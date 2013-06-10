@@ -1,0 +1,43 @@
+<br/>
+
+	<div class="container">
+		<h1>Apostas</h1>
+		
+		<div class="pagination pagination-centered">
+		  <ul>
+			<li><a href="#">&larr;</a></li>
+			<li><a href="#">1</a></li>
+			<li><a href="#">&rarr;</a></li>
+		  </ul>
+		</div>			
+		
+		<br/>
+		
+		<table class="table table-striped table-hover well">
+			<tr>
+				<td class="text-error">Jogo</td>
+				<td class="text-error">aposta</td>
+				<td class="text-error"></td>
+				<td>Pontos</td>
+			</tr>
+			{% for a in apostas %}
+			<tr>
+				<td>{{ a.jogo }}</td>
+				<form action="" method="post">
+				<td>
+						{{ a.jogo.time_a }} <input type="text" size=5 maxlength="2" value="{{ a.resultado_a }}" name="resultado_a"> X <input type="text" size="5" maxlength="2" value="{{ a.resultado_b }}" name="resultado_b"> {{ a.jogo.time_b }}
+				</td>
+				<td><input type="submit" value="OK" name="salvar" class="btn btn-small btn-success"></td>
+				</form>
+				<td>{{ a.pontos }}</td>
+			</tr>
+			{% empty %}
+				<h1>Não há produtos cadastrados</h1>
+			{% endfor %}
+		</table>
+		
+		<div class="text-right">
+			<a href="/produto_form/0/" class="btn btn-success">Salvar</a>
+		</div>
+		
+	</div>	

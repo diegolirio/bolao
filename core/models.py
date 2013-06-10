@@ -13,6 +13,12 @@ class Campeonato(models.Model):
 	nome = models.CharField(max_length=50)	
 	def __unicode__(self):
 		return self.nome
+		
+class Competicao(models.Model):
+	campeonato = models.ForeignKey(Campeonato)
+	nome = models.CharField(max_length=50)	
+	def __unicode__(self):
+		return self.nome + " - " + self.campeonato.nome
 	
 class Grupo(models.Model):
 	descricao = models.CharField(max_length=50)
@@ -46,8 +52,7 @@ class Jogo(models.Model):
 	status = models.ForeignKey(StatusJogo) 
 	def __unicode__(self):
 		r_a = ""
-		r_b = ""
-		
+		r_b = ""		
 		if self.status.codigo != "E":
 			r_a = str(self.resultado_a)
 			r_b = str(self.resultado_b)	
@@ -57,9 +62,9 @@ class Jogo(models.Model):
 class Inscricao(models.Model):
 	data = models.DateField()
 	participante = models.ForeignKey(Participante)
-	campeonato = models.ForeignKey(Campeonato)	
+	competicao = models.ForeignKey(Competicao)	
 	def __unicode__(self):
-		return str(self.pk) + " : Participante: " + self.participante.apelido + " / "+ self.campeonato.nome 
+		return str(self.pk) + " : Participante: " + self.participante.apelido + " / "+ self.competicao.nome 
 
 class Aposta(models.Model):
 	inscricao = models.ForeignKey(Inscricao)
@@ -68,7 +73,7 @@ class Aposta(models.Model):
 	resultado_b = models.IntegerField()
 	pontos = models.IntegerField()
 	def __unicode__(self):
-		return self.inscricao.participante.apelido + " / " + self.jogo.time_a + " " + str(self.jogo.resultado_a) + " X " + str(self.jogo.resultado_b) + " " + self.jogo.time_b + " / " + str(self.jogo.data) + " " + self.jogo.hora + " / Local: " + self.jogo.local + " / " + self.jogo.status 
+		return self.inscricao.participante.apelido + " / " + self.jogo.time_a + " " + str(self.jogo.resultado_a) + " X " + str(self.jogo.resultado_b) + " " + self.jogo.time_b + " / " + str(self.jogo.data_hora) + " / Local: " + self.jogo.local + " / " + self.jogo.status.descricao
 
 	
 	

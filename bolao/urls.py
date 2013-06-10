@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     
     url(r'^rancking/$', 'core.views.rancking'),
     url(r'^tabela/(?P<tipo>\d+)/$', 'core.views.tabela'),
+    url(r'^aposta/$', 'core.views.aposta'),
 )
 
 if settings.DEBUG:
