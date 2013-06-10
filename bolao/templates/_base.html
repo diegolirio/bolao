@@ -1,0 +1,54 @@
+<html>
+<head>
+	{% block head %}
+		<title>Usuarios</title>
+		<link href="/media/bootstrap/Asisco/bootstrap.min.css" rel="stylesheet"/>
+		
+		<!--<script src="{{ MEDIA_URL }}bootstrap/bootstrap.min.js"/>-->
+		
+		<link href="/media/bootstrap/bootswatch.css" rel="stylesheet"> 
+		<link href="/media/bootstrap/bootstrap-responsive.min.css" rel="stylesheet"> 
+		<!--<link href="bootstrap/font-awesome.min.css" rel="stylesheet"> -->          	
+		
+		<script src="/media/bootstrap/jquery.min.js"></script>
+		<script src="/media/bootstrap/bootstrap.min.js"></script>
+		<script src="/media/bootstrap/bootswatch.js"></script>
+		<script src="/media/bootstrap/jquery.smooth-scroll.min.js"></script>
+		
+		<script type="text/javascript">				
+			function show__(url, alt, larg) {
+				w = window.open(url, 
+								'', 
+								'height=550, width=750, top=150, left=250, scrollbars=no, resizable=no');
+								
+			}
+		</script>		
+		
+	{% endblock %}
+</head>
+<body>
+	
+	{% include 'menu_top.html' %}
+	
+	{% block body %}
+		<!-- Conteudo -->
+		<div class="container">
+			{% include template %}
+		</div>
+	{% endblock %}	
+	
+	<br/><br/><br/>
+	
+	<div class="text-center">
+		<span class="label label-important">asisco.com.br</span>
+	</div>
+
+	<footer>
+		<div class="container">
+			<p>Base Bootstrap Twiiter</p>
+			<p>Bootstrap asisco @ 2013</p>
+		</div>
+	</footer>
+	
+</body>
+</html>

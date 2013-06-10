@@ -1,0 +1,21 @@
+
+{% if tipo == '1' %}
+	<a href="/tabela/2/">Grupos</a>
+	<hr/>
+	{% for j in jogos %}
+		<p>
+			{{ j }}
+			{{ j.status }}	
+		</p>
+	{% endfor %}
+
+{% else %}
+	<a href="/tabela/1/">Jogos</a>
+	<hr/>
+	{% for j in jogos %}
+		<p>
+			{{ j }}
+		</p>
+	{% endfor %}	
+
+{% endif %}
