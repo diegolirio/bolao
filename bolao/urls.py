@@ -16,9 +16,10 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
     
-    url(r'^rancking/$', 'core.views.rancking'),
+    url(r'^rancking/$', 'core.views.rancking', name='rancking'),
     url(r'^tabela/(?P<tipo>\d+)/$', 'core.views.tabela'),
     url(r'^aposta/$', 'core.views.aposta'),
+    url(r'^aposta_calc/$', 'core.views.aposta_calc'),
 )
 
 if settings.DEBUG:

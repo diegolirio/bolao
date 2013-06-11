@@ -1,5 +1,6 @@
 # Create your views here.
 from django.shortcuts import render_to_response
+from django.shortcuts import redirect
 from core.models import Participante
 from core.models import Jogo
 from core.models import Aposta
@@ -16,3 +17,30 @@ def tabela(request, tipo):
 def aposta(request):
 	apostas = Aposta.objects.all()
 	return render_to_response('_base.html', {'template': 'aposta.html', 'apostas': apostas})
+
+def aposta_calc(request):
+	#participantes = Inscricao.objects.all()
+	
+	jogos = Jogo.objects.all()
+	for j in jogos:
+		if j.resultado_a > j.resultado_b:
+			j.vencedor = 'A'
+		else if j.resultado_a < j.resultado_b:
+			j.vencedor = 'B'
+		else:
+			j.vencedor = 'E'
+		j.save()
+	
+		apostas = Aposta.objects.all()
+		for a in apostas:
+			if (a.resultado_a == j.resultado_a) and (a.resultado_b == j.resultado_b):
+				a.pontos = 7
+			else if (a.vencedor == j.vencedor) and (a.vencedor != 'E'):
+				a.pontos = 5
+			else if (a.vencedor == j.vencedor) and (a.vencedor == 'E'):
+				a.pontos = 4
+			else:
+				a.pontos = 0
+			a.save()						
+	
+	return redirect('rancking')
