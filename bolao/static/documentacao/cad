@@ -7,3 +7,24 @@ nigeria 0 X 0 uruguai - E ---> ganhador null
 
 
 Apostas
+
+inscricao = 1
+jogo = 1
+resultado_a = 3
+resultado_b = 2
+pontos = 0
+vencedor = A
+
+inscricao = 1
+jogo = 2
+resultado_a = 0
+resultado_b = 1
+pontos = 0
+vencedor = B
+
+inscricao = 1
+jogo = 4
+resultado_a = 2
+resultado_b = 2
+pontos = 0
+vencedor = E
