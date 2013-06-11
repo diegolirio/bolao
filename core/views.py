@@ -25,19 +25,19 @@ def aposta_calc(request):
 	for j in jogos:
 		if j.resultado_a > j.resultado_b:
 			j.vencedor = 'A'
-		else if j.resultado_a < j.resultado_b:
+		elif j.resultado_a < j.resultado_b:
 			j.vencedor = 'B'
 		else:
 			j.vencedor = 'E'
 		j.save()
 	
-		apostas = Aposta.objects.all()
+		apostas = Aposta.objects.all().filter(jogo=j)
 		for a in apostas:
 			if (a.resultado_a == j.resultado_a) and (a.resultado_b == j.resultado_b):
 				a.pontos = 7
-			else if (a.vencedor == j.vencedor) and (a.vencedor != 'E'):
+			elif (a.vencedor == j.vencedor) and (a.vencedor != 'E'):
 				a.pontos = 5
-			else if (a.vencedor == j.vencedor) and (a.vencedor == 'E'):
+			elif (a.vencedor == j.vencedor) and (a.vencedor == 'E'):
 				a.pontos = 4
 			else:
 				a.pontos = 0
