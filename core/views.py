@@ -3,9 +3,10 @@ from django.shortcuts import render_to_response
 from core.models import Participante
 from core.models import Jogo
 from core.models import Aposta
+from core.models import Inscricao
 
 def rancking(request):
-	participantes = Participante.objects.all()
+	participantes = Inscricao.objects.all()
 	return render_to_response('_base.html', {'template': 'rancking.html', 'participantes': participantes})
 	
 def tabela(request, tipo):

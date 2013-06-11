@@ -2,12 +2,59 @@
 {% if tipo == '1' %}
 	<a href="/tabela/2/">Grupos</a>
 	<hr/>
-	{% for j in jogos %}
-		<p>
-			{{ j }}
-			{{ j.status }}	
-		</p>
-	{% endfor %}
+
+	<h1>Tabela</h1>
+	
+	<div class="pagination pagination-centered">
+	  <ul>
+		<li><a href="#">&larr;</a></li>
+		<li><a href="#">1</a></li>
+		<li><a href="#">&rarr;</a></li>
+	  </ul>
+	</div>			
+	
+	<br/>
+	
+	<table class="table table-striped table-hover well">
+		<!--
+		<tr>
+			<td class="text-error"></td>
+			<td class="text-error"></td>
+			<td class="text-error"></td>
+			<td class="text-error"></td>
+			<td class="text-error"></td>			
+			<td class="text-error"></td>
+			<td class="text-error"></td>
+		</tr>
+		-->
+		{% for j in jogos %}
+		<tr>
+			<td>{{ j.time_a }}</td>
+			<td>
+				{% if j.status.codigo != 'E' %}
+					{{ j.resultado_a }}
+				{% endif %}
+			</td>
+			<td>X</td>
+			<td>
+				{% if j.status.codigo != 'E' %}
+					{{ j.resultado_b }}
+				{% endif %}
+			</td>
+			<td>{{ j.time_b }}</td>
+			<td>{{ j.data_hora }}</td>
+			<td>{{ j.local }}</td>
+			<td>{{ j.status.codigo }}</td>
+		</tr>
+		{% empty %}
+			<h1>Não há produtos cadastrados</h1>
+		{% endfor %}
+	</table>
+	
+	<div class="text-right">
+		<a href="/produto_form/0/" class="btn btn-success">Salvar</a>
+	</div>
+
 
 {% else %}
 	<a href="/tabela/1/">Jogos</a>

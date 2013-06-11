@@ -1,5 +1,28 @@
-<h1>Rancking...</h1>
+<h1>Rancking</h1>
+	
+	<div class="pagination pagination-centered">
+	  <ul>
+		<li><a href="#">&larr;</a></li>
+		<li><a href="#">1</a></li>
+		<li><a href="#">&rarr;</a></li>
+	  </ul>
+	</div>			
 
-{% for p in participantes %}
-	<p>{{ p.apelido }}</p>
-{% endfor %}
+	<br/>
+
+	<table class="table table-striped table-hover well">
+		<tr>
+			<td class="text-error">Colocação</td>
+			<td class="text-error">Nome</td>
+			<td class="text-error">Pontos</td>
+		</tr>
+		{% for p in participantes %}
+		<tr>
+			<td>1º</td>
+			<td>{{ p.participante }}</td>
+			<td>{{ p.soma }}</td>
+		</tr>
+		{% empty %}
+			<h1>Não há produtos cadastrados</h1>
+		{% endfor %}
+	</table>

@@ -63,8 +63,17 @@ class Inscricao(models.Model):
 	data = models.DateField()
 	participante = models.ForeignKey(Participante)
 	competicao = models.ForeignKey(Competicao)	
+	colocacao = models.IntegerField(default=1)
+	
 	def __unicode__(self):
 		return str(self.pk) + " : Participante: " + self.participante.apelido + " / "+ self.competicao.nome 
+				
+	def soma(self):
+		t = 0
+		apostas = Aposta.objects.all().filter(inscricao=self)
+		for a in apostas:
+			t += a.pontos
+		return t
 
 class Aposta(models.Model):
 	inscricao = models.ForeignKey(Inscricao)
@@ -72,8 +81,8 @@ class Aposta(models.Model):
 	resultado_a = models.IntegerField()
 	resultado_b = models.IntegerField()
 	pontos = models.IntegerField()
+	
 	def __unicode__(self):
 		return self.inscricao.participante.apelido + " / " + self.jogo.time_a + " " + str(self.jogo.resultado_a) + " X " + str(self.jogo.resultado_b) + " " + self.jogo.time_b + " / " + str(self.jogo.data_hora) + " / Local: " + self.jogo.local + " / " + self.jogo.status.descricao
-
 	
 	
