@@ -3,4 +3,4 @@ from django.shortcuts import redirect
 
 def home(request):
 	#return render_to_response('_base.html', {'template': 'rancking.html'})
-	return redirect('/rancking/')
+	return redirect('/rancking/1/')

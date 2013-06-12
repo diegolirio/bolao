@@ -6,18 +6,35 @@ from core.models import Participante
 from core.models import Jogo
 from core.models import Aposta
 from core.models import Inscricao
+from core.models import Competicao
+from core.models import Campeonato
+from core.models import Grupo
 
-def rancking(request):
-	participantes = Inscricao.objects.all().order_by('-pontos', 'quantidade_acerto_placar')
-	return render_to_response('_base.html', {'template': 'rancking.html', 'participantes': participantes})
+def rancking(request, competicao):
+	co = Competicao.objects.get(pk=competicao)
+	#participantes = Inscricao.objects.all().order_by('-pontos', 'quantidade_acerto_placar')
+	participantes = Inscricao.objects.filter(competicao=co).order_by('colocacao')
+	return render_to_response('_base.html', {'template': 'rancking.html', 'participantes': participantes, 'competicao': co})
 	
-def tabela(request, tipo):
-	jogos = Jogo.objects.all()
-	return render_to_response('_base.html', {'template': 'tabela.html', 'jogos': jogos, 'tipo': tipo})	
+def tabela(request, competicao, tipo):
+	co = Competicao.objects.get(pk=competicao)
+	grupos = Grupo.objects.all().filter(campeonato=co.campeonato)
+	jgs = []
+	for g in grupos:
+		js = Jogo.objects.filter(grupo=g)
+		for j in js:
+			jgs.append(j)
+	return render_to_response('_base.html', {'template': 'tabela.html', 'jogos': jgs, 'tipo': tipo, 'competicao': co})	
 	
-def aposta(request):
-	apostas = Aposta.objects.all()
-	return render_to_response('_base.html', {'template': 'aposta.html', 'apostas': apostas})
+def aposta(request, participante, competicao):
+	i = Inscricao.objects.filter(participante=participante, competicao=competicao)[0:1].get()
+	#apostas = Aposta.objects.filter(participante)
+	apostas = []
+	#for i in inscricoes:
+	apts = Aposta.objects.filter(inscricao=i)
+	for a in apts:
+		apostas.append(a)
+	return render_to_response('_base.html', {'template': 'aposta.html', 'apostas': apostas, 'inscricao': i})
 
 def aposta_calc(request):
 	#participantes = Inscricao.objects.all()	
@@ -32,14 +49,16 @@ def aposta_calc(request):
 		j.save()
 		
 		calcula_aposta(j)
-		calcula_inscricao(j)
+		#calcula_inscricao(j)
 		calcula_rancking(j)
 		
-	return redirect('rancking')
+	return redirect('/rancking/1/')
 
 def calcula_aposta(jogo):
 	apostas = Aposta.objects.all().filter(jogo=jogo)
 	for a in apostas:
+		a.inscricao.calc()
+		"""
 		if (a.resultado_a == jogo.resultado_a) and (a.resultado_b == jogo.resultado_b):
 			a.pontos = PLACAR
 		elif (a.vencedor == jogo.vencedor) and (a.vencedor != 'E'):
@@ -48,7 +67,8 @@ def calcula_aposta(jogo):
 			a.pontos = EMPATE_SEM_PLACAR_CORRETO
 		else:
 			a.pontos = ERRO_TUDO
-		a.save()						
+		a.save()		
+		"""				
 			
 def calcula_inscricao(jogo):
 	apts = Aposta.objects.all().filter(jogo=jogo)
@@ -62,9 +82,13 @@ def calcula_inscricao(jogo):
 	
 	apostas = Aposta.objects.all().filter(jogo=jogo)
 	for a in apostas:
+		
+		print(a.inscricao.participante.apelido + " = " + str(a.pontos))
+		
 		qtde_ap = 0
 		qtde_av = 0
-		qtde_ae = 0					
+		qtde_ae = 0		
+					
 		if a.pontos == PLACAR:
 			qtde_ap = qtde_ap + 1	
 		elif a.pontos == VENCEDOR:
@@ -72,12 +96,12 @@ def calcula_inscricao(jogo):
 		elif a.pontos == EMPATE_SEM_PLACAR_CORRETO:
 			qtde_ae = qtde_ae + 1	
 	
-		i = a.inscricao
-		i.pontos = i.pontos + a.pontos
-		i.quantidade_acerto_placar = i.quantidade_acerto_placar + qtde_ap
-		i.quantidade_acerto_vencedor = i.quantidade_acerto_vencedor + qtde_av
-		i.quantidade_acerto_empate_erro_placar = i.quantidade_acerto_empate_erro_placar + qtde_ae
-		i.save()
+		insc = a.inscricao
+		insc.pontos = insc.pontos + a.pontos
+		insc.quantidade_acerto_placar = insc.quantidade_acerto_placar + qtde_ap
+		insc.quantidade_acerto_vencedor = insc.quantidade_acerto_vencedor + qtde_av
+		insc.quantidade_acerto_empate_erro_placar = insc.quantidade_acerto_empate_erro_placar + qtde_ae
+		insc.save()
 
 def calcula_rancking(jogo):
 	inscricoes = Inscricao.objects.all().order_by('-pontos')
@@ -87,9 +111,9 @@ def calcula_rancking(jogo):
 	qtde_av = 0
 	qtde_ae = 0
 	for i in inscricoes:
-		if (i.pontos != pt_anterior) or (i.quantidade_acerto_placar != qtde_ap) or (i.quantidade_acerto_vencedor != qtde_av) or (i.quantidade_acerto_empate_erro_placar != qtde_ae):
-			col = col + 1		
-		i.colocacao = col
+		col = col + 1		
+		if (i.pontos != pt_anterior) or (i.quantidade_acerto_placar != qtde_ap) or (i.quantidade_acerto_vencedor != qtde_av) or (i.quantidade_acerto_empate_erro_placar != qtde_ae):			
+			i.colocacao = col
 		i.save()
 		pt_anterior = i.pontos
 		qtde_ap = i.quantidade_acerto_placar
@@ -98,5 +122,26 @@ def calcula_rancking(jogo):
 		
 	#apostas = Aposta.objects.filter(inscricao.competicao = c)
 #	apostas = Aposta.objects.all().order_by('-pontos', 'headline')
+
+
 	
+def create_jogos(request):
+	"""
+	cam = Campeonato()
+	cam.nome = "Copa do Mundo 2014"
+	cam.save()
+	
+	gr = Grupo()
+	gr.campeonato = cam
+	gr.descricao = "Grupo A"
+	
+	jg = Jogo()
+	jg.grupo = gr
+	jg.time_a = "Brasil"
+	jg.time_b = "Italia"
+	jg.resultado_a = 2
+	jg.resultado_b = 3
+	jg.data_hora = Date()
+	"""
+	return redirect('/tabela/1/')
 	
