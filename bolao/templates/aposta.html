@@ -48,14 +48,14 @@
 			<td>{{ a.jogo.local }}</td>
 			<td>{{ a.jogo.status.codigo }}</td>
 			<td><b class="text-success">{{ a.jogo.time_a }}</b></td>
-			<td><b class="text-success">{{ a.jogo.resultado_a }}</b></td>
+			<td><b class="text-success">{{ a.resultado_a }}</b></td>
 			<td>X</td>
-			<td><b class="text-success">{{ a.jogo.resultado_a }}</b></td>
+			<td><b class="text-success">{{ a.resultado_a }}</b></td>
 			<td><b class="text-success">{{ a.jogo.time_b }}</b></td>
 			<td><a href="#" class="btn btn-small btn-info"><i class="icon-plus"></i></a></td>
 		</tr>
 		{% empty %}
-			<h1>Não há produtos cadastrados</h1>
+			<h1>Não há aposta cadastradas</h1>
 		{% endfor %}
 	</table>
 		

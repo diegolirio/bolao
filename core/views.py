@@ -10,11 +10,15 @@ from core.models import Competicao
 from core.models import Campeonato
 from core.models import Grupo
 
-def rancking(request, competicao):
-	co = Competicao.objects.get(pk=competicao)
+def rancking(request, participante, inscricao):
+	i = Inscricao.objects.get(pk=inscricao)
+	co = i.competicao
 	#participantes = Inscricao.objects.all().order_by('-pontos', 'quantidade_acerto_placar')
 	participantes = Inscricao.objects.filter(competicao=co).order_by('colocacao')
-	return render_to_response('_base.html', {'template': 'rancking.html', 'participantes': participantes, 'competicao': co})
+	
+	p = Participante.objects.get(pk=participante)
+	inscricoes = Inscricao.objects.filter(participante=p)
+	return render_to_response('_base.html', {'template': 'rancking.html', 'participantes': participantes, 'competicao': co, 'inscricoes': inscricoes})
 	
 def tabela(request, competicao, tipo):
 	co = Competicao.objects.get(pk=competicao)

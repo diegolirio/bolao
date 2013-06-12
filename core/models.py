@@ -5,7 +5,7 @@ from core.const import *
 # Create your models here.
 
 class Participante(models.Model):
-	user = models.ForeignKey(User)
+	user = models.ForeignKey(User, unique=True)
 	apelido = models.CharField(max_length=50)	
 	def __unicode__(self):
 		return self.apelido
