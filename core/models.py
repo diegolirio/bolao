@@ -98,6 +98,9 @@ class Inscricao(models.Model):
 		self.save()
 		return pt
 	
+	class Meta:
+		unique_together = ('participante', 'competicao')
+	
 ###########################################################
 class Aposta(models.Model):
 	inscricao = models.ForeignKey(Inscricao)
