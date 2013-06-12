@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from core.const import *
 
 # Create your models here.
 
@@ -59,22 +60,45 @@ class Jogo(models.Model):
 		
 		return self.time_a + " " + r_a + " X " + r_b + " " + self.time_b + " / " + str(self.data_hora) + " / Local: " + self.local
 
+###########################################################
+
 class Inscricao(models.Model):
 	data = models.DateField()
 	participante = models.ForeignKey(Participante)
 	competicao = models.ForeignKey(Competicao)	
 	colocacao = models.IntegerField(default=1)
+	pontos = models.IntegerField(default=0)
+	quantidade_acerto_placar = models.IntegerField(default=0)
+	quantidade_acerto_vencedor = models.IntegerField(default=0)
+	quantidade_acerto_empate_erro_placar = models.IntegerField(default=0)
 	
 	def __unicode__(self):
 		return str(self.pk) + " : Participante: " + self.participante.apelido + " / "+ self.competicao.nome 
 				
-	def soma(self):
-		t = 0
+	def calc(self):
+		pt = 0
+		qtde_ap = 0
+		qtde_av = 0
+		qtde_ae = 0
+		
 		apostas = Aposta.objects.all().filter(inscricao=self)
 		for a in apostas:
-			t += a.pontos
-		return t
-
+			pt += a.pontos
+			if a.pontos == PLACAR:
+				qtde_ap = qtde_ap + 1	
+			if a.pontos == VENCEDOR:
+				qtde_av = qtde_av + 1	
+			if a.pontos == EMPATE_SEM_PLACAR_CORRETO:
+				qtde_ae = qtde_ae + 1	
+													
+		self.pontos = pt
+		self.quantidade_acerto_placar = qtde_ap
+		self.quantidade_acerto_vencedor = qtde_av
+		self.quantidade_acerto_empate_erro_placar = qtde_ae
+		self.save()
+		return pt
+	
+###########################################################
 class Aposta(models.Model):
 	inscricao = models.ForeignKey(Inscricao)
 	jogo = models.ForeignKey(Jogo)
@@ -84,6 +108,6 @@ class Aposta(models.Model):
 	vencedor = models.CharField(max_length=1, blank=True) # (A - B - E)
 	
 	def __unicode__(self):
-		return self.inscricao.participante.apelido + " / " + self.jogo.time_a + " " + str(self.jogo.resultado_a) + " X " + str(self.jogo.resultado_b) + " " + self.jogo.time_b + " / " + str(self.jogo.data_hora) + " / Local: " + self.jogo.local + " / " + self.jogo.status.descricao
+		return self.inscricao.participante.apelido + " / " + self.jogo.time_a + " " + str(self.jogo.resultado_a) + " X " + str(self.jogo.resultado_b) + " " + self.jogo.time_b + " / " + str(self.jogo.data_hora) + " / Local: " + self.jogo.local + " / " + self.jogo.status.descricao + " - Aposta: " + str(self.resultado_a) + " X " + str(self.resultado_b)
 	
 	

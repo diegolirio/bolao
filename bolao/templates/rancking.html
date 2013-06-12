@@ -19,12 +19,18 @@
 			<td class="text-error">Colocação</td>
 			<td class="text-error">Nome</td>
 			<td class="text-error">Pontos</td>
+			<td class="text-error">AP</td>
+			<td class="text-error">AG</td>
+			<td class="text-error">AE</td>
 		</tr>
 		{% for p in participantes %}
 		<tr>
-			<td>1º</td>
+			<td>{{ p.colocacao}}º</td>
 			<td>{{ p.participante }}</td>
-			<td>{{ p.soma }}</td>
+			<td>{{ p.pontos }}</td>
+			<td>{{ p.quantidade_acerto_placar }}</td>
+			<td>{{ p.quantidade_acerto_vencedor }}</td>
+			<td>{{ p.quantidade_acerto_empate_erro_placar }}</td>
 		</tr>
 		{% empty %}
 			<h1>Não há participantes cadastrados</h1>
