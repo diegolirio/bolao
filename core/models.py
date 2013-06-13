@@ -11,7 +11,7 @@ class Participante(models.Model):
 		return self.apelido
 	
 class Campeonato(models.Model):
-	nome = models.CharField(max_length=50)	
+	nome = models.CharField(max_length=50, unique=True)	
 	def __unicode__(self):
 		return self.nome
 		
@@ -20,6 +20,8 @@ class Competicao(models.Model):
 	nome = models.CharField(max_length=50)	
 	def __unicode__(self):
 		return self.nome + " - " + self.campeonato.nome
+	class Meta:
+		unique_together = ('campeonato', 'nome')			
 	
 class Grupo(models.Model):
 	descricao = models.CharField(max_length=50)
@@ -28,13 +30,13 @@ class Grupo(models.Model):
 		return self.descricao + " - " + self.campeonato.nome	
 	
 class Time(models.Model):
-	nome = models.CharField(max_length=50)
+	nome = models.CharField(max_length=50, unique=True)
 	def __unicode__(self):
 		return self.nome
 		
 class StatusJogo(models.Model):
 	codigo = models.CharField(max_length=1)# { F, A, E }
-	descricao = models.CharField(max_length=30)	# {F:(finalizado), A: (em andamento, atualizando processo), E: (Edicao)}
+	descricao = models.CharField(max_length=30, unique=True)	# {F:(finalizado), A: (em andamento, atualizando processo), E: (Edicao)}
 	def __unicode__(self):
 		return "["+self.codigo+"] " + self.descricao	
 			
@@ -82,10 +84,10 @@ class Inscricao(models.Model):
 class Aposta(models.Model):
 	inscricao = models.ForeignKey(Inscricao)
 	jogo = models.ForeignKey(Jogo)
-	resultado_a = models.IntegerField()
-	resultado_b = models.IntegerField()
-	pontos = models.IntegerField()
-	vencedor = models.CharField(max_length=1, blank=True) # (A - B - E)	
+	resultado_a = models.IntegerField(default=0)
+	resultado_b = models.IntegerField(default=0)
+	pontos = models.IntegerField(default=0)
+	vencedor = models.CharField(max_length=1, blank=True, default='E') # (A - B - E)	
 	def __unicode__(self):
 		return self.inscricao.participante.apelido + " / " + self.jogo.time_a + " " + str(self.jogo.resultado_a) + " X " + str(self.jogo.resultado_b) + " " + self.jogo.time_b + " / " + str(self.jogo.data_hora) + " / Local: " + self.jogo.local + " / " + self.jogo.status.descricao + " - Aposta: " + str(self.resultado_a) + " X " + str(self.resultado_b)
 	class Meta:
