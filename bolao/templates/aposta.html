@@ -25,6 +25,7 @@
 			<td class="text-error"></td>
 			<td class="text-error"></td>
 			<td class="text-error"></td>
+			<td class="text-error">P</td>
 			<td class="text-error">Palpite</td>
 			<td class="text-error"></td>
 		</tr>
@@ -47,12 +48,17 @@
 			<td>{{ a.jogo.data_hora }}</td>
 			<td>{{ a.jogo.local }}</td>
 			<td>{{ a.jogo.status.codigo }}</td>
+			<td>{{ a.pontos }}</td>
 			<td><b class="text-success">{{ a.jogo.time_a }}</b></td>
 			<td><b class="text-success">{{ a.resultado_a }}</b></td>
 			<td>X</td>
-			<td><b class="text-success">{{ a.resultado_a }}</b></td>
+			<td><b class="text-success">{{ a.resultado_b }}</b></td>
 			<td><b class="text-success">{{ a.jogo.time_b }}</b></td>
-			<td><a href="#" class="btn btn-small btn-info"><i class="icon-plus"></i></a></td>
+			<td>
+				{% if a.jogo.status.codigo == 'E' %}
+					<a href="#" onclick="alert('desenvolvimento - altera palpite');" class="btn btn-small btn-info"><i class="icon-plus"></i></a>
+				{% endif %}
+			</td>
 		</tr>
 		{% empty %}
 			<h1>Não há aposta cadastradas</h1>

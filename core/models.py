@@ -74,29 +74,6 @@ class Inscricao(models.Model):
 	
 	def __unicode__(self):
 		return str(self.pk) + " : Participante: " + self.participante.apelido + " / "+ self.competicao.nome 
-				
-	def calc(self):
-		pt = 0
-		qtde_ap = 0
-		qtde_av = 0
-		qtde_ae = 0
-		
-		apostas = Aposta.objects.all().filter(inscricao=self)
-		for a in apostas:
-			pt += a.pontos
-			if a.pontos == PLACAR:
-				qtde_ap = qtde_ap + 1	
-			if a.pontos == VENCEDOR:
-				qtde_av = qtde_av + 1	
-			if a.pontos == EMPATE_SEM_PLACAR_CORRETO:
-				qtde_ae = qtde_ae + 1	
-													
-		self.pontos = pt
-		self.quantidade_acerto_placar = qtde_ap
-		self.quantidade_acerto_vencedor = qtde_av
-		self.quantidade_acerto_empate_erro_placar = qtde_ae
-		self.save()
-		return pt
 	
 	class Meta:
 		unique_together = ('participante', 'competicao')
@@ -108,9 +85,10 @@ class Aposta(models.Model):
 	resultado_a = models.IntegerField()
 	resultado_b = models.IntegerField()
 	pontos = models.IntegerField()
-	vencedor = models.CharField(max_length=1, blank=True) # (A - B - E)
-	
+	vencedor = models.CharField(max_length=1, blank=True) # (A - B - E)	
 	def __unicode__(self):
 		return self.inscricao.participante.apelido + " / " + self.jogo.time_a + " " + str(self.jogo.resultado_a) + " X " + str(self.jogo.resultado_b) + " " + self.jogo.time_b + " / " + str(self.jogo.data_hora) + " / Local: " + self.jogo.local + " / " + self.jogo.status.descricao + " - Aposta: " + str(self.resultado_a) + " X " + str(self.resultado_b)
+	class Meta:
+		unique_together = ('inscricao', 'jogo')		
 	
 	

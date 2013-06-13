@@ -10,31 +10,30 @@
 		   <a class="brand" href="/"><img src="/media/images/bola_32.png"/></a>
 		   <div class="nav-collapse collapse" id="main-menu">
 			<ul class="nav" id="main-menu-left">
-			    <li><a href="/rancking/1/">Rancking</a></li>
-			    <li><a href="/tabela/1/1/">Tabela da Copa</a></li>
-			    <li><a href="/aposta/1/1/">Aposta</a></li>
-			    <!--
 			    <li class="dropdown">
-				   <a class="dropdown-toggle" data-toggle="dropdown" href="#">Sistema de cadastro<b class="caret"></b></a>
+				   <a class="dropdown-toggle" data-toggle="dropdown" href="#">Rancking<b class="caret"></b></a>
 				   <ul class="dropdown-menu" id="swatch-menu">
-						<li class="nav-header">Consultas</li>
-						<li><a href="#/usuarios/">Usuários</a></li>					    
-						<li><a href="/clientes/">Clientes</a></li>		
-						<li><a href="/marcas/">Marcas</a></li>	
-						<li><a href="/produtos/">Produtos</a></li>	
-						<li><a href="/fornecedores/">Fornecedores</a></li>	
-					    <li class="nav-header">Cadastro</li>
-					    <li><a href="#/usuario_new/">Usuários</a></li>
-					    <li><a href="/cliente_new/">Clientes</a></li>
-					    <li><a href="/marca_new/">Marcas</a></li>						
-					    <li><a href="/produto_new/">Produto</a></li>						
-				   </ul> 
-			    </li>	
-			    -->	
-			    <!--
-			    <li><a href="/nf_form2/0/">Realizar Venda 2</a></li>			
-			    <li><a href="/nf_form3/0/">Realizar Venda 3</a></li>			
-			    -->		
+					   {% for i in inscricoes %}
+						  <li><a href="/rancking/{{i.id}}/">{{i.competicao.campeonato.nome}} - {{i.competicao.nome}}</a></li>					    
+					   {% endfor %}
+				   </ul>
+				</li>  
+			    <li class="dropdown">
+				   <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tabela<b class="caret"></b></a>
+				   <ul class="dropdown-menu" id="swatch-menu">
+					   {% for i in inscricoes %}
+						  <li><a href="/tabela/{{i.competicao.id}}/1/">{{i.competicao.campeonato.nome}}</a></li>					    
+					   {% endfor %}
+				   </ul>
+				</li>  
+			    <li class="dropdown">
+				   <a class="dropdown-toggle" data-toggle="dropdown" href="#">Aposta<b class="caret"></b></a>
+				   <ul class="dropdown-menu" id="swatch-menu">
+					   {% for i in inscricoes %}
+						  <li><a href="/aposta/{{i.id}}/">{{i.competicao.campeonato.nome}} - {{i.competicao.nome}}</a></li>					    
+					   {% endfor %}
+				   </ul>
+				</li>  
 			</ul>
 			<ul class="nav pull-right" id="main-menu-right">
 			  <li><a href="/admin/">Admin</a></li>

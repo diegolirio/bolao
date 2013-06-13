@@ -10,7 +10,7 @@
 	</div>			
 
 	<div class="text-right">
-		<a href="/aposta_calc/" class="btn btn-success">Calcular</a>
+		<a href="/aposta_calc/{{competicao.campeonato.pk}}/" class="btn btn-success">Calcular {{competicao.campeonato.nome}}</a>
 		<br/><br/>
 		Jogos finalizados: 2/40
 	</div>	
@@ -27,15 +27,15 @@
 			<td class="text-error" title="Acertos de Vencedor">AV</td>
 			<td class="text-error" title="Acertos de Empate com placar diferente">AE</td>
 		</tr>
-		{% for p in participantes %}
+		{% for ip in inscricoes_participantes %}
 		<tr>
-			<td>{{ p.colocacao}}º</td>
-			<td>{{ p.participante }}</td>
-			<td>{{ p.id }}</td>
-			<td>{{ p.pontos }}</td>
-			<td>{{ p.quantidade_acerto_placar }}</td>
-			<td>{{ p.quantidade_acerto_vencedor }}</td>
-			<td>{{ p.quantidade_acerto_empate_erro_placar }}</td>
+			<td class="text-info">{{ ip.colocacao}}º</td>
+			<td><a href="/aposta/{{ip.pk}}/" class="text-info">{{ ip.participante }}</a></td>
+			<td>{{ ip.id }}</td>
+			<td class="text-info">{{ ip.pontos }}</td>
+			<td>{{ ip.quantidade_acerto_placar }}</td>
+			<td>{{ ip.quantidade_acerto_vencedor }}</td>
+			<td>{{ ip.quantidade_acerto_empate_erro_placar }}</td>
 		</tr>
 		{% empty %}
 			<h1>Não há participantes cadastrados</h1>

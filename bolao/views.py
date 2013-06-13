@@ -16,8 +16,8 @@ def home(request):
 		url = "/index/"+participante+"/"
 	elif qtde == 1:
 		inscricoes = Inscricao.objects.filter(participante=participante)[0:1].get()
-		url = "/rancking/"+str(participante)+"/"+str(inscricoes.pk)+"/"
+		url = "/rancking/"+str(inscricoes.pk)+"/"
 	else:
-		url = "/help/"
+		url = "/index/0/"
 	
 	return redirect(url)
