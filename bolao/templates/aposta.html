@@ -25,9 +25,9 @@
 			<td class="text-error"></td>
 			<td class="text-error"></td>
 			<td class="text-error"></td>
-			<td class="text-error">P</td>
-			<td class="text-error">Palpite</td>
-			<td class="text-error"></td>
+			<td class="text-error" title="Pontos ganhos">P</td>
+			<td class="text-error" colspan="5">Palpite</td>
+			<td class="text-error">  - </td>
 		</tr>
 		
 		{% for a in apostas %}
@@ -56,7 +56,7 @@
 			<td><b class="text-success">{{ a.jogo.time_b }}</b></td>
 			<td>
 				{% if a.jogo.status.codigo == 'E' %}
-					<a href="#" onclick="alert('desenvolvimento - altera palpite');" class="btn btn-small btn-info"><i class="icon-plus"></i></a>
+					<a href="/aposta_edit/{{a.id}}/" onclick="show__(this.href); return false;" class="btn btn-small btn-info"><i class="icon-plus"></i></a>
 				{% endif %}
 			</td>
 		</tr>

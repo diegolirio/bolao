@@ -15,11 +15,18 @@ class Campeonato(models.Model):
 	def __unicode__(self):
 		return self.nome
 		
+class StatusJogo(models.Model):
+	codigo = models.CharField(max_length=1)# { F, A, E }
+	descricao = models.CharField(max_length=30, unique=True)	# {F:(finalizado), A: (em andamento, atualizando processo), E: (Edicao)}
+	def __unicode__(self):
+		return "["+self.codigo+"] " + self.descricao			
+		
 class Competicao(models.Model):
 	campeonato = models.ForeignKey(Campeonato)
 	nome = models.CharField(max_length=50)	
+	status = models.ForeignKey(StatusJogo) # ToDo...: ,default='E'
 	def __unicode__(self):
-		return self.nome + " - " + self.campeonato.nome
+		return self.nome + " - " + self.campeonato.nome + " - " + self.status.descricao
 	class Meta:
 		unique_together = ('campeonato', 'nome')			
 	
@@ -33,12 +40,6 @@ class Time(models.Model):
 	nome = models.CharField(max_length=50, unique=True)
 	def __unicode__(self):
 		return self.nome
-		
-class StatusJogo(models.Model):
-	codigo = models.CharField(max_length=1)# { F, A, E }
-	descricao = models.CharField(max_length=30, unique=True)	# {F:(finalizado), A: (em andamento, atualizando processo), E: (Edicao)}
-	def __unicode__(self):
-		return "["+self.codigo+"] " + self.descricao	
 			
 class Jogo(models.Model):
 	#time_a = models.ForeignKey(Time)
@@ -71,8 +72,11 @@ class Inscricao(models.Model):
 	colocacao = models.IntegerField(default=1)
 	pontos = models.IntegerField(default=0)
 	quantidade_acerto_placar = models.IntegerField(default=0)
+	quantidade_acerto_vencedor_um_resultado_correto = models.IntegerField(default=0)
 	quantidade_acerto_vencedor = models.IntegerField(default=0)
 	quantidade_acerto_empate_erro_placar = models.IntegerField(default=0)
+	quantidade_acerto_somente_resultado_um_time = models.IntegerField(default=0)
+	quantidade_erro = models.IntegerField(default=0)
 	
 	def __unicode__(self):
 		return str(self.pk) + " : Participante: " + self.participante.apelido + " / "+ self.competicao.nome 

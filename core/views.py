@@ -1,6 +1,7 @@
 # Create your views here.
 from django.shortcuts import render_to_response
 from django.shortcuts import redirect
+from django.template import RequestContext
 from core.const import *
 from core.models import Participante
 from core.models import Jogo
@@ -9,6 +10,7 @@ from core.models import Inscricao
 from core.models import Competicao
 from core.models import Campeonato
 from core.models import Grupo
+from core.forms import ApostaForm
 
 def rancking(request, inscricao):
 	i = Inscricao.objects.get(pk=inscricao)
@@ -66,21 +68,33 @@ def aposta_calc(request, campeonato):
 		for i in inscricoes:
 			apostas = Aposta.objects.filter(inscricao=i)
 			qtde_ap = 0
+			qtde_ar = 0
 			qtde_av = 0
-			qtde_ae = 0					
+			qtde_ae = 0
+			qtde_as = 0					
+			qtde_er = 0					
 			pt = 0
 			for a in apostas:
 				pt = pt + a.pontos
-				if a.pontos == PLACAR:
+				if a.pontos == PONTOS_PLACAR:
 					qtde_ap = qtde_ap + 1	
-				elif a.pontos == VENCEDOR:
+				if a.pontos == PONTOS_VENCEDOR_RESULTADO_GOLS_UM_TIME:
+					qtde_ar = qtde_ar + 1						
+				elif a.pontos == PONTOS_VENCEDOR:
 					qtde_av = qtde_av + 1	
-				elif a.pontos == EMPATE_SEM_PLACAR_CORRETO:
-					qtde_ae = qtde_ae + 1				
+				elif a.pontos == PONTOS_EMPATE_PLACAR_INCORRETO:
+					qtde_ae = qtde_ae + 1	
+				elif a.pontos == PONTOS_SOMENTE_RESULTADO_GOLS_UM_TIME:
+					qtde_as = qtde_as + 1	
+				elif (a.jogo.status.codigo != 'E') and (a.pontos == PONTOS_ERRO):
+					qtde_er = qtde_er + 1
 			i.pontos = pt
 			i.quantidade_acerto_placar = qtde_ap
+			i.quantidade_acerto_vencedor_um_resultado_correto = qtde_ar
 			i.quantidade_acerto_vencedor = + qtde_av
 			i.quantidade_acerto_empate_erro_placar = + qtde_ae
+			i.quantidade_acerto_somente_resultado_um_time = qtde_as
+			i.quantidade_erro = qtde_er
 			i.save()
 		#Calcula Rancking - colocacao
 		calcula_rancking(co)		
@@ -92,13 +106,17 @@ def calcula_aposta(jogo):
 	for a in apostas:
 		if jogo.status.codigo != 'E':
 			if (a.resultado_a == jogo.resultado_a) and (a.resultado_b == jogo.resultado_b):
-				a.pontos = PLACAR
+				a.pontos = PONTOS_PLACAR
+			elif (a.vencedor == jogo.vencedor) and (a.vencedor != 'E') and ((a.resultado_a == jogo.resultado_a) or (a.resultado_b == jogo.resultado_b)):
+				a.pontos = PONTOS_VENCEDOR_RESULTADO_GOLS_UM_TIME
 			elif (a.vencedor == jogo.vencedor) and (a.vencedor != 'E'):
-				a.pontos = VENCEDOR
+				a.pontos = PONTOS_VENCEDOR
 			elif (a.vencedor == jogo.vencedor) and (a.vencedor == 'E'):
-				a.pontos = EMPATE_SEM_PLACAR_CORRETO
+				a.pontos = PONTOS_EMPATE_PLACAR_INCORRETO
+			elif (a.vencedor != jogo.vencedor) and ((a.resultado_a == jogo.resultado_a) or (a.resultado_b == jogo.resultado_b)):
+				a.pontos = PONTOS_SOMENTE_RESULTADO_GOLS_UM_TIME
 			else:
-				a.pontos = ERRO_TUDO
+				a.pontos = PONTOS_ERRO
 		else:
 			a.pontos = 0
 		a.save()
@@ -122,28 +140,14 @@ def calcula_rancking(competicao):
 		qtde_av = i.quantidade_acerto_vencedor
 		qtde_ae = i.quantidade_acerto_empate_erro_placar
 		
-	#apostas = Aposta.objects.filter(inscricao.competicao = c)
-#	apostas = Aposta.objects.all().order_by('-pontos', 'headline')
-
-
-	
-def create_jogos(request):
-	"""
-	cam = Campeonato()
-	cam.nome = "Copa do Mundo 2014"
-	cam.save()
-	
-	gr = Grupo()
-	gr.campeonato = cam
-	gr.descricao = "Grupo A"
-	
-	jg = Jogo()
-	jg.grupo = gr
-	jg.time_a = "Brasil"
-	jg.time_b = "Italia"
-	jg.resultado_a = 2
-	jg.resultado_b = 3
-	jg.data_hora = Date()
-	"""
-	return redirect('/tabela/1/')
+# Altera aposta, usuario alterando sua propria aposta		
+def aposta_edit(request, pk):
+	execute_transation = 'S'
+	model = Aposta.objects.get(pk=pk)
+	mensagem = 'Jogo encontra-se em ' + model.jogo.status.descricao
+	form = ApostaForm(instance=model)
+	return render_to_response('_base_simple.html', {'template': 'aposta_edit.html', 
+	                                                'execute_transation': execute_transation,
+	                                                'form': form, 'mensagem': mensagem}, 
+	                          context_instance=RequestContext(request))
 	

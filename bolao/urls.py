@@ -20,6 +20,7 @@ urlpatterns = patterns('',
     url(r'^tabela/(?P<inscricao>\d+)/(?P<tipo>\d+)/$', 'core.views.tabela', name='tabela'),
     url(r'^aposta/(?P<inscricao>\d+)/$', 'core.views.aposta'),
     url(r'^aposta_calc/(?P<campeonato>\d+)/$', 'core.views.aposta_calc'),
+    url(r'^aposta_edit/(?P<pk>\d+)/$', 'core.views.aposta_edit'),
     
     url(r'^create_jogos/$', 'core.views.create_jogos'),
 )
