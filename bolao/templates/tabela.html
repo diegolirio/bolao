@@ -50,6 +50,7 @@
 			<td>{{ j.data_hora }}</td>
 			<td>{{ j.local }}</td>
 			<td>{{ j.status.codigo }}</td>
+			<td><a href="/apostas_jogo/{{ j.id }}/{{competicao.id}}/" title="dinheiro como icone">apostas</a></td>
 		</tr>
 		{% empty %}
 			<h1>Não há produtos cadastrados</h1>

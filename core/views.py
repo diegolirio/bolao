@@ -172,3 +172,12 @@ def aposta_edit(request, pk):
 	                                                'aposta': model, 'form': form, 'mensagem': mensagem}, 
 	                          context_instance=RequestContext(request))
 	
+def apostas_jogo(request, jogo_pk, competicao_pk):
+	j = Jogo.objects.get(pk=jogo_pk)
+	co = Competicao.objects.get(pk=competicao_pk)
+	#inscricoes = Inscricao.objects.filter(competicao=co)
+	return render_to_response('_base.html', {'template': 'apostas_jogo.html', 'jogo': j, 'competicao': co })	
+
+
+
+
