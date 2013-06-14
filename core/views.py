@@ -173,10 +173,25 @@ def aposta_edit(request, pk):
 	                          context_instance=RequestContext(request))
 	
 def apostas_jogo(request, jogo_pk, competicao_pk):
+	# apostas de um soh jogo
 	j = Jogo.objects.get(pk=jogo_pk)
+	apostas = Aposta.Objects.filter(jogo=j)
+	
+	# apostas da competicao
 	co = Competicao.objects.get(pk=competicao_pk)
+	inscricoes = Inscricao.objects.filter(competicao=co)
+	
+	# apostas de um soh jogo e competicao Ex: Brasil X Italia (Copa do Mundo 2014 - Della Volpe)
+	apostas_jogos_competicao = []
+	
+	for a in apostas:
+		for i in inscricoes:
+			if a.inscricao.pk = i.pk:
+				apostas_jogos_competicao.append(a)
+	
+	
 	#inscricoes = Inscricao.objects.filter(competicao=co)
-	return render_to_response('_base.html', {'template': 'apostas_jogo.html', 'jogo': j, 'competicao': co })	
+	return render_to_response('_base.html', {'template': 'apostas_jogo.html', 'jogo': j, 'competicao': co, 'apostas': apostas_jogos_competicao })	
 
 
 
