@@ -21,9 +21,7 @@ urlpatterns = patterns('',
     url(r'^aposta/(?P<inscricao>\d+)/$', 'core.views.aposta'),
     url(r'^aposta_calc/(?P<campeonato>\d+)/$', 'core.views.aposta_calc'),
     url(r'^aposta_edit/(?P<pk>\d+)/$', 'core.views.aposta_edit'),
-    
-    url(r'^create_jogos/$', 'core.views.create_jogos'),
-)
+ )
 
 if settings.DEBUG:
 	urlpatterns += patterns('', 

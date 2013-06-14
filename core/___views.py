@@ -1,5 +1,4 @@
-# -*- encoding: utf-8 -*-
-
+# Create your views here.
 from django.shortcuts import render_to_response
 from django.shortcuts import redirect
 from django.template import RequestContext
@@ -143,32 +142,12 @@ def calcula_rancking(competicao):
 		
 # Altera aposta, usuario alterando sua propria aposta		
 def aposta_edit(request, pk):
+	execute_transation = 'S'
 	model = Aposta.objects.get(pk=pk)
-	execute_transation = 'N'
-	mensagem = ''	
-	form = ApostaForm()
-	#if model.jogo.data_hora > DateTime.now-4horas: ToDo..:
-	if model.jogo.status.codigo == 'E':		
-		if request.method == 'POST':
-			form = ApostaForm(request.POST, request.FILES, instance=model)
-			if form.is_valid():
-				model_update = form.save(commit=False)
-				if model_update.resultado_a > model_update.resultado_b:
-					model_update.vencedor = 'A'
-				elif model_update.resultado_a < model_update.resultado_b:
-					model_update.vencedor = 'B'
-				else:
-					model_update.vencedor = 'E'
-				model_update.save()
-				execute_transation = 'S'
-				mensagem = 'Aposta alterada com sucesso'
-		else:
-			form = ApostaForm(instance=model)
-	else:
-		mensagem = 'Nao sera mais possivel alterar aposta. Jogo encontra-se em ' + model.jogo.status.descricao
-		execute_transation = 'S'
+	mensagem = 'Jogo encontra-se em ' + model.jogo.status.descricao
+	form = ApostaForm(instance=model)
 	return render_to_response('_base_simple.html', {'template': 'aposta_edit.html', 
 	                                                'execute_transation': execute_transation,
-	                                                'aposta': model, 'form': form, 'mensagem': mensagem}, 
+	                                                'form': form, 'mensagem': mensagem}, 
 	                          context_instance=RequestContext(request))
 	
