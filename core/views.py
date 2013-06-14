@@ -13,6 +13,10 @@ from core.models import Campeonato
 from core.models import Grupo
 from core.forms import ApostaForm
 
+# Todo o pagina de competicao devera ter na url a inscricao(que contem o participante 
+#  e suas apostas, e a competicao com os jogos do campeonato.
+
+
 def rancking(request, inscricao):
 	i = Inscricao.objects.get(pk=inscricao)
 	co = i.competicao
@@ -46,6 +50,7 @@ def aposta(request, inscricao):
 	inscricoes = Inscricao.objects.filter(participante=i.participante)
 	return render_to_response('_base.html', {'template': 'aposta.html', 'apostas': apostas, 'inscricao': i, 'inscricoes': inscricoes})
 
+# Faz o Calculo do campeonato para todas as competicoes do mesmo.
 def aposta_calc(request, campeonato):
 	c = Campeonato.objects.get(pk=campeonato)
 	grupos = Grupo.objects.filter(campeonato=c)
@@ -64,9 +69,10 @@ def aposta_calc(request, campeonato):
 	
 	competicoes = Competicao.objects.filter(campeonato=c)
 	for co in competicoes:
-		# Calcula pontuacao na inscricao que ingloba a soma da pontuacao
+		# Calcula pontuacao na inscricao que contem a soma da pontuacao
 		inscricoes = Inscricao.objects.filter(competicao=co)
 		for i in inscricoes:
+			# ToDo...: Cria metodo separa para o calculo somatorio. Passando a inscricao como parametro.
 			apostas = Aposta.objects.filter(inscricao=i)
 			qtde_ap = 0
 			qtde_ar = 0
@@ -97,11 +103,12 @@ def aposta_calc(request, campeonato):
 			i.quantidade_acerto_somente_resultado_um_time = qtde_as
 			i.quantidade_erro = qtde_er
 			i.save()
-		#Calcula Rancking - colocacao
+		#Calcula Rancking/colocacao
 		calcula_rancking(co)		
 	
 	return redirect('/rancking/1/')
 
+# calcula a aposta.
 def calcula_aposta(jogo):
 	apostas = Aposta.objects.filter(jogo=jogo)
 	for a in apostas:
@@ -122,6 +129,7 @@ def calcula_aposta(jogo):
 			a.pontos = 0
 		a.save()
 
+#Calcula Rancking/colocacao
 def calcula_rancking(competicao):
 	inscricoes = Inscricao.objects.filter(competicao=competicao).order_by('-pontos','quantidade_acerto_placar','quantidade_acerto_vencedor','quantidade_acerto_empate_erro_placar')
 	col = 0
@@ -147,7 +155,7 @@ def aposta_edit(request, pk):
 	execute_transation = 'N'
 	mensagem = ''	
 	form = ApostaForm()
-	#if model.jogo.data_hora > DateTime.now-4horas: ToDo..:
+	# ToDo...: if model.jogo.data_hora > DateTime.now-4horas: ToDo..:
 	if model.jogo.status.codigo == 'E':		
 		if request.method == 'POST':
 			form = ApostaForm(request.POST, request.FILES, instance=model)
@@ -172,14 +180,18 @@ def aposta_edit(request, pk):
 	                                                'aposta': model, 'form': form, 'mensagem': mensagem}, 
 	                          context_instance=RequestContext(request))
 	
-def apostas_jogo(request, jogo_pk, competicao_pk):
+# Visualiza as apostas daquele expecifico Jogoe Competicao
+def apostas_jogo(request, jogo_pk, inscricao_pk):
 	# apostas de um soh jogo
 	j = Jogo.objects.get(pk=jogo_pk)
 	apostas = Aposta.Objects.filter(jogo=j)
 	
 	# apostas da competicao
-	co = Competicao.objects.get(pk=competicao_pk)
-	inscricoes = Inscricao.objects.filter(competicao=co)
+	inscricao = Inscricao.objects.get(pk=inscricao_pk)
+	inscricoes = Inscricao.objects.filter(competicao=inscricao.competicao)
+	
+	if (j.status.codigo == 'E'):
+		return redirect('/tabela/')
 	
 	# apostas de um soh jogo e competicao Ex: Brasil X Italia (Copa do Mundo 2014 - Della Volpe)
 	apostas_jogos_competicao = []
@@ -187,11 +199,8 @@ def apostas_jogo(request, jogo_pk, competicao_pk):
 	for a in apostas:
 		for i in inscricoes:
 			if a.inscricao.pk = i.pk:
-				apostas_jogos_competicao.append(a)
-	
-	
-	#inscricoes = Inscricao.objects.filter(competicao=co)
-	return render_to_response('_base.html', {'template': 'apostas_jogo.html', 'jogo': j, 'competicao': co, 'apostas': apostas_jogos_competicao })	
+				apostas_jogos_competicao.append(a)	
+	return render_to_response('_base.html', {'template': 'apostas_jogo.html', 'jogo': j, 'inscricao': inscricao, 'apostas': apostas_jogos_competicao })	
 
 
 
