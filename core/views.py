@@ -132,8 +132,8 @@ def itabela(request, inscricao_pk):
 							 })
 
 def get_palpites_all_participantes(jogo, competicao):
-	apostas = Aposta.objects.filter(jogo=j)	
-	inscricoes = Inscricao.objects.filter(competicao=c)	
+	apostas = Aposta.objects.filter(jogo=jogo)	
+	inscricoes = Inscricao.objects.filter(competicao=competicao)	
 	apostas_jogos_competicao = []	
 	for a in apostas:
 		for i in inscricoes:
@@ -217,6 +217,26 @@ def aposta(request, inscricao):
 								  'nome_aposta': NOME_APOSTA,
 								  'url_aposta': URL_IAPOSTA + str(i.pk)+'/'	                              
 	                          })
+
+# ToDo...: criar um iperfil
+def perfil(request, inscricao_pk):
+	inscricao = Inscricao.objects.get(pk=inscricao_pk)
+	return render_to_response('_base.html', 
+						      {  
+								'template': 'perfil.html',
+								'titulo': inscricao.participante.apelido,
+								# possivel subtitulo
+								'inscricao': inscricao,
+								'competicao': inscricao.competicao, #enviado para montar o submenu
+								'participante': inscricao.participante,
+							     # url publicas contem somente a competicacao
+								 'nome_rancking': NOME_RANCKING,
+								 'url_rancking': URL_RANCKING + str(inscricao.competicao.pk)+'/',
+								 'nome_tabela': NOME_TABELA,
+								 'url_tabela': URL_TABELA + str(inscricao.competicao.pk)+'/',
+								 'nome_aposta': '',
+								 'url_aposta': '#'								
+							   })
 
 # Faz o Calculo do campeonato para todas as competicoes do mesmo.
 def aposta_calc(request, campeonato):

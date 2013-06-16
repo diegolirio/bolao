@@ -30,6 +30,7 @@ urlpatterns = patterns('',
     url(r'^rancking/(?P<competicao_pk>\d+)/$', 'core.views.rancking', name='rancking'),
     url(r'^tabela/(?P<competicao_pk>\d+)/$', 'core.views.tabela', name='tabela'),
     url(r'^apostas_jogo/(?P<competicao_pk>\d+)/(?P<jogo_pk>\d+)/$', 'core.views.apostas_jogo'),
+    url(r'^perfil/(?P<inscricao_pk>\d+)/$', 'core.views.perfil'),
     # Logado (privadas) >>> url fixado sempre a competicao como parametro
     url(r'^irancking/(?P<inscricao_pk>\d+)/$', 'core.views.irancking', name='irancking'),    
     url(r'^itabela/(?P<inscricao_pk>\d+)/$', 'core.views.itabela', name='itabela'),

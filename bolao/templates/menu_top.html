@@ -14,7 +14,7 @@
 			</ul>
 			<ul class="nav pull-right" id="main-menu-right">
 			  <li><a href="/admin/">Admin</a></li>
-			  <li><a href="/aposta/">Regras</a></li>
+			  <li><a href="/regras/">Regras</a></li>
 			  {% if participante.user.is_authenticated %}
 			    <li class="dropdown">
 				   <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{ participante.apelido }}<b class="caret"></b></a>
@@ -54,9 +54,9 @@
 							<div class="pull-right">
 								<h3>{{ participante }}</h3>
 								<p>{{ inscricao.colocacao }}º<span class="offset3">{{ inscricao.pontos }} pts.</span></p>
-							</div>
+							</div>							
 						{% else %}
-							<button type="button" class="btn pull-right">Cadastre-se</button>						  
+							<a href="/cadastrese/" class="btn pull-right">Cadastre-se</a>						  
 						{% endif %}
 					</div>
 				</div>
