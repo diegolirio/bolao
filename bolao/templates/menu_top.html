@@ -7,38 +7,25 @@
 			 <span class="icon-bar"></span>
 			 <span class="icon-bar"></span>
 		   </a>
-		   <a class="brand" href="/"><img src="/media/images/bola_32.png"/></a>
+		   <a class="brand" href="/home/"><img src="/media/images/bola_32.png"/></a>
 		   <div class="nav-collapse collapse" id="main-menu">
 			<ul class="nav" id="main-menu-left">
-			    <li class="dropdown">
-				   <a class="dropdown-toggle" data-toggle="dropdown" href="#">Rancking<b class="caret"></b></a>
-				   <ul class="dropdown-menu" id="swatch-menu">
-					   {% for i in inscricoes %}
-						  <li><a href="/rancking/{{i.id}}/">{{i.competicao.campeonato.nome}} - {{i.competicao.nome}}</a></li>					    
-					   {% endfor %}
-				   </ul>
-				</li>  
-			    <li class="dropdown">
-				   <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tabela<b class="caret"></b></a>
-				   <ul class="dropdown-menu" id="swatch-menu">
-					   {% for i in inscricoes %}
-						  <li><a href="/tabela/{{i.competicao.id}}/1/">{{i.competicao.campeonato.nome}}</a></li>					    
-					   {% endfor %}
-				   </ul>
-				</li>  
-			    <li class="dropdown">
-				   <a class="dropdown-toggle" data-toggle="dropdown" href="#">Aposta<b class="caret"></b></a>
-				   <ul class="dropdown-menu" id="swatch-menu">
-					   {% for i in inscricoes %}
-						  <li><a href="/aposta/{{i.id}}/">{{i.competicao.campeonato.nome}} - {{i.competicao.nome}}</a></li>					    
-					   {% endfor %}
-				   </ul>
-				</li>  
+				<li><a href="/home/">Competições</a></li>
 			</ul>
 			<ul class="nav pull-right" id="main-menu-right">
 			  <li><a href="/admin/">Admin</a></li>
 			  <li><a href="/aposta/">Regras</a></li>
-              <li><a href="#">Login</a></li> 
+			  {% if participante.user.is_authenticated %}
+			    <li class="dropdown">
+				   <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{ participante.apelido }}<b class="caret"></b></a>
+				   <ul class="dropdown-menu" id="swatch-menu">
+					  <li><a href="/perfil/">Perfil</a></li>					    
+					  <li><a href="/logout/">Sair</a></li>					    
+				   </ul>
+				</li>  								
+			  {% else %}	
+			    <li><a href="/login/">Login</a></li> 
+			  {% endif %}
 			  <!--
 			  <li><a rel="tooltip" target="_blank" href="http://builtwithbootstrap.com/" title="Showcase of Bootstrap sites &amp; apps" onclick="_gaq.push(['_trackEvent', 'click', 'outbound', 'builtwithbootstrap']);">Built With Bootstrap <i class="icon-share-alt"></i></a></li>
 			  <li><a rel="tooltip" target="_blank" href="https://wrapbootstrap.com/?ref=bsw" title="Marketplace for premium Bootstrap templates" onclick="_gaq.push(['_trackEvent', 'click', 'outbound', 'wrapbootstrap']);">WrapBootstrap <i class="icon-share-alt"></i></a></li>
@@ -48,5 +35,41 @@
 		 </div>
 	   </div>
 	 </div>
-	 
-	 <br/><br/><br/>
+	
+	<br/><br/><br/>
+
+		
+        <div class="head">
+			<div class="container">
+            	<div class="row-fluid">
+					<div class="span5">
+							<img class="pull-left" src="/media/images/trofeu_bolao_72.png"/>
+							<div class="offset2">
+								<h1 class="muted">{{ titulo }}</h1>
+								<p>{{ competicao.campeonato.nome }}  {{ competicao.nome }}</p>
+							</div>
+					</div>
+					<div class="span7">
+						{% if participante.user.is_authenticated %}
+							<div class="pull-right">
+								<h3>{{ participante }}</h3>
+								<p>{{ inscricao.colocacao }}º<span class="offset3">{{ inscricao.pontos }} pts.</span></p>
+							</div>
+						{% else %}
+							<button type="button" class="btn pull-right">Cadastre-se</button>						  
+						{% endif %}
+					</div>
+				</div>
+            </div>
+				{% if competicao.id > 0 %}
+    			<div class="subnav">
+					<div class="container">
+					<ul class="nav nav-pills">
+					  <li><a href="{{url_rancking}}">{{nome_rancking}}</a></li>
+					  <li><a href="{{url_tabela}}">{{nome_tabela}}</a></li>					    
+					  <li><a href="{{url_aposta}}">{{nome_aposta}}</a></li>
+					</ul>
+					</div>
+                </div>
+                {% endif %}
+		</div>

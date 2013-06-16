@@ -3,6 +3,7 @@
 from django.shortcuts import render_to_response
 from django.shortcuts import redirect
 from django.template import RequestContext
+from django.contrib.auth.decorators import login_required
 from core.const import *
 from core.models import Participante
 from core.models import Jogo
@@ -13,42 +14,209 @@ from core.models import Campeonato
 from core.models import Grupo
 from core.forms import ApostaForm
 
-# Todo o pagina de competicao devera ter na url a inscricao(que contem o participante 
-#  e suas apostas, e a competicao com os jogos do campeonato.
-
-
-def rancking(request, inscricao):
-	i = Inscricao.objects.get(pk=inscricao)
-	co = i.competicao
-	#participantes = Inscricao.objects.all().order_by('-pontos', 'quantidade_acerto_placar')
-	#participantes = Inscricao.objects.filter(competicao=co).order_by('colocacao')
+def get_participante(user):
+	try:
+		p = Participante.objects.filter(user=user)[0:1].get()
+	except:
+		return redirect('/login/') # cadastro/perfil/ 1 termino
+	return p
 	
-	inscricoes = Inscricao.objects.filter(participante=i.participante)
-	inscricoes_participantes = Inscricao.objects.filter(competicao=i.competicao).order_by('colocacao')
-	return render_to_response('_base.html', {'template': 'rancking.html', 'inscricoes_participantes': inscricoes_participantes, 'competicao': co, 'inscricoes': inscricoes})
-	
-def tabela(request, inscricao, tipo):
-	i = Inscricao.objects.get(pk=inscricao)
-	co = Competicao.objects.get(pk=i.competicao.pk)
-	grupos = Grupo.objects.all().filter(campeonato=co.campeonato)
+def home(request):
+	participante = Participante()
+	competicoes = Competicao.objects.all()
+	if request.user.is_authenticated():
+		participante = get_participante(request.user)
+		url_rancking = URL_IRANCKING
+	else:
+		url_rancking = URL_RANCKING
+	return render_to_response('_base.html',{	'template': 'index.html',
+												'titulo': 'Troféu Bolão',
+												'participante': participante,
+												'competicoes': competicoes,
+												'url_rancking': url_rancking
+											})
+											
+def get_rancking_by_competicao(competicao):
+	return Inscricao.objects.filter(competicao=competicao).order_by('colocacao')
+
+def rancking(request, competicao_pk):
+	competicao = Competicao.objects.get(pk=competicao_pk)
+	participante = Participante()
+	inscricoes_competicao = get_rancking_by_competicao(competicao)
+	return render_to_response('_base.html', 
+							  {     'template': 'rancking.html', 
+							        'titulo': 'Rancking', 
+							        'inscricoes_competicao': inscricoes_competicao, 
+							        'participante': participante,
+							        'competicao': competicao,
+							        # url publicas contem somente a competicacao
+							        'nome_rancking': NOME_RANCKING,
+							        'url_rancking': URL_RANCKING + str(competicao.pk)+'/',
+							        'nome_tabela': NOME_TABELA,
+							        'url_tabela': URL_TABELA + str(competicao.pk)+'/',
+							        'nome_aposta': '',
+							        'url_aposta': '#'
+							        })
+
+@login_required
+def irancking(request, inscricao_pk):
+	inscricao = Inscricao.objects.get(pk=inscricao_pk)
+	inscricoes_competicao = get_rancking_by_competicao(inscricao.competicao)
+	return render_to_response('_base.html', 
+	                         {      'template': 'rancking.html', 
+	                                'titulo': 'Rancking', 
+	                                'inscricoes_competicao': inscricoes_competicao, 
+									# Sempre conter esses para pegar os dados de ambos
+	                                'participante': inscricao.participante,
+	                                'inscricao': inscricao,
+	                                'competicao': inscricao.competicao,
+									# url privadas contem inscricao da competicacao
+							        'nome_rancking': NOME_RANCKING,
+							        'url_rancking': URL_IRANCKING + str(inscricao.pk)+'/',
+							        'nome_tabela': NOME_TABELA,
+							        'url_tabela': URL_ITABELA + str(inscricao.pk)+'/',
+							        'nome_aposta': NOME_APOSTA,
+							        'url_aposta': URL_IAPOSTA + str(inscricao.pk)+'/'
+	                                })
+	                                
+def get_jogos_of_the_campeonato(campeonato):
+	grupos = Grupo.objects.all().filter(campeonato=campeonato)
 	jgs = []
 	for g in grupos:
 		js = Jogo.objects.filter(grupo=g)
 		for j in js:
 			jgs.append(j)
-	inscricoes = Inscricao.objects.filter(participante=i.participante)
-	return render_to_response('_base.html', {'template': 'tabela.html', 'jogos': jgs, 'tipo': tipo, 'competicao': co, 'inscricoes': inscricoes})	
-	
-def aposta(request, inscricao):
+	return jgs			                                
+
+def tabela(request, competicao_pk):	
+	p = Participante()
+	competicao = Competicao.objects.get(pk=competicao_pk)
+	jgs = get_jogos_of_the_campeonato(competicao.campeonato)
+	return render_to_response('_base.html', 
+							  {       'template': 'tabela.html', 
+								      'titulo': 'Tabela',
+								      'competicao': competicao,
+									  'jogos': jgs, 
+									  'participante': p,
+          							  # url publicas contem somente a competicacao
+									  'nome_rancking': NOME_RANCKING,
+									  'url_rancking': URL_RANCKING + str(competicao.pk)+'/',
+									  'nome_tabela': NOME_TABELA,
+									  'url_tabela': URL_TABELA + str(competicao.pk)+'/',
+									  'nome_aposta': '',
+									  'url_aposta': '#',
+									  'nome_apostas_jogo': NOME_APOSTAS_JOGO,
+									  'url_apostas_jogo': URL_APOSTAS_JOGO + str(competicao.pk)+'/'
+							 })
+
+@login_required
+def itabela(request, inscricao_pk):
+	i = Inscricao.objects.get(pk=inscricao_pk)
+	jgs = get_jogos_of_the_campeonato(i.competicao.campeonato)
+	return render_to_response('_base.html', 
+							  {       'template': 'tabela.html', 
+								      'titulo': 'Tabela', 
+								      'competicao': i.competicao,
+									  'jogos': jgs, 
+									  'participante': i.participante,
+									  'inscricao': i, 
+									  # url privadas contem inscricao da competicacao
+							          'nome_rancking': NOME_RANCKING,
+							          'url_rancking': URL_IRANCKING + str(i.pk)+'/',
+							          'nome_tabela': NOME_TABELA,
+							          'url_tabela': URL_ITABELA + str(i.pk)+'/',
+							          'nome_aposta': NOME_APOSTA,
+							          'url_aposta': URL_IAPOSTA + str(i.pk)+'/',
+									  'nome_apostas_jogo': NOME_APOSTAS_JOGO,
+									  'url_apostas_jogo': URL_IAPOSTAS_JOGO + str(i.competicao.pk)+'/'							          
+							 })
+
+def get_palpites_all_participantes(jogo, competicao):
+	apostas = Aposta.objects.filter(jogo=j)	
+	inscricoes = Inscricao.objects.filter(competicao=c)	
+	apostas_jogos_competicao = []	
+	for a in apostas:
+		for i in inscricoes:
+			if a.inscricao.pk == i.pk:
+				apostas_jogos_competicao.append(a)		
+	return apostas_jogos_competicao
+
+# Visualiza as apostas daquele expecifico Jogo e Competicao
+def apostas_jogo(request, competicao_pk, jogo_pk):
+	j = Jogo.objects.get(pk=jogo_pk)
+	if (j.status.codigo == 'E'):
+		return redirect(URL_TABELA+str(c.pk)+'/')	
+	c = Inscricao.objects.get(pk=competicao_pk)
+	# apostas de um soh jogo e competicao Ex: Brasil X Italia (Copa do Mundo 2014 - Della Volpe)
+	apostas_jogos_competicao = get_palpites_all_participantes(j, c)
+	p = Participante()
+	return render_to_response('_base.html', 
+	                          {   'template': 'apostas_jogo.html', 
+								  'titulo': 'Palpites de Todos',
+	                              'jogo': j, 
+	                              'competicao': c, 
+	                              'participante': p,
+	                              'apostas': apostas_jogos_competicao,
+								  # url publicas contem somente a competicacao
+								  'nome_rancking': NOME_RANCKING,
+								  'url_rancking': URL_RANCKING + str(c.pk)+'/',
+								  'nome_tabela': NOME_TABELA,
+								  'url_tabela': URL_TABELA + str(c.pk)+'/',
+								  'nome_aposta': '',
+								  'url_aposta': '#'
+	                           })	
+
+
+# Visualiza as apostas daquele expecifico Jogo e Competicao
+@login_required
+def iapostas_jogo(request, inscricao_pk, jogo_pk):
+	j = Jogo.objects.get(pk=jogo_pk)	
+	if (j.status.codigo == 'E'):
+		return redirect(URL_ITABELA+str(inscricao.pk)+'/')		
+	inscricao = Inscricao.objects.get(pk=inscricao_pk)
+	# apostas de um soh jogo e competicao Ex: Brasil X Italia (Copa do Mundo 2014 - Della Volpe)
+	apostas_jogos_competicao = get_palpites_all_participantes(j, inscricao.competicao)
+	return render_to_response('_base.html', 
+	                          {   'template': 'apostas_jogo.html', 
+								  'titulo': 'Palpites de Todos',
+	                              'inscricao': inscricao, 
+	                              'apostas': apostas_jogos_competicao,
+	                              'jogo': j, 
+	                              'competicao': inscricao.competicao, 
+	                              'participante': inscricao.participante,
+								  # url privadas contem inscricao da competicacao
+								  'nome_rancking': NOME_RANCKING,
+								  'url_rancking': URL_IRANCKING + str(inscricao.pk)+'/',
+								  'nome_tabela': NOME_TABELA,
+								  'url_tabela': URL_ITABELA + str(inscricao.pk)+'/',
+								  'nome_aposta': NOME_APOSTA,
+								  'url_aposta': URL_IAPOSTA + str(inscricao.pk)+'/'
+	                           })	
+	                           
+@login_required
+def aposta(request, inscricao):	
 	i = Inscricao.objects.get(pk=inscricao)
-	#apostas = Aposta.objects.filter(participante)
 	apostas = []
 	#for i in inscricoes:
 	apts = Aposta.objects.filter(inscricao=i)
 	for a in apts:
 		apostas.append(a)
 	inscricoes = Inscricao.objects.filter(participante=i.participante)
-	return render_to_response('_base.html', {'template': 'aposta.html', 'apostas': apostas, 'inscricao': i, 'inscricoes': inscricoes})
+	return render_to_response('_base.html', 
+	                          {   'template': 'aposta.html', 
+	                              'titulo': 'Minhas Apostas',
+	                              'participante': i.participante,
+	                              'competicao': i.competicao,
+	                              'apostas': apostas, 
+	                              'inscricao': i,
+								  # url privadas contem inscricao da competicacao
+								  'nome_rancking': NOME_RANCKING,
+								  'url_rancking': URL_IRANCKING + str(i.pk)+'/',
+								  'nome_tabela': NOME_TABELA,
+								  'url_tabela': URL_ITABELA + str(i.pk)+'/',
+								  'nome_aposta': NOME_APOSTA,
+								  'url_aposta': URL_IAPOSTA + str(i.pk)+'/'	                              
+	                          })
 
 # Faz o Calculo do campeonato para todas as competicoes do mesmo.
 def aposta_calc(request, campeonato):
@@ -150,6 +318,7 @@ def calcula_rancking(competicao):
 		qtde_ae = i.quantidade_acerto_empate_erro_placar
 		
 # Altera aposta, usuario alterando sua propria aposta		
+@login_required
 def aposta_edit(request, pk):
 	model = Aposta.objects.get(pk=pk)
 	execute_transation = 'N'
@@ -179,29 +348,3 @@ def aposta_edit(request, pk):
 	                                                'execute_transation': execute_transation,
 	                                                'aposta': model, 'form': form, 'mensagem': mensagem}, 
 	                          context_instance=RequestContext(request))
-	
-# Visualiza as apostas daquele expecifico Jogoe Competicao
-def apostas_jogo(request, jogo_pk, inscricao_pk):
-	# apostas de um soh jogo
-	j = Jogo.objects.get(pk=jogo_pk)
-	apostas = Aposta.Objects.filter(jogo=j)
-	
-	# apostas da competicao
-	inscricao = Inscricao.objects.get(pk=inscricao_pk)
-	inscricoes = Inscricao.objects.filter(competicao=inscricao.competicao)
-	
-	if (j.status.codigo == 'E'):
-		return redirect('/tabela/')
-	
-	# apostas de um soh jogo e competicao Ex: Brasil X Italia (Copa do Mundo 2014 - Della Volpe)
-	apostas_jogos_competicao = []
-	
-	for a in apostas:
-		for i in inscricoes:
-			if a.inscricao.pk = i.pk:
-				apostas_jogos_competicao.append(a)	
-	return render_to_response('_base.html', {'template': 'apostas_jogo.html', 'jogo': j, 'inscricao': inscricao, 'apostas': apostas_jogos_competicao })	
-
-
-
-

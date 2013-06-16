@@ -1,11 +1,3 @@
-
-{% if tipo == '1' %}
-	<a href="/tabela/2/">Grupos</a>
-	<hr/>
-
-	<h1>Tabela</h1>
-	{{ competicao.campeonato.nome }} - {{ competicao.nome }}
-	
 	<div class="pagination pagination-centered">
 	  <ul>
 		<li><a href="#">&larr;</a></li>
@@ -14,24 +6,23 @@
 	  </ul>
 	</div>			
 	
-	
-	
-	<div class="text-right">
-		<a href="/create_jogos/" class="btn btn-success">Criar Tabela</a>
+	<div class="pull-right">
+		<img src="/media/images/editar_24.png"/> <i class="icon-arrow-right"></i> Em aberto/Editavel
+		<img src="/media/images/bola__32.png" class="offset1"/> <i class="icon-arrow-right"></i> Em andamento/Bola rolando
+		<img src="/media/images/apito_24.png" class="offset1"/> <i class="icon-arrow-right"></i> Finalizado
 	</div>
+
 	<br/>
-	<table class="table table-striped table-hover well">
-		<!--
+	<br/>
+
+	<table class="table table-striped table-hover well">		
 		<tr>
-			<td class="text-error"></td>
-			<td class="text-error"></td>
-			<td class="text-error"></td>
-			<td class="text-error"></td>
-			<td class="text-error"></td>			
-			<td class="text-error"></td>
-			<td class="text-error"></td>
+			<td class="text-error" colspan="5">Jogo</td>
+			<td class="text-error">Data e hora</td>
+			<td class="text-error">Local</td>
+			<td class="text-error">Status</td>
+			<td class="text-error">Ver Apostas</td>			
 		</tr>
-		-->
 		{% for j in jogos %}
 		<tr>
 			<td>{{ j.time_a }}</td>
@@ -49,22 +40,26 @@
 			<td>{{ j.time_b }}</td>
 			<td>{{ j.data_hora }}</td>
 			<td>{{ j.local }}</td>
-			<td>{{ j.status.codigo }}</td>
-			<td><a href="/apostas_jogo/{{ j.id }}/{{competicao.id}}/" title="dinheiro como icone">apostas</a></td>
+			<td>
+				{% if j.status.codigo == 'E' %} 
+					<img src="/media/images/editar_24.png" title="{{j.status.descricao}}"/>
+				{% elif j.status.codigo == 'A' %}
+					<img src="/media/images/bola__32.png" title="{{j.status.descricao}}"/>
+				{% elif j.status.codigo == 'F' %}
+					<img src="/media/images/apito_24.png" title="{{j.status.descricao}}"/>
+				{% endif %}
+			</td>
+			<td>
+				{% if j.status.codigo != 'E' %}
+					<a href="{{url_apostas_jogo}}{{ j.id }}/" title="{{ nome_apostas_jogo }}">
+						<img src="/media/images/dinheiro_moedas_32.png"/>
+					</a>
+				{% else %}
+					<a disabled href="javascript:undefined" onclick="alert('Visualização de apostas somente visivel após partida estiver em andamento ou momentos antes!');"><img src="/media/images/interrogacao_.png"/></a>
+				{% endif %}
+			</td>
 		</tr>
 		{% empty %}
-			<h1>Não há produtos cadastrados</h1>
+			<h1>Não há Jogos cadastrados</h1>
 		{% endfor %}
 	</table>
-
-
-{% else %}
-	<a href="/tabela/1/">Jogos</a>
-	<hr/>
-	{% for j in jogos %}
-		<p>
-			{{ j }}
-		</p>
-	{% endfor %}	
-
-{% endif %}
