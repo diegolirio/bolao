@@ -68,7 +68,8 @@ class Jogo(models.Model):
 class Inscricao(models.Model):
 	data = models.DateField()
 	participante = models.ForeignKey(Participante)
-	competicao = models.ForeignKey(Competicao)	
+	competicao = models.ForeignKey(Competicao)
+	# Pontucao (Analisar se compensa mover para um Model)
 	colocacao = models.IntegerField(default=1)
 	pontos = models.IntegerField(default=0)
 	quantidade_acerto_placar = models.IntegerField(default=0)
@@ -77,6 +78,7 @@ class Inscricao(models.Model):
 	quantidade_acerto_empate_erro_placar = models.IntegerField(default=0)
 	quantidade_acerto_somente_resultado_um_time = models.IntegerField(default=0)
 	quantidade_erro = models.IntegerField(default=0)
+	# end Pontucao
 	
 	def __unicode__(self):
 		return str(self.pk) + " : Participante: " + self.participante.apelido + " / "+ self.competicao.nome 
