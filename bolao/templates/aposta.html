@@ -22,7 +22,8 @@
 			<td class="text-error"> Alterar</td>
 		</tr>
 		
-		{% for a in apostas %}
+		{% for a in apostas %}		
+		{% if a.inscricao.id == inscricao.id %}
 		<tr>
 			<div class="muted">
 				<td class="muted">{{ a.jogo.time_a }}</td>
@@ -62,6 +63,7 @@
 				{% endif %}
 			</td>
 		</tr>
+		{% endif %}
 		{% empty %}
 			<h1>Não há aposta cadastradas</h1>
 		{% endfor %}

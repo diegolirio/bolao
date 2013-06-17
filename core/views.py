@@ -31,6 +31,7 @@ def home(request):
 		url_rancking = URL_RANCKING
 	return render_to_response('_base.html',{	'template': 'index.html',
 												'titulo': 'Troféu Bolão',
+												'subtitulo': '',
 												'participante': participante,
 												'competicoes': competicoes,
 												'url_rancking': url_rancking
@@ -46,6 +47,7 @@ def rancking(request, competicao_pk):
 	return render_to_response('_base.html', 
 							  {     'template': 'rancking.html', 
 							        'titulo': 'Rancking', 
+							        'subtitulo': competicao.campeonato.nome + ' ' + competicao.nome,
 							        'inscricoes_competicao': inscricoes_competicao, 
 							        'participante': participante,
 							        'competicao': competicao,
@@ -65,6 +67,7 @@ def irancking(request, inscricao_pk):
 	return render_to_response('_base.html', 
 	                         {      'template': 'rancking.html', 
 	                                'titulo': 'Rancking', 
+	                                'subtitulo': inscricao.competicao.campeonato.nome + ' ' + inscricao.competicao.nome,
 	                                'inscricoes_competicao': inscricoes_competicao, 
 									# Sempre conter esses para pegar os dados de ambos
 	                                'participante': inscricao.participante,
@@ -95,6 +98,7 @@ def tabela(request, competicao_pk):
 	return render_to_response('_base.html', 
 							  {       'template': 'tabela.html', 
 								      'titulo': 'Tabela',
+								      'subtitulo': competicao.campeonato.nome + ' ' + competicao.nome,
 								      'competicao': competicao,
 									  'jogos': jgs, 
 									  'participante': p,
@@ -116,6 +120,7 @@ def itabela(request, inscricao_pk):
 	return render_to_response('_base.html', 
 							  {       'template': 'tabela.html', 
 								      'titulo': 'Tabela', 
+								      'subtitulo': i.competicao.campeonato.nome + ' ' + i.competicao.nome,
 								      'competicao': i.competicao,
 									  'jogos': jgs, 
 									  'participante': i.participante,
@@ -146,13 +151,14 @@ def apostas_jogo(request, competicao_pk, jogo_pk):
 	j = Jogo.objects.get(pk=jogo_pk)
 	if (j.status.codigo == 'E'):
 		return redirect(URL_TABELA+str(c.pk)+'/')	
-	c = Inscricao.objects.get(pk=competicao_pk)
+	c = Competicao.objects.get(pk=competicao_pk)
 	# apostas de um soh jogo e competicao Ex: Brasil X Italia (Copa do Mundo 2014 - Della Volpe)
 	apostas_jogos_competicao = get_palpites_all_participantes(j, c)
 	p = Participante()
 	return render_to_response('_base.html', 
 	                          {   'template': 'apostas_jogo.html', 
 								  'titulo': 'Palpites de Todos',
+								  'subtitulo': c.campeonato.nome + ' ' + c.nome,
 	                              'jogo': j, 
 	                              'competicao': c, 
 	                              'participante': p,
@@ -179,6 +185,7 @@ def iapostas_jogo(request, inscricao_pk, jogo_pk):
 	return render_to_response('_base.html', 
 	                          {   'template': 'apostas_jogo.html', 
 								  'titulo': 'Palpites de Todos',
+								  'subtitulo': inscricao.competicao.campeonato.nome + ' ' + inscricao.competicao.nome,
 	                              'inscricao': inscricao, 
 	                              'apostas': apostas_jogos_competicao,
 	                              'jogo': j, 
@@ -196,18 +203,14 @@ def iapostas_jogo(request, inscricao_pk, jogo_pk):
 @login_required
 def aposta(request, inscricao):	
 	i = Inscricao.objects.get(pk=inscricao)
-	apostas = []
-	#for i in inscricoes:
 	apts = Aposta.objects.filter(inscricao=i)
-	for a in apts:
-		apostas.append(a)
-	inscricoes = Inscricao.objects.filter(participante=i.participante)
 	return render_to_response('_base.html', 
 	                          {   'template': 'aposta.html', 
+								  'subtitulo': i.competicao.campeonato.nome + ' ' + i.competicao.nome,
 	                              'titulo': 'Minhas Apostas',
 	                              'participante': i.participante,
 	                              'competicao': i.competicao,
-	                              'apostas': apostas, 
+	                              'apostas': apts, 
 	                              'inscricao': i,
 								  # url privadas contem inscricao da competicacao
 								  'nome_rancking': NOME_RANCKING,
@@ -225,6 +228,7 @@ def perfil(request, inscricao_pk):
 						      {  
 								'template': 'perfil.html',
 								'titulo': inscricao.participante.apelido,
+								'subtitulo': inscricao.competicao.campeonato.nome + ' ' + inscricao.competicao.nome,
 								# possivel subtitulo
 								'inscricao': inscricao,
 								'competicao': inscricao.competicao, #enviado para montar o submenu
