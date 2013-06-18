@@ -5,34 +5,29 @@ from django.shortcuts import redirect
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from core.const import *
-from core.models import Participante
-from core.models import Jogo
-from core.models import Aposta
-from core.models import Inscricao
-from core.models import Competicao
-from core.models import Campeonato
-from core.models import Grupo
-from core.forms import ApostaForm
+from core.models import *
+from core.forms import *
 
-def get_participante(user):
-	try:
-		p = Participante.objects.filter(user=user)[0:1].get()
-	except:
-		return redirect('/login/') # cadastro/perfil/ 1 termino
-	return p
+def user_login_is_valid(user_request, user_inscricao):
+	if user_request.pk == user_inscricao.pk:
+		return True
+	return False
 	
 def home(request):
-	participante = Participante()
+	user_participante = Participante()
 	competicoes = Competicao.objects.all()
 	if request.user.is_authenticated():
-		participante = get_participante(request.user)
+		try:
+			user_participante = Participante.objects.filter(user=request.user)[0:1].get()
+		except:
+			redirect('/cadastrese_2/'+str(request.user.pk))
 		url_rancking = URL_IRANCKING
 	else:
 		url_rancking = URL_RANCKING
 	return render_to_response('_base.html',{	'template': 'index.html',
 												'titulo': 'Troféu Bolão',
 												'subtitulo': '',
-												'participante': participante,
+												'user_participante': user_participante,
 												'competicoes': competicoes,
 												'url_rancking': url_rancking
 											})
@@ -57,29 +52,37 @@ def rancking(request, competicao_pk):
 							        'nome_tabela': NOME_TABELA,
 							        'url_tabela': URL_TABELA + str(competicao.pk)+'/',
 							        'nome_aposta': '',
-							        'url_aposta': '#'
+							        'url_aposta': '#',
+							        'nome_perfil_competicao': '',
+							        'url_perfil_competicao': URL_PERFIL_COMPETICAO,
 							        })
 
 @login_required
-def irancking(request, inscricao_pk):
-	inscricao = Inscricao.objects.get(pk=inscricao_pk)
-	inscricoes_competicao = get_rancking_by_competicao(inscricao.competicao)
+def irancking(request, user_inscricao_pk):
+	user_inscricao = Inscricao.objects.get(pk=user_inscricao_pk)
+	if not user_login_is_valid(request.user, user_inscricao.participante.user):
+		return redirect('/')
+	inscricoes_competicao = get_rancking_by_competicao(user_inscricao.competicao)		
 	return render_to_response('_base.html', 
 	                         {      'template': 'rancking.html', 
 	                                'titulo': 'Rancking', 
-	                                'subtitulo': inscricao.competicao.campeonato.nome + ' ' + inscricao.competicao.nome,
+	                                'subtitulo': user_inscricao.competicao.campeonato.nome + ' ' + user_inscricao.competicao.nome,
+
 	                                'inscricoes_competicao': inscricoes_competicao, 
 									# Sempre conter esses para pegar os dados de ambos
-	                                'participante': inscricao.participante,
-	                                'inscricao': inscricao,
-	                                'competicao': inscricao.competicao,
+	                                'user_participante': user_inscricao.participante,
+	                                'user_inscricao': user_inscricao,
+	                                'competicao': user_inscricao.competicao,
+
 									# url privadas contem inscricao da competicacao
 							        'nome_rancking': NOME_RANCKING,
-							        'url_rancking': URL_IRANCKING + str(inscricao.pk)+'/',
+							        'url_rancking': URL_IRANCKING + str(user_inscricao.pk)+'/',
 							        'nome_tabela': NOME_TABELA,
-							        'url_tabela': URL_ITABELA + str(inscricao.pk)+'/',
+							        'url_tabela': URL_ITABELA + str(user_inscricao.pk)+'/',
 							        'nome_aposta': NOME_APOSTA,
-							        'url_aposta': URL_IAPOSTA + str(inscricao.pk)+'/'
+							        'url_aposta': URL_IAPOSTA + str(user_inscricao.pk)+'/',
+							        'nome_perfil_competicao': '',
+							        'url_perfil_competicao': URL_IPERFIL_COMPETICAO + str(user_inscricao.pk)+'/'
 	                                })
 	                                
 def get_jogos_of_the_campeonato(campeonato):
@@ -114,26 +117,28 @@ def tabela(request, competicao_pk):
 							 })
 
 @login_required
-def itabela(request, inscricao_pk):
-	i = Inscricao.objects.get(pk=inscricao_pk)
-	jgs = get_jogos_of_the_campeonato(i.competicao.campeonato)
+def itabela(request, user_inscricao_pk):
+	user_inscricao = Inscricao.objects.get(pk=user_inscricao_pk)
+	if not user_login_is_valid(request.user, user_inscricao.participante.user):
+		return redirect('/')
+	jgs = get_jogos_of_the_campeonato(user_inscricao.competicao.campeonato)
 	return render_to_response('_base.html', 
 							  {       'template': 'tabela.html', 
 								      'titulo': 'Tabela', 
-								      'subtitulo': i.competicao.campeonato.nome + ' ' + i.competicao.nome,
-								      'competicao': i.competicao,
+								      'subtitulo': user_inscricao.competicao.campeonato.nome + ' ' + user_inscricao.competicao.nome,
+								      'competicao': user_inscricao.competicao,
 									  'jogos': jgs, 
-									  'participante': i.participante,
-									  'inscricao': i, 
+									  'user_participante': user_inscricao.participante,
+									  'user_inscricao': user_inscricao, 
 									  # url privadas contem inscricao da competicacao
 							          'nome_rancking': NOME_RANCKING,
-							          'url_rancking': URL_IRANCKING + str(i.pk)+'/',
+							          'url_rancking': URL_IRANCKING + str(user_inscricao.pk)+'/',
 							          'nome_tabela': NOME_TABELA,
-							          'url_tabela': URL_ITABELA + str(i.pk)+'/',
+							          'url_tabela': URL_ITABELA + str(user_inscricao.pk)+'/',
 							          'nome_aposta': NOME_APOSTA,
-							          'url_aposta': URL_IAPOSTA + str(i.pk)+'/',
+							          'url_aposta': URL_IAPOSTA + str(user_inscricao.pk)+'/',
 									  'nome_apostas_jogo': NOME_APOSTAS_JOGO,
-									  'url_apostas_jogo': URL_IAPOSTAS_JOGO + str(i.competicao.pk)+'/'							          
+									  'url_apostas_jogo': URL_IAPOSTAS_JOGO + str(user_inscricao.pk)+'/'							          
 							 })
 
 def get_palpites_all_participantes(jogo, competicao):
@@ -175,72 +180,150 @@ def apostas_jogo(request, competicao_pk, jogo_pk):
 
 # Visualiza as apostas daquele expecifico Jogo e Competicao
 @login_required
-def iapostas_jogo(request, inscricao_pk, jogo_pk):
+def iapostas_jogo(request, user_inscricao_pk, jogo_pk):
+	user_inscricao = Inscricao.objects.get(pk=user_inscricao_pk)
+	if not user_login_is_valid(request.user, user_inscricao.participante.user):
+		return redirect('/')
 	j = Jogo.objects.get(pk=jogo_pk)	
 	if (j.status.codigo == 'E'):
-		return redirect(URL_ITABELA+str(inscricao.pk)+'/')		
-	inscricao = Inscricao.objects.get(pk=inscricao_pk)
+		return redirect(URL_ITABELA+str(user_inscricao.pk)+'/')	
 	# apostas de um soh jogo e competicao Ex: Brasil X Italia (Copa do Mundo 2014 - Della Volpe)
-	apostas_jogos_competicao = get_palpites_all_participantes(j, inscricao.competicao)
+	apostas_jogos_competicao = get_palpites_all_participantes(j, user_inscricao.competicao)
 	return render_to_response('_base.html', 
 	                          {   'template': 'apostas_jogo.html', 
 								  'titulo': 'Palpites de Todos',
-								  'subtitulo': inscricao.competicao.campeonato.nome + ' ' + inscricao.competicao.nome,
-	                              'inscricao': inscricao, 
+								  'subtitulo': user_inscricao.competicao.campeonato.nome + ' ' + user_inscricao.competicao.nome,
+	                              'user_inscricao': user_inscricao, 
 	                              'apostas': apostas_jogos_competicao,
 	                              'jogo': j, 
-	                              'competicao': inscricao.competicao, 
-	                              'participante': inscricao.participante,
+	                              'competicao': user_inscricao.competicao, 
+	                              'user_participante': user_inscricao.participante,
 								  # url privadas contem inscricao da competicacao
 								  'nome_rancking': NOME_RANCKING,
-								  'url_rancking': URL_IRANCKING + str(inscricao.pk)+'/',
+								  'url_rancking': URL_IRANCKING + str(user_inscricao.pk)+'/',
 								  'nome_tabela': NOME_TABELA,
-								  'url_tabela': URL_ITABELA + str(inscricao.pk)+'/',
+								  'url_tabela': URL_ITABELA + str(user_inscricao.pk)+'/',
 								  'nome_aposta': NOME_APOSTA,
-								  'url_aposta': URL_IAPOSTA + str(inscricao.pk)+'/'
+								  'url_aposta': URL_IAPOSTA + str(user_inscricao.pk)+'/'
 	                           })	
 	                           
 @login_required
-def aposta(request, inscricao):	
-	i = Inscricao.objects.get(pk=inscricao)
-	apts = Aposta.objects.filter(inscricao=i)
+def aposta(request, user_inscricao_pk):	
+	user_inscricao = Inscricao.objects.get(pk=user_inscricao_pk)
+	if not user_login_is_valid(request.user, user_inscricao.participante.user):
+		return redirect('/')
+	apts = Aposta.objects.filter(inscricao=user_inscricao)
 	return render_to_response('_base.html', 
 	                          {   'template': 'aposta.html', 
-								  'subtitulo': i.competicao.campeonato.nome + ' ' + i.competicao.nome,
+								  'subtitulo': user_inscricao.competicao.campeonato.nome + ' ' + user_inscricao.competicao.nome,
 	                              'titulo': 'Minhas Apostas',
-	                              'participante': i.participante,
-	                              'competicao': i.competicao,
+	                              'user_participante': user_inscricao.participante,
+	                              'competicao': user_inscricao.competicao,
 	                              'apostas': apts, 
-	                              'inscricao': i,
+	                              'user_inscricao': user_inscricao,
 								  # url privadas contem inscricao da competicacao
 								  'nome_rancking': NOME_RANCKING,
-								  'url_rancking': URL_IRANCKING + str(i.pk)+'/',
+								  'url_rancking': URL_IRANCKING + str(user_inscricao.pk)+'/',
 								  'nome_tabela': NOME_TABELA,
-								  'url_tabela': URL_ITABELA + str(i.pk)+'/',
+								  'url_tabela': URL_ITABELA + str(user_inscricao.pk)+'/',
 								  'nome_aposta': NOME_APOSTA,
-								  'url_aposta': URL_IAPOSTA + str(i.pk)+'/'	                              
+								  'url_aposta': URL_IAPOSTA + str(user_inscricao.pk)+'/'	                              
 	                          })
+	                          
+# Altera aposta, usuario alterando sua propria aposta		
+@login_required
+def iaposta_edit(request, user_aposta_pk):
+	execute_transation = 'N'
+	model = Aposta.objects.get(pk=user_aposta_pk)
+	mensagem = ''	
+	form = ApostaForm()
+	# ToDo...: if model.jogo.data_hora > DateTime.now-4horas: ToDo..:
+	if model.jogo.status.codigo == 'E':		
+		if request.method == 'POST':
+			form = ApostaForm(request.POST, request.FILES, instance=model)
+			if form.is_valid():
+				model_update = form.save(commit=False)
+				if model_update.resultado_a > model_update.resultado_b:
+					model_update.vencedor = 'A'
+				elif model_update.resultado_a < model_update.resultado_b:
+					model_update.vencedor = 'B'
+				else:
+					model_update.vencedor = 'E'
+				model.colocacao = 0
+				model.pontuacao = 0
+				model.calculado = False
+				model_update.save()
+				execute_transation = 'S'
+				mensagem = 'Aposta alterada com sucesso'
+		else:
+			form = ApostaForm(instance=model)
+	else:
+		mensagem = 'Nao sera mais possivel alterar aposta. Jogo encontra-se em ' + model.jogo.status.descricao
+		execute_transation = 'S'
+	return render_to_response('_base_simple.html', 
+	                          {    'template': 'aposta_edit.html', 
+	                               'execute_transation': execute_transation,
+	                               'aposta': model, 
+	                               'form': form, 
+	                               'mensagem': mensagem}, 
+	                          context_instance=RequestContext(request))	                          
 
-# ToDo...: criar um iperfil
-def perfil(request, inscricao_pk):
-	inscricao = Inscricao.objects.get(pk=inscricao_pk)
+def perfil_competicao(request, view_inscricao_pk):
+	user_participante = Participante()
+	view_inscricao = Inscricao.objects.get(pk=view_inscricao_pk)
 	return render_to_response('_base.html', 
 						      {  
 								'template': 'perfil.html',
-								'titulo': inscricao.participante.apelido,
-								'subtitulo': inscricao.competicao.campeonato.nome + ' ' + inscricao.competicao.nome,
+								'titulo': view_inscricao.participante.apelido,
+								'subtitulo': view_inscricao.competicao.campeonato.nome + ' ' + view_inscricao.competicao.nome,
 								# possivel subtitulo
-								'inscricao': inscricao,
-								'competicao': inscricao.competicao, #enviado para montar o submenu
-								'participante': inscricao.participante,
+								'view_inscricao': view_inscricao,
+								'competicao': view_inscricao.competicao, #enviado para montar o submenu
+								'user_participante': user_participante,
 							     # url publicas contem somente a competicacao
 								 'nome_rancking': NOME_RANCKING,
-								 'url_rancking': URL_RANCKING + str(inscricao.competicao.pk)+'/',
+								 'url_rancking': URL_RANCKING + str(view_inscricao.competicao.pk)+'/',
 								 'nome_tabela': NOME_TABELA,
-								 'url_tabela': URL_TABELA + str(inscricao.competicao.pk)+'/',
+								 'url_tabela': URL_TABELA + str(view_inscricao.competicao.pk)+'/',
 								 'nome_aposta': '',
 								 'url_aposta': '#'								
 							   })
+
+# ToDo...: criar um iperfil >>> def perfil(request, view_inscricao_pk, user_inscricao_pk):							   
+def iperfil_competicao(request, user_inscricao_pk, view_inscricao_pk):
+	user_participante = Participante()
+	user_inscricao = Inscricao.objects.get(pk=user_inscricao_pk)
+	view_inscricao = Inscricao.objects.get(pk=view_inscricao_pk)
+	if not user_login_is_valid(request.user, user_inscricao.participante.user):
+		return redirect('/')	
+	if user_inscricao.pk == view_inscricao.pk:
+		apts = Aposta.objects.filter(inscricao=view_inscricao)
+	else:
+		# ToDo nao aparece..... apostasss
+		apts = []
+		apts_aux = Aposta.objects.filter(inscricao=view_inscricao)
+		for a in apts_aux:
+			if (a.jogo.status.codigo == 'A') or (a.jogo.status.codigo == 'F'):
+				apts.append(a)
+	return render_to_response('_base.html', 
+						      {  
+								'template': 'perfil.html',
+								'titulo': view_inscricao.participante.apelido,
+								'subtitulo': view_inscricao.competicao.campeonato.nome + ' ' + view_inscricao.competicao.nome,
+								# possivel subtitulo
+	                            'user_participante': user_inscricao.participante,
+	                            'user_inscricao': user_inscricao,								
+								'view_inscricao': view_inscricao,
+								'competicao': view_inscricao.competicao, #enviado para montar o submenu
+								'apostas': apts_aux,
+							     # url publicas contem somente a competicacao
+								 'nome_rancking': NOME_RANCKING,
+								 'url_rancking': URL_IRANCKING + str(user_inscricao.competicao.pk)+'/',
+								 'nome_tabela': NOME_TABELA,
+								 'url_tabela': URL_ITABELA + str(user_inscricao.competicao.pk)+'/',
+								 'nome_aposta': NOME_APOSTA,
+								 'url_aposta': URL_IAPOSTA + str(user_inscricao.pk)+'/'
+							   })							   
 
 # Faz o Calculo do campeonato para todas as competicoes do mesmo.
 def aposta_calc(request, campeonato):
@@ -302,7 +385,7 @@ def aposta_calc(request, campeonato):
 
 # calcula a aposta.
 def calcula_aposta(jogo):
-	apostas = Aposta.objects.filter(jogo=jogo)
+	apostas = Aposta.objects.filter(jogo=jogo, calculado=False)
 	for a in apostas:
 		if jogo.status.codigo != 'E':
 			if (a.resultado_a == jogo.resultado_a) and (a.resultado_b == jogo.resultado_b):
@@ -317,6 +400,7 @@ def calcula_aposta(jogo):
 				a.pontos = PONTOS_SOMENTE_RESULTADO_GOLS_UM_TIME
 			else:
 				a.pontos = PONTOS_ERRO
+			a.calculado = True
 		else:
 			a.pontos = 0
 		a.save()
@@ -340,35 +424,3 @@ def calcula_rancking(competicao):
 		qtde_ap = i.quantidade_acerto_placar
 		qtde_av = i.quantidade_acerto_vencedor
 		qtde_ae = i.quantidade_acerto_empate_erro_placar
-		
-# Altera aposta, usuario alterando sua propria aposta		
-@login_required
-def aposta_edit(request, pk):
-	model = Aposta.objects.get(pk=pk)
-	execute_transation = 'N'
-	mensagem = ''	
-	form = ApostaForm()
-	# ToDo...: if model.jogo.data_hora > DateTime.now-4horas: ToDo..:
-	if model.jogo.status.codigo == 'E':		
-		if request.method == 'POST':
-			form = ApostaForm(request.POST, request.FILES, instance=model)
-			if form.is_valid():
-				model_update = form.save(commit=False)
-				if model_update.resultado_a > model_update.resultado_b:
-					model_update.vencedor = 'A'
-				elif model_update.resultado_a < model_update.resultado_b:
-					model_update.vencedor = 'B'
-				else:
-					model_update.vencedor = 'E'
-				model_update.save()
-				execute_transation = 'S'
-				mensagem = 'Aposta alterada com sucesso'
-		else:
-			form = ApostaForm(instance=model)
-	else:
-		mensagem = 'Nao sera mais possivel alterar aposta. Jogo encontra-se em ' + model.jogo.status.descricao
-		execute_transation = 'S'
-	return render_to_response('_base_simple.html', {'template': 'aposta_edit.html', 
-	                                                'execute_transation': execute_transation,
-	                                                'aposta': model, 'form': form, 'mensagem': mensagem}, 
-	                          context_instance=RequestContext(request))

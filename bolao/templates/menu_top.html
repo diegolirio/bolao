@@ -15,9 +15,9 @@
 			<ul class="nav pull-right" id="main-menu-right">
 			  <li><a href="/admin/">Admin</a></li>
 			  <li><a href="/regras/">Regras</a></li>
-			  {% if participante.user.is_authenticated %}
+			  {% if user_participante.user.is_authenticated %}
 			    <li class="dropdown">
-				   <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{ participante.apelido }}<b class="caret"></b></a>
+				   <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{ user_participante.apelido }}<b class="caret"></b></a>
 				   <ul class="dropdown-menu" id="swatch-menu">
 					  <li><a href="/perfil/">Perfil</a></li>					    
 					  <li><a href="/logout/">Sair</a></li>					    
@@ -50,10 +50,13 @@
 							</div>
 					</div>
 					<div class="span7">
-						{% if participante.user.is_authenticated %}
+						{% if user_participante.user.is_authenticated %}
 							<div class="pull-right">
-								<h3>{{ participante }}</h3>
-								<p>{{ inscricao.colocacao }}º<span class="offset3">{{ inscricao.pontos }} pts.</span></p>
+								<!--
+								<h3>{{ user_participante }}</h3>
+								<p>{{ inscricao.colocacao }}º Colocação</p>
+								<p><span class="offset3">{{ inscricao.pontos }} pontos.</span></p>
+								-->
 							</div>							
 						{% else %}
 							<a href="/cadastrese/" class="btn pull-right">Cadastre-se</a>						  

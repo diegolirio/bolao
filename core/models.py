@@ -94,6 +94,8 @@ class Aposta(models.Model):
 	resultado_b = models.IntegerField(default=0)
 	pontos = models.IntegerField(default=0)
 	vencedor = models.CharField(max_length=1, blank=True, default='E') # (A - B - E)	
+	calculado = models.BooleanField(default=False)
+	colocacao = models.IntegerField(default=0)
 	def __unicode__(self):
 		return self.inscricao.participante.apelido + " / " + self.jogo.time_a + " " + str(self.jogo.resultado_a) + " X " + str(self.jogo.resultado_b) + " " + self.jogo.time_b + " / " + str(self.jogo.data_hora) + " / Local: " + self.jogo.local + " / " + self.jogo.status.descricao + " - Aposta: " + str(self.resultado_a) + " X " + str(self.resultado_b)
 	class Meta:

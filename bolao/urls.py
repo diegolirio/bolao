@@ -30,15 +30,18 @@ urlpatterns = patterns('',
     url(r'^rancking/(?P<competicao_pk>\d+)/$', 'core.views.rancking', name='rancking'),
     url(r'^tabela/(?P<competicao_pk>\d+)/$', 'core.views.tabela', name='tabela'),
     url(r'^apostas_jogo/(?P<competicao_pk>\d+)/(?P<jogo_pk>\d+)/$', 'core.views.apostas_jogo'),
-    url(r'^perfil/(?P<inscricao_pk>\d+)/$', 'core.views.perfil'),
+    url(r'^perfil_competicao/(?P<view_inscricao_pk>\d+)/$', 'core.views.perfil_competicao'),
     # Logado (privadas) >>> url fixado sempre a competicao como parametro
-    url(r'^irancking/(?P<inscricao_pk>\d+)/$', 'core.views.irancking', name='irancking'),    
-    url(r'^itabela/(?P<inscricao_pk>\d+)/$', 'core.views.itabela', name='itabela'),
-    url(r'^iapostas_jogo/(?P<inscricao_pk>\d+)/(?P<jogo_pk>\d+)/$', 'core.views.iapostas_jogo'),
-    url(r'^iaposta/(?P<inscricao>\d+)/$', 'core.views.aposta'),
+    url(r'^irancking/(?P<user_inscricao_pk>\d+)/$', 'core.views.irancking', name='irancking'),    
+    url(r'^itabela/(?P<user_inscricao_pk>\d+)/$', 'core.views.itabela', name='itabela'),
+    url(r'^iaposta/(?P<user_inscricao_pk>\d+)/$', 'core.views.aposta'),
+    url(r'^iapostas_jogo/(?P<user_inscricao_pk>\d+)/(?P<jogo_pk>\d+)/$', 'core.views.iapostas_jogo'),
+    url(r'^iaposta_edit/(?P<user_aposta_pk>\d+)/$', 'core.views.iaposta_edit'),
+    url(r'^iperfil_competicao/(?P<user_inscricao_pk>\d+)/(?P<view_inscricao_pk>\d+)/$', 'core.views.iperfil_competicao'),
+    #url(r'^iperfil/(?P<user_inscricao_pk>\d+)/$', 'core.views.iperfil'),
     # ------------------------------------------------------------------------------------------------    
     url(r'^aposta_calc/(?P<campeonato>\d+)/$', 'core.views.aposta_calc'),
-    url(r'^aposta_edit/(?P<pk>\d+)/$', 'core.views.aposta_edit'),
+    
  )
 
 if settings.DEBUG:

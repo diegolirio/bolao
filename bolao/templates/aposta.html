@@ -23,7 +23,7 @@
 		</tr>
 		
 		{% for a in apostas %}		
-		{% if a.inscricao.id == inscricao.id %}
+		{% if a.inscricao.id == user_inscricao.id %}
 		<tr>
 			<div class="muted">
 				<td class="muted">{{ a.jogo.time_a }}</td>
@@ -59,7 +59,7 @@
 			<td><b>{{ a.jogo.time_b }}</b></td>
 			<td>
 				{% if a.jogo.status.codigo == 'E' %}
-					<a href="/aposta_edit/{{a.id}}/" class="btn" onclick="show__(this.href); return false;"><i class="icon-refresh"></i></a>
+					<a href="/iaposta_edit/{{a.id}}/" class="btn" onclick="show__(this.href); return false;"><i class="icon-refresh"></i></a>
 				{% endif %}
 			</td>
 		</tr>
