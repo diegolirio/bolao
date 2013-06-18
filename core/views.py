@@ -318,9 +318,9 @@ def iperfil_competicao(request, user_inscricao_pk, view_inscricao_pk):
 								'apostas': apts_aux,
 							     # url publicas contem somente a competicacao
 								 'nome_rancking': NOME_RANCKING,
-								 'url_rancking': URL_IRANCKING + str(user_inscricao.competicao.pk)+'/',
+								 'url_rancking': URL_IRANCKING + str(user_inscricao.pk)+'/',
 								 'nome_tabela': NOME_TABELA,
-								 'url_tabela': URL_ITABELA + str(user_inscricao.competicao.pk)+'/',
+								 'url_tabela': URL_ITABELA + str(user_inscricao.pk)+'/',
 								 'nome_aposta': NOME_APOSTA,
 								 'url_aposta': URL_IAPOSTA + str(user_inscricao.pk)+'/'
 							   })							   
