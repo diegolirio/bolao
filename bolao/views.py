@@ -16,7 +16,7 @@ def index(request):
 		qtde = Inscricao.objects.filter(participante=user_participante).count()			
 		if qtde == 1:
 			user_inscricao = Inscricao.objects.filter(participante=user_participante)[0:1].get()
-			url = "/irancking/"+str(user_inscricao.pk)+"/"
+			url = "/rancking/"+str(user_inscricao.competicao.pk)+"/"
 		else:
 			url = "/home/"
 	else:

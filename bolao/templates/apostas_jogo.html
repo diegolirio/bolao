@@ -21,7 +21,7 @@
 	</tr>
 	{% for a in apostas %}
 	<tr>
-		<td><a href="/perfil/{{a.inscricao.id}}/"><span class="text-info">{{ a.inscricao.participante.apelido }}</span></a></td>
+		<td><a href="{{url_perfil_competicao}}{{a.inscricao.id}}/"><span class="text-info">{{ a.inscricao.participante.apelido }}</span></a></td>
 		<td>{{ a.jogo.time_a }}</td>
 		<td>{{ a.resultado_a }}</td>
 		<td>X</td>

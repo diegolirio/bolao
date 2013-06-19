@@ -13,7 +13,10 @@
 				<li><a href="/home/">Competições</a></li>
 			</ul>
 			<ul class="nav pull-right" id="main-menu-right">
-			  <li><a href="/admin/">Admin</a></li>
+			  {% if user_participante.user.username == 'admin' %}
+				<li><a href="/admin/">Admin</a></li>
+				<li><a href="/system/">System</a></li>
+			  {% endif %}
 			  <li><a href="/regras/">Regras</a></li>
 			  {% if user_participante.user.is_authenticated %}
 			    <li class="dropdown">
@@ -59,7 +62,7 @@
 								-->
 							</div>							
 						{% else %}
-							<a href="/cadastrese/" class="btn pull-right">Cadastre-se</a>						  
+							<a href="/cadastre_se/" class="btn pull-right">Cadastre-se</a>						  
 						{% endif %}
 					</div>
 				</div>
@@ -69,9 +72,11 @@
 					{% if competicao.id > 0 %}
 					<div class="container">
 						<ul class="nav nav-pills">
-						  <li><a href="{{url_rancking}}">{{nome_rancking}}</a></li>
-						  <li><a href="{{url_tabela}}">{{nome_tabela}}</a></li>					    
-						  <li><a href="{{url_aposta}}">{{nome_aposta}}</a></li>
+						  <li><a href="/rancking/{{competicao.id}}/">Rancking</a></li>
+						  <li><a href="/tabela/{{competicao.id}}">Tabela</a></li>
+						  {% if user_inscricao.pk > 0 %}
+							<li><a href="/aposta/{{competicao.id}}/">Aposta</a></li>
+						  {% endif %}
 						</ul>
 					</div>
 					{% endif %}

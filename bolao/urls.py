@@ -20,8 +20,7 @@ urlpatterns = patterns('',
     url(r'^login/', "django.contrib.auth.views.login", {"template_name": "login.html"}), 
     url(r'^logout/', "django.contrib.auth.views.logout_then_login", {'login_url': '/login/'}),
     # pagina Home
-	url(r'^home/$', 'core.views.home', name='home'),
-	
+	url(r'^home/$', 'core.views.home', name='home'),	
 	# ------------------------------------------------------------------------------------------------
 	# Urls publicas e privadas cai sempre no mesmo html, a diferente eh q a privada 
 	#  tera a possivel inscricao da competicao e participante logado
@@ -29,18 +28,25 @@ urlpatterns = patterns('',
     # Nao Logado (publicas)
     url(r'^rancking/(?P<competicao_pk>\d+)/$', 'core.views.rancking', name='rancking'),
     url(r'^tabela/(?P<competicao_pk>\d+)/$', 'core.views.tabela', name='tabela'),
+    url(r'^aposta/(?P<competicao_pk>\d+)/$', 'core.views.aposta'),
     url(r'^apostas_jogo/(?P<competicao_pk>\d+)/(?P<jogo_pk>\d+)/$', 'core.views.apostas_jogo'),
-    url(r'^perfil_competicao/(?P<view_inscricao_pk>\d+)/$', 'core.views.perfil_competicao'),
+    url(r'^aposta_edit/(?P<user_aposta_pk>\d+)/$', 'core.views.aposta_edit'),
+    url(r'^perfil_competicao/(?P<competicao_pk>\d+)/(?P<view_inscricao_pk>\d+)/$', 'core.views.perfil_competicao'),
     # Logado (privadas) >>> url fixado sempre a competicao como parametro
-    url(r'^irancking/(?P<user_inscricao_pk>\d+)/$', 'core.views.irancking', name='irancking'),    
-    url(r'^itabela/(?P<user_inscricao_pk>\d+)/$', 'core.views.itabela', name='itabela'),
-    url(r'^iaposta/(?P<user_inscricao_pk>\d+)/$', 'core.views.aposta'),
-    url(r'^iapostas_jogo/(?P<user_inscricao_pk>\d+)/(?P<jogo_pk>\d+)/$', 'core.views.iapostas_jogo'),
-    url(r'^iaposta_edit/(?P<user_aposta_pk>\d+)/$', 'core.views.iaposta_edit'),
-    url(r'^iperfil_competicao/(?P<user_inscricao_pk>\d+)/(?P<view_inscricao_pk>\d+)/$', 'core.views.iperfil_competicao'),
+
+#    url(r'^irancking/(?P<competicao_pk>\d+)/$', 'core.views.irancking', name='irancking'),    
+ #   url(r'^itabela/(?P<user_inscricao_pk>\d+)/$', 'core.views.itabela', name='itabela'),
+  #  url(r'^iaposta/(?P<user_inscricao_pk>\d+)/$', 'core.views.aposta'),
+   # url(r'^iapostas_jogo/(?P<user_inscricao_pk>\d+)/(?P<jogo_pk>\d+)/$', 'core.views.iapostas_jogo'),
+    #url(r'^iaposta_edit/(?P<user_aposta_pk>\d+)/$', 'core.views.iaposta_edit'),
+    #url(r'^iperfil_competicao/(?P<user_inscricao_pk>\d+)/(?P<view_inscricao_pk>\d+)/$', 'core.views.iperfil_competicao'),
     #url(r'^iperfil/(?P<user_inscricao_pk>\d+)/$', 'core.views.iperfil'),
+    
     # ------------------------------------------------------------------------------------------------    
-    url(r'^aposta_calc/(?P<campeonato>\d+)/$', 'core.views.aposta_calc'),
+    # system 
+    #url(r'^system/$', 'core.views.system_calcular'),
+    #url(r'^system/cadastrar_jogo/(?P<campeonato_pk>)/$', 'core.views.system_cadastrar_jogo'),
+    #url(r'^aposta_calc/(?P<campeonato>\d+)/$', 'core.views.aposta_calc'),
     
  )
 

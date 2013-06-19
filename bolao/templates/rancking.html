@@ -22,7 +22,7 @@
 		{% for ip in inscricoes_competicao %}
 		<tr {% if ip.participante.id == user_participante.id %} style="background-color: #64FE2E;" {% endif %}>
 			<td class="text-info">{{ ip.colocacao}}º</td>
-			<td><a href="{{url_perfil_competicao}}{{ip.id}}/" class="text-info">{{ ip.participante }}</a></td>
+			<td><a href="/perfil_competicao/{{competicao.id}}/{{ip.id}}/" class="text-info">{{ ip.participante }}</a></td>
 			<td>{{ ip.id }}</td>
 			<td class="text-info">{{ ip.pontos }}</td>
 			<td>{{ ip.quantidade_acerto_placar }}</td>
