@@ -44,8 +44,8 @@ urlpatterns = patterns('',
     
     # ------------------------------------------------------------------------------------------------    
     # system 
-    #url(r'^system/$', 'core.views.system_calcular'),
-    #url(r'^system/cadastrar_jogo/(?P<campeonato_pk>)/$', 'core.views.system_cadastrar_jogo'),
+    url(r'^system/$', 'core.views.system'),
+    url(r'^system/campeonato_calc_jogos/(?P<campeonato_pk>\d+)/$', 'core.views.system_campeonato_calc_jogos'),
     #url(r'^aposta_calc/(?P<campeonato>\d+)/$', 'core.views.aposta_calc'),
     
  )

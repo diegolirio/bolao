@@ -13,15 +13,18 @@ def user_login_is_valid(user_request, user_inscricao):
 		return True
 	return False
 	
-def home(request):
-	user_participante = get_participante_by_user(request.user)
-	competicoes = Competicao.objects.all()
-	if request.user.is_authenticated():
-		# Usuario Logado e nao inscrito........... nao acessa o Rancking..... ????
+def get_participante_by_user(user):
+	user_participante = Participante()
+	if user.is_authenticated():
 		try:
-			user_participante = Participante.objects.filter(user=request.user)[0:1].get()
+			user_participante = Participante.objects.filter(user=user)[0:1].get()
 		except:
-			redirect('/cadastrese_2/'+str(request.user.pk))
+			return redirect('/cadastre_se/')
+	return user_participante			
+	
+def home(request):
+	competicoes = Competicao.objects.all()	
+	user_participante = get_participante_by_user(request.user)
 	return render_to_response('_base.html',{	'template': 'index.html',
 												'titulo': 'Troféu Bolão',
 												'subtitulo': '',
@@ -31,13 +34,6 @@ def home(request):
 											
 def get_rancking_by_competicao(competicao):
 	return Inscricao.objects.filter(competicao=competicao).order_by('colocacao')
-	
-def get_participante_by_user(user):
-	try:
-		user_participante = Participante.objects.filter(user=user)[0:1].get()
-	except:
-		return redirect('/cadastre_se/'+str(reques.user.pk))
-	return user_participante		
 	
 def get_inscricao(competicao, participante):
 	try:
@@ -328,6 +324,15 @@ def iperfil_competicao(request, user_inscricao_pk, view_inscricao_pk):
 								 'url_aposta': URL_IAPOSTA + str(user_inscricao.pk)+'/'
 							   })							   
 """
+def system(request):
+	campeonatos = Campeonato.objects.all()
+	user_participante = get_participante_by_user(request.user)
+	return render_to_response('_base.html', {'template': 'system/campeonatos.html', 'titulo': 'Campeonatos', 'subtitulo': 'Calcular e Alterar placar', 'user_participante': user_participante, 'campeonatos': campeonatos})
+
+def system_campeonato_calc_jogos(request, campeonato_pk):
+	campeonato = Campeonato.objects.get(pk=campeonato_pk)
+	user_participante = get_participante_by_user(request.user)
+	return render_to_response('_base.html', {'template': 'system/campeonato_calc_jogos.html', 'titulo': 'Calcular ' + campeonato.nome, 'subtitulo': 'Placar e calculo', 'user_participante': user_participante, 'campeonato': campeonato})
 
 # Faz o Calculo do campeonato para todas as competicoes do mesmo.
 def aposta_calc(request, campeonato):
