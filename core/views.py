@@ -465,8 +465,8 @@ def calcula_rancking_historico(competicao, jogo, aposta):
 	inscricoes = list()
 	# ToDo...: Calcula Aposta atual do Jogo com o que esta na inscricao.
 	for i_ in inscricoes_calc:
-		i = soma_aposta_inscricao(i_, aposta)	
-		inscricoes.append(i_)
+		i_calculado = soma_aposta_inscricao(i_, aposta)	
+		inscricoes.append(i_calculado)
 	for i in inscricoes:
 		col = col + 1		
 		if (i.pontos != pt_anterior) or (i.quantidade_acerto_placar != qtde_ap) or (i.quantidade_acerto_vencedor != qtde_av) or (i.quantidade_acerto_empate_erro_placar != qtde_ae):			
@@ -478,9 +478,9 @@ def calcula_rancking_historico(competicao, jogo, aposta):
 		qtde_av = i.quantidade_acerto_vencedor
 		qtde_ae = i.quantidade_acerto_empate_erro_placar
 		# rancking no momento da Aposta
-		#a = Aposta.objects.filter(jogo=jogo, inscricao=i)[0:1].get()
-		aposta.colocacao = i.colocacao
-		aposta.save()
+		a = Aposta.objects.filter(jogo=jogo, inscricao=i)[0:1].get()
+		a.colocacao = i.colocacao
+		a.save()
 
 #Calcula Rancking/colocacao
 def calcula_rancking(competicao):
