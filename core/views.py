@@ -374,11 +374,11 @@ def calcular_vencedor_jogo(j):
 def calcula_aposta(jogo):
 	# pega somente as apostas não calculadas
 	apostas = Aposta.objects.filter(jogo=jogo, calculado=False)
-	"""
+	
 	if apostas.count() > 0:
 		competicao = apostas[0].inscricao.competicao
 	i = 0
-	"""
+	
 	for a in apostas:
 		if (a.resultado_a == jogo.resultado_a) and (a.resultado_b == jogo.resultado_b):
 			a.pontos = PONTOS_PLACAR
@@ -396,12 +396,12 @@ def calcula_aposta(jogo):
 			a.calculado = True
 		a.save()
 		# calcula o rancking no momento da aposta (historico de colocacao)
-		"""
+	
 		i = i + 1	
 		if (i == apostas.count()) or (competicao != a.inscricao.competicao):
 			print('Calculando >>>>>> ' + competicao.nome + ' <> ' + str(i)+' de '+ str(apostas.count()))
 			calcula_rancking_historico(competicao, jogo)
-			competicao = a.inscricao.competicao"""
+			competicao = a.inscricao.competicao
 		
 def calcula_soma_pontos(inscricao):
 	# ToDo...: Cria metodo separa para o calculo somatorio. Passando a inscricao como parametro.
@@ -434,17 +434,36 @@ def calcula_soma_pontos(inscricao):
 	inscricao.quantidade_acerto_empate_erro_placar = qtde_ae
 	inscricao.quantidade_acerto_somente_resultado_um_time = qtde_as
 	inscricao.quantidade_erro = qtde_er
-	inscricao.save()			
+	inscricao.save()		
+	
+def soma_aposta_inscricao(inscricao, aposta):
+	inscricao_ = inscricao
+	inscricao_.pontos = inscricao_.pontos + aposta.pontos
+	if aposta.pontos == PONTOS_PLACAR:
+		inscricao_.quantidade_acerto_placar = inscricao_.quantidade_acerto_placar + 1
+	if a.pontos == PONTOS_VENCEDOR_RESULTADO_GOLS_UM_TIME:
+		inscricao_.quantidade_acerto_vencedor_um_resultado_correto = inscricao_.quantidade_acerto_vencedor_um_resultado_correto + 1
+	elif a.pontos == PONTOS_VENCEDOR:
+		inscricao_.quantidade_acerto_vencedor = inscricao_.quantidade_acerto_vencedor + 1
+	elif a.pontos == PONTOS_EMPATE_PLACAR_INCORRETO:
+		inscricao_.quantidade_acerto_empate_erro_placar = inscricao_.quantidade_acerto_empate_erro_placar + 1
+	elif a.pontos == PONTOS_SOMENTE_RESULTADO_GOLS_UM_TIME:
+		inscricao_.quantidade_acerto_somente_resultado_um_time = inscricao_.quantidade_acerto_somente_resultado_um_time + 1
+	elif (a.jogo.status.codigo != 'E') and (a.pontos == PONTOS_ERRO):
+		inscricao_.quantidade_erro = inscricao_.quantidade_erro + 1
+	return inscricao_
 		
 #Calcula Rancking/colocacao na aposta (Histórico)
-def calcula_rancking_historico(competicao, jogo):
+def calcula_rancking_historico(competicao, jogo, aposta):
 	inscricoes = Inscricao.objects.filter(competicao=competicao).order_by('-pontos','-quantidade_acerto_placar', '-quantidade_acerto_vencedor_um_resultado_correto', '-quantidade_acerto_vencedor','-quantidade_acerto_empate_erro_placar', '-quantidade_acerto_somente_resultado_um_time')
 	col = 0
 	pt_anterior = 0
 	qtde_ap = 0
 	qtde_av = 0
 	qtde_ae = 0
-	for i in inscricoes:
+	for i_ in inscricoes:
+		# ToDo...: Calcula Aposta atual do Jogo com o que esta na inscricao.
+		i = soma_aposta_inscricao(i_, aposta)
 		col = col + 1		
 		if (i.pontos != pt_anterior) or (i.quantidade_acerto_placar != qtde_ap) or (i.quantidade_acerto_vencedor != qtde_av) or (i.quantidade_acerto_empate_erro_placar != qtde_ae):			
 			i.colocacao = col
