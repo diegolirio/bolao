@@ -18,16 +18,18 @@
 		<td class="text-error">Participante</td>
 		<td class="text-error" colspan="5">Jogo</td>
 		<td class="text-error">Pontos</td>
+		<td class="text-error">Colocação</td>
 	</tr>
 	{% for a in apostas %}
 	<tr>
-		<td><a href="{{url_perfil_competicao}}{{a.inscricao.id}}/"><span class="text-info">{{ a.inscricao.participante.apelido }}</span></a></td>
+		<td><a href="/perfil_competicao/{{competicao.id}}/{{a.inscricao.id}}/"><span class="text-info">{{ a.inscricao.participante.apelido }}</span></a></td>
 		<td>{{ a.jogo.time_a }}</td>
 		<td>{{ a.resultado_a }}</td>
 		<td>X</td>
-		<td>{{ a.resultado_a }}</td>
+		<td>{{ a.resultado_b }}</td>
 		<td>{{ a.jogo.time_b }}</td>
 		<td>{{ a.pontos }}</td>
+		<td>{{ a.colocacao }}</td>
 	</tr>
 	{% empty %}
 		<h1>Não há palpites cadastrados para este jogo</h1>

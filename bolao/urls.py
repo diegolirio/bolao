@@ -46,7 +46,7 @@ urlpatterns = patterns('',
     # system 
     url(r'^system/$', 'core.views.system'),
     url(r'^system/campeonato_calc_jogos/(?P<campeonato_pk>\d+)/$', 'core.views.system_campeonato_calc_jogos'),
-    #url(r'^aposta_calc/(?P<campeonato>\d+)/$', 'core.views.aposta_calc'),
+    url(r'^aposta_calc/(?P<campeonato>\d+)/$', 'core.views.aposta_calc'),
     
  )
 

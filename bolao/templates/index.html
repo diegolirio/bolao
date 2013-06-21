@@ -1,6 +1,18 @@
 
+<div class="row">
 {% for c in competicoes %}
-	<h1><a href="/rancking/{{c.id}}/">{{ c.nome }}</a></h1>
+		<!--<h1><a href="/rancking/{{c.id}}/">{{ c.nome }}</a></h1>-->
+	<div class="span6">
+		<div class="hero-unit">
+			<a href="/rancking/{{c.id}}/"><img src="/media/images/gold_cup_100X124.png" /></a>
+			<h2>{{c.nome}}</h2>
+			<h4>{{c.campeonato.nome}}</h4> 
+			<br/>
+			<p>
+				<a href="/rancking/{{c.id}}/" class="btn btn-success btn-large">Entre e veja a competição</a>
+			</p>	
+		</div>		
+	</div>
 	<!--
 	<div id="preview">
 	<ul class="thumbnails">
@@ -18,3 +30,4 @@
 	</li>
 	-->	
 {% endfor %}
+</div>

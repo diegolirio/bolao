@@ -1,2 +1,17 @@
-	ToDo..: Criar pagina somente para calculo... e placar dos jogos para alteracao
+<!--
 	<a href="/aposta_calc/{{competicao.campeonato.pk}}/" class="btn btn-success">Calcular {{competicao.campeonato.nome}}</a>
+-->
+	
+	  <div class="btn-group pull-right">
+		<a class="btn btn-success btn-large" href="#">Calcular (Prévia)</a>
+		<a class="btn btn-success dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
+		<ul class="dropdown-menu">
+		  <li><a href="/aposta_calc/{{campeonato.pk}}/">Calcular definitivo</a></li>
+		  <li class="divider"></li>
+		  <li><a href="#">Forçar Calculo já definido</a></li>
+		</ul>
+	  </div>	
+	  
+	  <br/>
+
+	  {% include 'tabela.html' %}
