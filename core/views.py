@@ -254,9 +254,11 @@ def __calcular_vencedor_jogo__(j):
 	
 def __calcula_apostas__(jogo):
 	apostas = Aposta.objects.filter(jogo=jogo)
+	"""
 	if apostas.count():
 		competicao = apostas[0].inscricao.competicao
 	i = 0
+	"""
 	for a in apostas:
 		i = i + 1
 		if (a.resultado_a == jogo.resultado_a) and (a.resultado_b == jogo.resultado_b):
@@ -274,10 +276,12 @@ def __calcula_apostas__(jogo):
 		if a.jogo.status.codigo == 'F':
 			a.calculado = True
 		a.save()
+		"""
 		if (competicao != a.inscricao.competicao) or (i == apostas.count()):
 			competicao = a.inscricao.competicao
 			# calcula colocacao na aposta (competicao)
 			__calcula_colocacao_aposta__(competicao, jogo)
+		"""
 		
 def __calcula_colocacao_aposta__(competicao, jogo):
 	inscricoes = Inscricao.objects.filter(competicao=competicao)
@@ -308,7 +312,7 @@ def __soma_pontuacao__(inscricao):
 		if a.pontos == PONTOS_VENCEDOR_RESULTADO_GOLS_UM_TIME:
 			qtde_ar = qtde_ar + 1						
 		elif a.pontos == PONTOS_VENCEDOR:
-			qtde_av = qtde_av + 1	
+			qtde_av = qtde_av + 1
 		elif a.pontos == PONTOS_EMPATE_PLACAR_INCORRETO:
 			qtde_ae = qtde_ae + 1	
 		elif a.pontos == PONTOS_SOMENTE_RESULTADO_GOLS_UM_TIME:
