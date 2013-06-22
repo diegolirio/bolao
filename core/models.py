@@ -61,7 +61,7 @@ class Jogo(models.Model):
 			r_a = str(self.resultado_a)
 			r_b = str(self.resultado_b)	
 		
-		return self.time_a + " " + r_a + " X " + r_b + " " + self.time_b + " / " + str(self.data_hora) + " / Local: " + self.local
+		return self.time_a + " " + r_a + " X " + r_b + " " + self.time_b + " / " + str(self.data_hora) + " - " + self.status.descricao + " / Local: " + self.local
 
 ###########################################################
 

@@ -1,5 +1,9 @@
 # -*- encoding: utf-8 -*-
 
+"""
+ToDo...: Criar uma function que retorna a colocacao da aposta
+"""
+
 from django.shortcuts import render_to_response
 from django.shortcuts import redirect
 from django.template import RequestContext
@@ -43,12 +47,6 @@ def get_inscricao(competicao, participante):
 		user_inscricao = Inscricao()	
 	return user_inscricao
 
-def set_properties(request, competicao_pk):
-	competicao = Competicao.objects.get(pk=competicao_pk)	
-	user_participante = get_participante_by_user(request.user)
-	user_inscricao = get_inscricao(competicao, user_participante)
-
-
 def rancking(request, competicao_pk):
 	competicao = Competicao.objects.get(pk=competicao_pk)	
 	user_participante = get_participante_by_user(request.user)
@@ -64,33 +62,6 @@ def rancking(request, competicao_pk):
 							        #-----------------------------------
 							        'inscricoes_competicao': inscricoes_competicao
 							        })
-"""
-@login_required
-def irancking(request, user_inscricao_pk):
-	user_inscricao = Inscricao.objects.get(pk=user_inscricao_pk)
-	if not user_login_is_valid(request.user, user_inscricao.participante.user):
-		return redirect('/')
-	inscricoes_competicao = get_rancking_by_competicao(user_inscricao.competicao)		
-	return render_to_response('_base.html', 
-	                         {      'template': 'rancking.html', 
-	                                'titulo': 'Rancking', 
-	                                'subtitulo': user_inscricao.competicao.campeonato.nome + ' ' + user_inscricao.competicao.nome,
-	                                'inscricoes_competicao': inscricoes_competicao, 
-									# Sempre conter esses para pegar os dados de ambos
-	                                'user_participante': user_inscricao.participante,
-	                                'user_inscricao': user_inscricao,
-	                                'competicao': user_inscricao.competicao,
-									# url privadas contem inscricao da competicacao
-							        'nome_rancking': NOME_RANCKING,
-							        'url_rancking': URL_IRANCKING + str(user_inscricao.pk)+'/',
-							        'nome_tabela': NOME_TABELA,
-							        'url_tabela': URL_ITABELA + str(user_inscricao.pk)+'/',
-							        'nome_aposta': NOME_APOSTA,
-							        'url_aposta': URL_IAPOSTA + str(user_inscricao.pk)+'/',
-							        'nome_perfil_competicao': '',
-							        'url_perfil_competicao': URL_IPERFIL_COMPETICAO + str(user_inscricao.pk)+'/'
-	                                })
-"""
 	                                
 def get_jogos_of_the_campeonato(campeonato):
 	grupos = Grupo.objects.all().filter(campeonato=campeonato)
@@ -116,32 +87,6 @@ def tabela(request, competicao_pk):
 								      #----
 									  'jogos': jgs
 							 })
-"""
-@login_required
-def itabela(request, user_inscricao_pk):
-	user_inscricao = Inscricao.objects.get(pk=user_inscricao_pk)
-	if not user_login_is_valid(request.user, user_inscricao.participante.user):
-		return redirect('/')
-	jgs = get_jogos_of_the_campeonato(user_inscricao.competicao.campeonato)
-	return render_to_response('_base.html', 
-							  {       'template': 'tabela.html', 
-								      'titulo': 'Tabela', 
-								      'subtitulo': user_inscricao.competicao.campeonato.nome + ' ' + user_inscricao.competicao.nome,
-								      'competicao': user_inscricao.competicao,
-									  'jogos': jgs, 
-									  'user_participante': user_inscricao.participante,
-									  'user_inscricao': user_inscricao, 
-									  # url privadas contem inscricao da competicacao
-							          'nome_rancking': NOME_RANCKING,
-							          'url_rancking': URL_IRANCKING + str(user_inscricao.pk)+'/',
-							          'nome_tabela': NOME_TABELA,
-							          'url_tabela': URL_ITABELA + str(user_inscricao.pk)+'/',
-							          'nome_aposta': NOME_APOSTA,
-							          'url_aposta': URL_IAPOSTA + str(user_inscricao.pk)+'/',
-									  'nome_apostas_jogo': NOME_APOSTAS_JOGO,
-									  'url_apostas_jogo': URL_IAPOSTAS_JOGO + str(user_inscricao.pk)+'/'							          
-							 })
-"""
 
 def get_palpites_all_participantes(jogo, competicao):
 	apostas = Aposta.objects.filter(jogo=jogo).order_by('-pontos')
@@ -172,40 +117,6 @@ def apostas_jogo(request, competicao_pk, jogo_pk):
 	                              'jogo': jogo, 
 	                              'apostas': apostas_jogos_competicao
 	                           })	
-
-
-"""
-# Visualiza as apostas daquele expecifico Jogo e Competicao
-@login_required
-def iapostas_jogo(request, user_inscricao_pk, jogo_pk):
-	user_inscricao = Inscricao.objects.get(pk=user_inscricao_pk)
-	if not user_login_is_valid(request.user, user_inscricao.participante.user):
-		return redirect('/')
-	j = Jogo.objects.get(pk=jogo_pk)	
-	if (j.status.codigo == 'E'):
-		return redirect(URL_ITABELA+str(user_inscricao.pk)+'/')	
-	# apostas de um soh jogo e competicao Ex: Brasil X Italia (Copa do Mundo 2014 - Della Volpe)
-	apostas_jogos_competicao = get_palpites_all_participantes(j, user_inscricao.competicao)
-	return render_to_response('_base.html', 
-	                          {   'template': 'apostas_jogo.html', 
-								  'titulo': 'Palpites de Todos',
-								  'subtitulo': user_inscricao.competicao.campeonato.nome + ' ' + user_inscricao.competicao.nome,
-	                              'user_inscricao': user_inscricao, 
-	                              'apostas': apostas_jogos_competicao,
-	                              'jogo': j, 
-	                              'competicao': user_inscricao.competicao, 
-	                              'user_participante': user_inscricao.participante,
-								  # url privadas contem inscricao da competicacao
-								  'nome_rancking': NOME_RANCKING,
-								  'url_rancking': URL_IRANCKING + str(user_inscricao.pk)+'/',
-								  'nome_tabela': NOME_TABELA,
-								  'url_tabela': URL_ITABELA + str(user_inscricao.pk)+'/',
-								  'nome_aposta': NOME_APOSTA,
-								  'url_aposta': URL_IAPOSTA + str(user_inscricao.pk)+'/',
-								  'nome_perfil_competicao': NOME_APOSTA,
-								  'url_perfil_competicao': URL_IPERFIL_COMPETICAO + str(user_inscricao.pk)+'/'								  
-	                           })	
-"""	
 	                           
 @login_required
 def aposta(request, competicao_pk):	
@@ -268,14 +179,19 @@ def perfil_competicao(request, competicao_pk, view_inscricao_pk):
 	user_participante = get_participante_by_user(request.user)
 	user_inscricao = get_inscricao(competicao, user_participante)
 	view_inscricao = Inscricao.objects.get(pk=view_inscricao_pk)
-	apostas = list()
+	view_apostas = list()
 	apts_aux = Aposta.objects.filter(inscricao=view_inscricao)
 	if user_inscricao.pk != view_inscricao.pk:
 		for a in apts_aux:
 			if (a.jogo.status.codigo == 'A') or (a.jogo.status.codigo == 'F'):
-				apostas.append(a)	
+				view_apostas.append(a)	
 	else:
-		apostas = apts_aux
+		view_apostas = apts_aux
+	view_apostas_chart = list() 
+	jogo_ = 1
+	for _a in view_apostas:
+		view_apostas_chart.append([_a.colocacao, _a.inscricao.participante.apelido, jogo_, {'pk': _a.pk}])		
+		jogo_ = jogo_ + 1
 	return render_to_response('_base.html', 
 						      {  
 								'template': 'perfil.html',
@@ -285,46 +201,12 @@ def perfil_competicao(request, competicao_pk, view_inscricao_pk):
 								'user_inscricao': user_participante,
 								'competicao': competicao, 								
 								'view_inscricao': view_inscricao,
-								'apostas': apostas
+								'view_apostas': view_apostas,
+								'view_apostas_chart': view_apostas_chart,
+								'qtde_jogos': jogo_
 							   })
 
-"""
-# ToDo...: criar um iperfil >>> def perfil(request, view_inscricao_pk, user_inscricao_pk):							   
-def iperfil_competicao(request, user_inscricao_pk, view_inscricao_pk):
-	user_participante = Participante()
-	user_inscricao = Inscricao.objects.get(pk=user_inscricao_pk)
-	view_inscricao = Inscricao.objects.get(pk=view_inscricao_pk)
-	if not user_login_is_valid(request.user, user_inscricao.participante.user):
-		return redirect('/')	
-	if user_inscricao.pk == view_inscricao.pk:
-		apts = Aposta.objects.filter(inscricao=view_inscricao)
-	else:
-		# ToDo nao aparece..... apostasss
-		apts = []
-		apts_aux = Aposta.objects.filter(inscricao=view_inscricao)
-		for a in apts_aux:
-			if (a.jogo.status.codigo == 'A') or (a.jogo.status.codigo == 'F'):
-				apts.append(a)
-	return render_to_response('_base.html', 
-						      {  
-								'template': 'perfil.html',
-								'titulo': view_inscricao.participante.apelido,
-								'subtitulo': view_inscricao.competicao.campeonato.nome + ' ' + view_inscricao.competicao.nome,
-								# possivel subtitulo
-	                            'user_participante': user_inscricao.participante,
-	                            'user_inscricao': user_inscricao,								
-								'view_inscricao': view_inscricao,
-								'competicao': view_inscricao.competicao, #enviado para montar o submenu
-								'apostas': apts,
-							     # url publicas contem somente a competicacao
-								 'nome_rancking': NOME_RANCKING,
-								 'url_rancking': URL_IRANCKING + str(user_inscricao.pk)+'/',
-								 'nome_tabela': NOME_TABELA,
-								 'url_tabela': URL_ITABELA + str(user_inscricao.pk)+'/',
-								 'nome_aposta': NOME_APOSTA,
-								 'url_aposta': URL_IAPOSTA + str(user_inscricao.pk)+'/'
-							   })							   
-"""
+# begin system
 
 @login_required
 def system(request):
@@ -338,30 +220,30 @@ def system_campeonato_calc_jogos(request, campeonato_pk):
 	user_participante = get_participante_by_user(request.user)
 	return render_to_response('_base.html', {'template': 'system/campeonato_calc_jogos.html', 'titulo': 'Calcular ' + campeonato.nome, 'subtitulo': 'Placar e calculo', 'user_participante': user_participante, 'campeonato': campeonato})
 
-# Faz o Calculo do campeonato para todas as competicoes do mesmo.
 @login_required
-def aposta_calc(request, campeonato):
-	c = Campeonato.objects.get(pk=campeonato)
-	grupos = Grupo.objects.filter(campeonato=c)
+def system_calcular_campeonato(request, campeonato_pk):
+	campeonato = Campeonato.objects.get(pk=campeonato_pk)
+	grupos = Grupo.objects.filter(campeonato=campeonato)
+	status = StatusJogo.objects.filter(codigo='E')[0:1].get()
 	for g in grupos:
-		jogos = Jogo.objects.filter(grupo=g).order_by('data_hora')
+		jogos = Jogo.objects.filter(grupo=g).exclude(status=status).order_by('data_hora')
 		for j in jogos:
-			# Calcular Vencedor
-			calcular_vencedor_jogo(j) 
-			# Calcula todas as apostas de todos os participantes com este jogo, se estiver finalizado
-			if j.status.codigo != 'E':
-				calcula_aposta(j) 
-	competicoes = Competicao.objects.filter(campeonato=c)
-	for co in competicoes:
-		# Calcula pontuacao na inscricao que contem a soma da pontuacao
-		inscricoes = Inscricao.objects.filter(competicao=co)
+			print(j.time_a + " X " + j.time_b)
+			__calcular_vencedor_jogo__(j)
+			# calcula apostas e colocacao hist...
+			__calcula_apostas__(j)
+	# calcula somatorio definitivo
+	competicoes = Competicao.objects.filter(campeonato=campeonato)
+	for c in competicoes:
+		inscricoes = Inscricao.objects.filter(competicao=c)
 		for i in inscricoes:
-			calcula_soma_pontos(i)
+			# somatorio na inscricao,
+			__soma_pontuacao__(i)		
 		#Calcula Rancking/colocacao
-		calcula_rancking(co)			
+		__calcula_rancking__(c)
 	return redirect('/home/')
 	
-def calcular_vencedor_jogo(j):
+def __calcular_vencedor_jogo__(j):
 	if j.resultado_a > j.resultado_b:
 		j.vencedor = 'A'
 	elif j.resultado_a < j.resultado_b:
@@ -369,19 +251,14 @@ def calcular_vencedor_jogo(j):
 	else:
 		j.vencedor = 'E'
 	j.save()	
-
-# calcula a aposta.
-def calcula_aposta(jogo):
-	# pega somente as apostas não calculadas
-	apostas = Aposta.objects.filter(jogo=jogo, calculado=False)
 	
-	# >>> To: Rancking historico
-	if apostas.count() > 0:
+def __calcula_apostas__(jogo):
+	apostas = Aposta.objects.filter(jogo=jogo)
+	if apostas.count():
 		competicao = apostas[0].inscricao.competicao
 	i = 0
-	# >>>
-	
 	for a in apostas:
+		i = i + 1
 		if (a.resultado_a == jogo.resultado_a) and (a.resultado_b == jogo.resultado_b):
 			a.pontos = PONTOS_PLACAR
 		elif (a.vencedor == jogo.vencedor) and (a.vencedor != 'E') and ((a.resultado_a == jogo.resultado_a) or (a.resultado_b == jogo.resultado_b)):
@@ -394,15 +271,160 @@ def calcula_aposta(jogo):
 			a.pontos = PONTOS_SOMENTE_RESULTADO_GOLS_UM_TIME
 		else:
 			a.pontos = PONTOS_ERRO
-		if jogo.status.codigo == 'F':
+		if a.jogo.status.codigo == 'F':
 			a.calculado = True
 		a.save()
+		if (competicao != a.inscricao.competicao) or (i == apostas.count()):
+			competicao = a.inscricao.competicao
+			# calcula colocacao na aposta (competicao)
+			__calcula_colocacao_aposta__(competicao, jogo)
+		
+def __calcula_colocacao_aposta__(competicao, jogo):
+	inscricoes = Inscricao.objects.filter(competicao=competicao)
+	for i_ in inscricoes:
+		# somatorio e depois o rancking
+		__soma_pontuacao__(i_)
+	__calcula_rancking__(competicao)
+	for i in inscricoes:
+		aposta = Aposta.objects.filter(jogo=jogo, inscricao=i)[0:1].get()
+		aposta.colocacao = i.colocacao
+		aposta.save()
+		
+
+def __soma_pontuacao__(inscricao):
+	# ToDo...: Cria metodo separa para o calculo somatorio. Passando a inscricao como parametro.
+	apostas = Aposta.objects.filter(inscricao=inscricao)
+	qtde_ap = 0
+	qtde_ar = 0
+	qtde_av = 0
+	qtde_ae = 0
+	qtde_as = 0					
+	qtde_er = 0					
+	pt = 0
+	for a in apostas:
+		pt = pt + a.pontos
+		if a.pontos == PONTOS_PLACAR:
+			qtde_ap = qtde_ap + 1	
+		if a.pontos == PONTOS_VENCEDOR_RESULTADO_GOLS_UM_TIME:
+			qtde_ar = qtde_ar + 1						
+		elif a.pontos == PONTOS_VENCEDOR:
+			qtde_av = qtde_av + 1	
+		elif a.pontos == PONTOS_EMPATE_PLACAR_INCORRETO:
+			qtde_ae = qtde_ae + 1	
+		elif a.pontos == PONTOS_SOMENTE_RESULTADO_GOLS_UM_TIME:
+			qtde_as = qtde_as + 1	
+		elif (a.jogo.status.codigo != 'E') and (a.pontos == PONTOS_ERRO):
+			qtde_er = qtde_er + 1
+	inscricao.pontos = pt
+	inscricao.quantidade_acerto_placar = qtde_ap
+	inscricao.quantidade_acerto_vencedor_um_resultado_correto = qtde_ar
+	inscricao.quantidade_acerto_vencedor = qtde_av
+	inscricao.quantidade_acerto_empate_erro_placar = qtde_ae
+	inscricao.quantidade_acerto_somente_resultado_um_time = qtde_as
+	inscricao.quantidade_erro = qtde_er
+	inscricao.save()		
+	return inscricao
+
+def __limpa_pontuacao__(inscricao):
+	inscricao.pontos = 0
+	inscricao.quantidade_acerto_placar = 0
+	inscricao.quantidade_acerto_vencedor_um_resultado_correto = 0
+	inscricao.quantidade_acerto_vencedor = 0
+	inscricao.quantidade_acerto_empate_erro_placar = 0
+	inscricao.quantidade_acerto_somente_resultado_um_time = 0
+	inscricao.quantidade_erro = 0
+	inscricao.save()			
+
+#Calcula Rancking/colocacao
+def __calcula_rancking__(competicao):
+	inscricoes = Inscricao.objects.filter(competicao=competicao).order_by('-pontos','-quantidade_acerto_placar', '-quantidade_acerto_vencedor_um_resultado_correto', '-quantidade_acerto_vencedor','-quantidade_acerto_empate_erro_placar', '-quantidade_acerto_somente_resultado_um_time')
+	col = 0
+	pt_anterior = 0
+	qtde_ap = 0
+	qtde_ar = 0
+	qtde_av = 0
+	qtde_ae = 0
+	qtde_as = 0
+	for i in inscricoes:
+		col = col + 1		
+		if (i.pontos != pt_anterior) or (i.quantidade_acerto_vencedor_um_resultado_correto != qtde_ar) or (i.quantidade_acerto_placar != qtde_ap) or (i.quantidade_acerto_vencedor != qtde_av) or (i.quantidade_acerto_empate_erro_placar != qtde_ae) or (i.quantidade_acerto_somente_resultado_um_time != qtde_as):			
+			i.colocacao = col
+		else:
+			i.colocacao = col-1
+		i.save()
+		pt_anterior = i.pontos
+		qtde_ap = i.quantidade_acerto_placar
+		qtde_av = i.quantidade_acerto_vencedor
+		qtde_ae = i.quantidade_acerto_empate_erro_placar
+	
+	
+#end	
+	
+# Faz o Calculo do campeonato para todas as competicoes do mesmo.
+@login_required
+def aposta_calc(request, campeonato):
+	c = Campeonato.objects.get(pk=campeonato)
+	grupos = Grupo.objects.filter(campeonato=c)
+	for g in grupos:
+		jogos = Jogo.objects.filter(grupo=g).order_by('data_hora')
+		for j in jogos:
+			# Calcular Vencedor
+			calcular_vencedor_jogo(j) 
+			# Calcula todas as apostas de todos os participantes com este jogo, se estiver finalizado
+			#if j.status.codigo != 'E':
+			calcula_aposta(j) 
+	
+	competicoes = Competicao.objects.filter(campeonato=c)
+	for co in competicoes:
+		# Calcula pontuacao na inscricao que contem a soma da pontuacao
+		inscricoes = Inscricao.objects.filter(competicao=co)
+		for i in inscricoes:
+			calcula_soma_pontos(i)
+		#Calcula Rancking/colocacao
+		calcula_rancking(co)			
+	return redirect('/home/')
+
+# calcula a aposta.
+def calcula_aposta(jogo):
+	# pega somente as apostas não calculadas
+	apostas = Aposta.objects.filter(jogo=jogo, calculado=False)	
+	# >>> To: Rancking historico
+	"""
+	if apostas.count() > 0:
+		competicao = apostas[0].inscricao.competicao
+	i = 0
+	"""
+	# >>>	
+	for a in apostas:
+		if a.jogo.status != 'E':
+			if (a.resultado_a == jogo.resultado_a) and (a.resultado_b == jogo.resultado_b):
+				a.pontos = PONTOS_PLACAR
+			elif (a.vencedor == jogo.vencedor) and (a.vencedor != 'E') and ((a.resultado_a == jogo.resultado_a) or (a.resultado_b == jogo.resultado_b)):
+				a.pontos = PONTOS_VENCEDOR_RESULTADO_GOLS_UM_TIME
+			elif (a.vencedor == jogo.vencedor) and (a.vencedor != 'E'):
+				a.pontos = PONTOS_VENCEDOR
+			elif (a.vencedor == jogo.vencedor) and (a.vencedor == 'E'):
+				a.pontos = PONTOS_EMPATE_PLACAR_INCORRETO
+			elif (a.vencedor != jogo.vencedor) and ((a.resultado_a == jogo.resultado_a) or (a.resultado_b == jogo.resultado_b)):
+				a.pontos = PONTOS_SOMENTE_RESULTADO_GOLS_UM_TIME
+			else:
+				a.pontos = PONTOS_ERRO
+			if a.jogo.status.codigo == 'F':
+				a.calculado = True
+		else:
+			a.pontos = 0
+			a.calculado = False
+			a.colocacao = 0
+		a.save()
+		
 		# calcula o rancking no momento da aposta (historico de colocacao)
+		"""
 		i = i + 1	
 		if (i == apostas.count()) or (competicao != a.inscricao.competicao):
 			print('Calculando >>>>>> ' + competicao.nome + ' <> ' + str(i)+' de '+ str(apostas.count()))
 			calcula_rancking_historico(competicao, jogo, a)
 			competicao = a.inscricao.competicao
+		"""
 		
 def calcula_soma_pontos(inscricao):
 	# ToDo...: Cria metodo separa para o calculo somatorio. Passando a inscricao como parametro.
@@ -442,15 +464,15 @@ def soma_aposta_inscricao(inscricao, aposta):
 	inscricao_.pontos = inscricao_.pontos + aposta.pontos
 	if aposta.pontos == PONTOS_PLACAR:
 		inscricao_.quantidade_acerto_placar = inscricao_.quantidade_acerto_placar + 1
-	if a.pontos == PONTOS_VENCEDOR_RESULTADO_GOLS_UM_TIME:
+	if aposta.pontos == PONTOS_VENCEDOR_RESULTADO_GOLS_UM_TIME:
 		inscricao_.quantidade_acerto_vencedor_um_resultado_correto = inscricao_.quantidade_acerto_vencedor_um_resultado_correto + 1
-	elif a.pontos == PONTOS_VENCEDOR:
+	elif aposta.pontos == PONTOS_VENCEDOR:
 		inscricao_.quantidade_acerto_vencedor = inscricao_.quantidade_acerto_vencedor + 1
-	elif a.pontos == PONTOS_EMPATE_PLACAR_INCORRETO:
+	elif aposta.pontos == PONTOS_EMPATE_PLACAR_INCORRETO:
 		inscricao_.quantidade_acerto_empate_erro_placar = inscricao_.quantidade_acerto_empate_erro_placar + 1
-	elif a.pontos == PONTOS_SOMENTE_RESULTADO_GOLS_UM_TIME:
+	elif aposta.pontos == PONTOS_SOMENTE_RESULTADO_GOLS_UM_TIME:
 		inscricao_.quantidade_acerto_somente_resultado_um_time = inscricao_.quantidade_acerto_somente_resultado_um_time + 1
-	elif (a.jogo.status.codigo != 'E') and (a.pontos == PONTOS_ERRO):
+	elif (aposta.jogo.status.codigo != 'E') and (aposta.pontos == PONTOS_ERRO):
 		inscricao_.quantidade_erro = inscricao_.quantidade_erro + 1
 	return inscricao_
 		
@@ -481,23 +503,3 @@ def calcula_rancking_historico(competicao, jogo, aposta):
 		a = Aposta.objects.filter(jogo=jogo, inscricao=i)[0:1].get()
 		a.colocacao = i.colocacao
 		a.save()
-
-#Calcula Rancking/colocacao
-def calcula_rancking(competicao):
-	inscricoes = Inscricao.objects.filter(competicao=competicao).order_by('-pontos','-quantidade_acerto_placar', '-quantidade_acerto_vencedor_um_resultado_correto', '-quantidade_acerto_vencedor','-quantidade_acerto_empate_erro_placar', '-quantidade_acerto_somente_resultado_um_time')
-	col = 0
-	pt_anterior = 0
-	qtde_ap = 0
-	qtde_av = 0
-	qtde_ae = 0
-	for i in inscricoes:
-		col = col + 1		
-		if (i.pontos != pt_anterior) or (i.quantidade_acerto_placar != qtde_ap) or (i.quantidade_acerto_vencedor != qtde_av) or (i.quantidade_acerto_empate_erro_placar != qtde_ae):			
-			i.colocacao = col
-		else:
-			i.colocacao = col-1
-		i.save()
-		pt_anterior = i.pontos
-		qtde_ap = i.quantidade_acerto_placar
-		qtde_av = i.quantidade_acerto_vencedor
-		qtde_ae = i.quantidade_acerto_empate_erro_placar
