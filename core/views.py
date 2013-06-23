@@ -201,10 +201,18 @@ def perfil_competicao(request, competicao_pk, view_inscricao_pk):
 								'user_inscricao': user_participante,
 								'competicao': competicao, 								
 								'view_inscricao': view_inscricao,
-								'view_apostas': view_apostas,
+								'apostas': view_apostas,
 								'view_apostas_chart': view_apostas_chart,
 								'qtde_jogos': jogo_
 							   })
+
+def cadastre_se(request):
+	form = UserForm()
+	return render_to_response('_base.html', 
+	                          {'template': 'cadastre_se.html', 
+	                           'titulo': 'Cadastre-se', 
+	                           'subtitulo': '',
+	                           'form': form})
 
 # begin system
 
