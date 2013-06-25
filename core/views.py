@@ -207,12 +207,18 @@ def perfil_competicao(request, competicao_pk, view_inscricao_pk):
 							   })
 
 def cadastre_se(request):
-	form = UserForm()
+	if request.method == 'POST':
+		form = UserForm(request.FILES, request.POST)
+		if form.is_valid():
+			form.save()
+	else:
+		form = UserForm()
 	return render_to_response('_base.html', 
 	                          {'template': 'cadastre_se.html', 
 	                           'titulo': 'Cadastre-se', 
 	                           'subtitulo': '',
-	                           'form': form})
+	                           'form': form,
+	                           }, RequestContext(request))
 
 # begin system
 
