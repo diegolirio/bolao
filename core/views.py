@@ -220,6 +220,7 @@ def __get_code_randow__():
 def cadastre_se(request):
 	status_transation = 'I' # Insert
 	if request.method == 'POST':
+		# if '_user' in request.POST:
 		form_user = UserForm(request.FILES, request.POST)
 		tem_participante = user_participante = Participante.objects.filter(user=user).count() > 0
 		if form_user.is_valid():
