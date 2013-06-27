@@ -1,6 +1,107 @@
-<form action="" method="POST"> {% csrf_token %}
-	{{ form.as_p }}
+<div class="row">
 	
-	<input type="submit" value="Salvar" class="btn" name="save">
-	
-</form>
+	<div class="span6">
+
+		<form action="" method="POST" class="form-horizontal"> {% csrf_token %}
+		<fieldset>
+
+		<!-- Form Name -->
+		<legend>Usuário</legend>
+
+		<!-- Text input-->
+		<div class="control-group">
+		  <label class="control-label">username</label>
+		  <div class="controls">
+			<input id="username" name="username" type="text" placeholder="usuário" class="input-xlarge" required="">
+			
+		  </div>
+		</div>
+
+		<!-- Password input-->
+		<div class="control-group">
+		  <label class="control-label">Password</label>
+		  <div class="controls">
+			<input id="password" name="password" type="password" placeholder="password" class="input-xlarge" required="">
+			
+		  </div>
+		</div>
+
+		<!-- Password input-->
+		<div class="control-group">
+		  <label class="control-label">Confirm Password</label>
+		  <div class="controls">
+			<input id="passwor_confirm" name="passwor_confirm" type="password" placeholder="confirm password" class="input-xlarge" required="">
+			
+		  </div>
+		</div>
+
+		<!-- Prepended text-->
+		<div class="control-group">
+		  <label class="control-label">E-mail</label>
+		  <div class="controls">
+			<div class="input-prepend">
+			  <span class="add-on">@</span>
+			  <input id="email" name="email" class="span2" placeholder="email" type="text" required="">
+			</div>
+			
+		  </div>
+		</div>
+		
+		<!-- Button -->
+		<div class="control-group">
+		  <div class="controls">
+			<input type="submit" value="Salvar" class="btn btn-primary" name="save">
+		  </div>
+		</div>		
+		
+		
+
+		</fieldset>
+		
+
+		</form>
+	</div>
+	<div class="span6">
+			<form class="form-horizontal">
+
+
+			<fieldset>
+
+			<!-- Form Name -->
+			<legend>Participante</legend>
+
+			<!--<img src="" height="170" width="200"/>-->
+
+			<!-- Text input-->
+			<div class="control-group">
+			  <label class="control-label">Apelido</label>
+			  <div class="controls">
+				<input id="apelido" name="apelido" type="text" placeholder="apelido" class="input-xlarge" required="">
+				
+			  </div>
+			</div>
+
+			<!-- Text input-->
+			<div class="control-group">
+			  <label class="control-label">Telefone</label>
+			  <div class="controls">
+				<input id="telefone" name="telefone" type="text" placeholder="telefone" class="input-xlarge" required="">
+				
+			  </div>
+			</div>
+
+			<!-- Button (Double) -->
+			<div class="control-group">
+			  <label class="control-label">Double Button</label>
+			  <div class="controls">
+				<button id="button1id" name="button1id" class="btn btn-success">Good Button</button>
+				<button id="button2id" name="button2id" class="btn btn-danger">Scary Button</button>
+			  </div>
+			</div>
+
+			</fieldset>
+			</form>
+
+	</div>
+
+</div>
