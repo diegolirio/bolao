@@ -15,7 +15,7 @@
 	</div>
 </div>
 
-<a href="#" class="pull-right">Legenda</a>
+{% include 'legenda_pontos.html' %}
 {% if view_inscricao.participante.id != user_participante.id and user_participante.user.is_authenticated %}
 	<a href="#" class="btn">Comparar colocação</a>
 {% endif %}
@@ -66,7 +66,7 @@
 		{% endfor %}
 
         var options = {
-          title: 'Histótico de Colocação',
+          title: 'Histórico de Colocação',
           vAxis: {maxValue: 10, direction: -1} // Inverte a Coluna em ordem crescente...
         };
 

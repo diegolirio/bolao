@@ -6,7 +6,12 @@ from core.const import *
 
 class Participante(models.Model):
 	user = models.ForeignKey(User, unique=True)
+	# ToDo...: Instalar ImageField
+	#foto = models.ImageField(upload_to="images/users")
 	apelido = models.CharField(max_length=50)	
+	ddd = models.IntegerField(default=11, max_length=2)
+	telefone = models.IntegerField()
+	confirm_email = models.BooleanField(default=False)
 	def __unicode__(self):
 		return self.apelido
 	

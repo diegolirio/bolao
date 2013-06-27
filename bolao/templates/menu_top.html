@@ -41,46 +41,45 @@
 	 </div>
 	
 	<br/><br/><br/>
-
-		
-        <div class="head">
-			<div class="container">
-            	<div class="row-fluid">
-					<div class="span5">
-							<img class="pull-left" src="/media/images/trofeu_bolao_72.png"/>
-							<div class="offset2">
-								<h1 class="muted">{{ titulo }}</h1>
-								<p>{{ subtitulo }}</p>
-							</div>
-					</div>
-					<div class="span7">
-						{% if user_participante.user.is_authenticated %}
-							<div class="pull-right">
-								<!--
-								<h3>{{ user_participante }}</h3>
-								<p>{{ inscricao.colocacao }}º Colocação</p>
-								<p><span class="offset3">{{ inscricao.pontos }} pontos.</span></p>
-								-->
-							</div>							
-						{% else %}
-							<a href="/cadastre_se/" class="btn pull-right">Cadastre-se</a>						  
-						{% endif %}
-					</div>
+	
+	<div class="head">
+		<div class="container">
+			<div class="row-fluid">
+				<div class="span5">
+						<img class="pull-left" src="/media/images/trofeu_bolao_72.png"/>
+						<div class="offset2">
+							<h1 class="muted">{{ titulo }}</h1>
+							<p>{{ subtitulo }}</p>
+						</div>
 				</div>
-            </div>
-				
-    			<div class="subnav">
-					{% if competicao.id > 0 %}
-					<div class="container">
-						<ul class="nav nav-pills">
-						  <li><a href="/rancking/{{competicao.id}}/">Rancking</a></li>
-						  <li><a href="/tabela/{{competicao.id}}">Tabela</a></li>
-						  {% if user_inscricao.pk > 0 %}
-							<li><a href="/aposta/{{competicao.id}}/">Aposta</a></li>
-						  {% endif %}
-						</ul>
-					</div>
+				<div class="span7">
+					{% if user_participante.user.is_authenticated %}
+						<div class="pull-right">
+							<!--
+							<h3>{{ user_participante }}</h3>
+							<p>{{ inscricao.colocacao }}º Colocação</p>
+							<p><span class="offset3">{{ inscricao.pontos }} pontos.</span></p>
+							-->
+						</div>							
+					{% else %}
+						<a href="/cadastre_se/" class="btn pull-right">Cadastre-se</a>						  
 					{% endif %}
-                </div>
-                
+				</div>
+			</div>
 		</div>
+			
+		<div class="subnav">
+			{% if competicao.id > 0 %}
+			<div class="container">
+				<ul class="nav nav-pills">
+				  <li><a href="/rancking/{{competicao.id}}/">Rancking</a></li>
+				  <li><a href="/tabela/{{competicao.id}}">Tabela</a></li>
+				  {% if user_inscricao.pk > 0 %}
+					<li><a href="/aposta/{{competicao.id}}/">Minhas Aposta</a></li>
+				  {% endif %}
+				</ul>
+			</div>
+			{% endif %}
+		</div>
+			
+	</div>	
