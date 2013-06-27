@@ -10,7 +10,7 @@
 
 		<!-- Text input-->
 		<div class="control-group">
-		  <label class="control-label">username</label>
+		  <label class="control-label">Usuario</label>
 		  <div class="controls">
 			<input id="username" name="username" type="text" placeholder="usuário" class="input-xlarge span2" required="">
 			
@@ -19,18 +19,18 @@
 
 		<!-- Password input-->
 		<div class="control-group">
-		  <label class="control-label">Password</label>
+		  <label class="control-label">Senha</label>
 		  <div class="controls">
-			<input id="password" name="password" type="password" placeholder="password" class="input-xlarge span2" required="">
+			<input id="password" name="password" type="password" placeholder="senha" class="input-xlarge span2" required="">
 			
 		  </div>
 		</div>
 
 		<!-- Password input-->
 		<div class="control-group">
-		  <label class="control-label">Confirm Password</label>
+		  <label class="control-label">Confirmar Senha</label>
 		  <div class="controls">
-			<input id="passwor_confirm" name="passwor_confirm" type="password" placeholder="confirm password" class="span2" required="">
+			<input id="passwor_confirm" name="passwor_confirm" type="password" placeholder="confirma senha" class="span2" required="">
 			
 		  </div>
 		</div>
@@ -62,48 +62,49 @@
 		</form>
 	</div>
 	<div class="span6">
+		{% if status_transation == 'I' %}
 			<form class="form-horizontal">
-
-
-			<fieldset>
-
-			<!-- Form Name -->
-			<legend>Participante</legend>
-
-			<!--<img src="" height="170" width="200"/>-->
-
-			<!-- Text input-->
-			<div class="control-group">
-			  <label class="control-label">Apelido</label>
-			  <div class="controls">
-				<input id="apelido" name="apelido" type="text" placeholder="apelido" class="input-xlarge" required="">
+				<fieldset>
+					<!-- Form Name -->
+					<legend>Participante</legend>
+					<!--<img src="" height="170" width="200"/>-->	
 				
-			  </div>
-			</div>
-			
-			<!-- Foto -->
+						{{form_participante}}
+					
+						<!--
+						<hr/>
 
-			<!-- Telefone input-->
-			<div class="control-group">
-			  <label class="control-label">Telefone</label>
-			  <div class="controls">
-				<input id="ddd_id" name="ddd" type="text" placeholder="ddd" required="" class="span1">
-				<input id="telefone_id" name="telefone" type="text" placeholder="telefone" required="">			
-			  </div>
-			</div>		
+						<!-- Text input->
+						<div class="control-group">
+						  <label class="control-label">Apelido</label>
+						  <div class="controls">
+							<input id="apelido" name="apelido" type="text" placeholder="apelido" class="input-xlarge" required="">
+						  </div>
+						</div>
+						
+						<!-- Foto ->
 
-			<!-- Button (Double) -->
-			<div class="control-group">
-			  <label class="control-label">Double Button</label>
-			  <div class="controls">
-				<button id="button1id" name="button1id" class="btn btn-success">Good Button</button>
-				<button id="button2id" name="button2id" class="btn btn-danger">Scary Button</button>
-			  </div>
-			</div>
+						<!-- Telefone input->
+						<div class="control-group">
+						  <label class="control-label">Telefone</label>
+						  <div class="controls">
+							<input id="ddd_id" name="ddd" type="text" placeholder="ddd" required="" class="span1">
+							<input id="telefone_id" name="telefone" type="text" placeholder="telefone" required="">			
+						  </div>
+						</div>		
 
-			</fieldset>
+						<!-- Button (Double) ->
+						<div class="control-group">
+						  <label class="control-label">Double Button</label>
+						  <div class="controls">
+							<button id="button1id" name="button1id" class="btn btn-success">Good Button</button>
+							<button id="button2id" name="button2id" class="btn btn-danger">Scary Button</button>
+						  </div>
+						</div>
+						-->
+				</fieldset>
 			</form>
-
+		{% endif %}
 	</div>
 
 </div>

@@ -8,10 +8,11 @@ class Participante(models.Model):
 	user = models.ForeignKey(User, unique=True)
 	# ToDo...: Instalar ImageField
 	#foto = models.ImageField(upload_to="images/users")
-	apelido = models.CharField(max_length=50)	
+	apelido = models.CharField(max_length=30)	
 	ddd = models.IntegerField(default=11, max_length=2)
-	telefone = models.IntegerField()
+	telefone = models.IntegerField(blank=True)
 	confirm_email = models.BooleanField(default=False)
+	confirm_send_url = models.CharField(max_length=100)
 	def __unicode__(self):
 		return self.apelido
 	

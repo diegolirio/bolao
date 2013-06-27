@@ -213,19 +213,49 @@ def perfil_competicao(request, competicao_pk, view_inscricao_pk):
 								#'view_apostas_chart': view_apostas_chart,
 								'qtde_jogos': jogo_
 							   })
+							   
+def __get_code_randow__():
+	return '1234567890'
 
 def cadastre_se(request):
+	status_transation = 'I' # Insert
 	if request.method == 'POST':
-		form = UserForm(request.FILES, request.POST)
-		if form.is_valid():
-			form.save()
+		form_user = UserForm(request.FILES, request.POST)
+		tem_participante = user_participante = Participante.objects.filter(user=user).count() > 0
+		if form_user.is_valid():
+			user = form_user.save()
+			if not tem_participante:
+				participante_new = Participante()
+				participante_new.user = user
+				participante_new.apelido = user.username
+				participante_new.ddd = 11
+				#participante_new.telefone = ...
+				participante_new.confirm_send_url = '/confirm_email/' + user.username + '/' + __get_code_randow__()
+				#user.email()
+			status_transation = 'V' # Visualizacao
+		elif tem_participante:		
+			status_transation = 'U' # Update
 	else:
-		form = UserForm()
+		if request.user.is_authenticated():
+			form_user = UserForm(request.user)
+			user_participante = get_participante_by_user(request.user)
+			if user_participante != None:
+				form_participante = ParticipanteForm(instance=user_participante)
+				if not user_participante.confirm_email:
+					status_transation = 'A' # Aguardando
+				else:
+					status_transation = 'V' # Visualizacao				
+			else:
+				form_participante = ParticipanteForm()	
+		else:
+			form_participante = ParticipanteForm()
+			form_user = UserForm()
 	return render_to_response('_base.html', 
 	                          {'template': 'cadastre_se.html', 
 	                           'titulo': 'Cadastre-se', 
 	                           'subtitulo': '',
-	                           'form': form,
+	                           'form_user': form_user,
+							   'form_participante': form_participante
 	                           }, RequestContext(request))
 
 # begin system
@@ -234,7 +264,7 @@ def cadastre_se(request):
 def system(request):
 	campeonatos = Campeonato.objects.all()
 	user_participante = get_participante_by_user(request.user)
-	return render_to_response('_base.html', {'template': 'system/campeonatos.html', 'titulo': 'Campeonatos', 'subtitulo': 'Calcular e Alterar placar', 'user_participante': user_participante, 'campeonatos': campeonatos})
+	return render_to_response('_base.html', {'template': 'system/campeonatos.html', 'titulo': 'Sistema', 'subtitulo': 'Campeonatos: Calcular e Alterar placar', 'user_participante': user_participante, 'campeonatos': campeonatos})
 
 @login_required
 def system_campeonato_calc_jogos(request, campeonato_pk):
@@ -388,7 +418,11 @@ def __calcula_rancking__(competicao):
 		qtde_av = i.quantidade_acerto_vencedor
 		qtde_ae = i.quantidade_acerto_empate_erro_placar
 		
-#end system	
+#end system	---------------------------------------------------------------------------
+
+
+
+
 	
 # Faz o Calculo do campeonato para todas as competicoes do mesmo.
 @login_required

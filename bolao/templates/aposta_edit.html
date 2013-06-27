@@ -11,8 +11,8 @@
 	</div>						
 	
 	<div class="control-group">	
-		<input type="hidden" value="{{aposta.inscricao.id}}" name="inscricao">
-		<input type="hidden" value="{{aposta.jogo.id}}" name="jogo">
+		<input type="hidden" value="{{aposta.inscricao.id}}" name="inscricao" class="span1">
+		<input type="hidden" value="{{aposta.jogo.id}}" name="jogo" class="span1">
 		
 		{% if form.resultado_a.errors %}
 			{% for error in form.resultado_a.errors %}
