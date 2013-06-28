@@ -8,40 +8,42 @@
 		<!-- Form Name -->
 		<legend>Usuário</legend>
 
-		<!-- Text input-->
+		{{ form_user.as_p }}
+
+		<!--
 		<div class="control-group">
 		  <label class="control-label">Usuario</label>
 		  <div class="controls">
-			<input id="username" name="username" type="text" placeholder="usuário" class="input-xlarge span2" required="">
-			
+			  {{ form_user.username }}
+			<!--<input id="username" name="username" type="text" placeholder="usuário" class="input-xlarge span2">--
 		  </div>
 		</div>
 
-		<!-- Password input-->
+		<!-- Password input--
 		<div class="control-group">
 		  <label class="control-label">Senha</label>
 		  <div class="controls">
-			<input id="password" name="password" type="password" placeholder="senha" class="input-xlarge span2" required="">
-			
+			<!--<input id="password" name="password" type="password" placeholder="senha" class="input-xlarge span2" >--
+			<input id="password" name="password" type="password" placeholder="senha" class="span2" value="{{form_user.password.value}}">
 		  </div>
 		</div>
 
-		<!-- Password input-->
+		<!-- Password input--
 		<div class="control-group">
 		  <label class="control-label">Confirmar Senha</label>
 		  <div class="controls">
-			<input id="passwor_confirm" name="passwor_confirm" type="password" placeholder="confirma senha" class="span2" required="">
-			
+			<input id="password_confirm" name="password_confirm" type="password" placeholder="confirma senha" class="span2" value="{{form_user.password.value}}">
 		  </div>
 		</div>
 
-		<!-- Prepended text-->
+		<!-- Prepended text->
 		<div class="control-group">
 		  <label class="control-label">E-mail</label>
 		  <div class="controls">
 			<div class="input-prepend">
 			  <span class="add-on">@</span>
-			  <input id="email" name="email" placeholder="email" type="text" class="span3">
+			  {{ form_user.email }}
+			  <!--<input id="email" name="email" placeholder="email" type="text" class="span3">--
 			</div>
 			
 		  </div>
@@ -50,7 +52,7 @@
 		<!-- Button -->
 		<div class="control-group">
 		  <div class="controls">
-			<input type="submit" value="Salvar" class="btn btn-primary" name="save">
+			<input type="submit" value="Salvar" class="btn btn-primary" name="save_user">
 		  </div>
 		</div>		
 		
@@ -62,8 +64,8 @@
 		</form>
 	</div>
 	<div class="span6">
-		{% if status_transation == 'I' %}
-			<form class="form-horizontal">
+		{% if status_transation != 'I' %}
+			<form action="" method="POST" class="form-horizontal"> {% csrf_token %}
 				<fieldset>
 					<!-- Form Name -->
 					<legend>Participante</legend>
@@ -92,16 +94,18 @@
 							<input id="telefone_id" name="telefone" type="text" placeholder="telefone" required="">			
 						  </div>
 						</div>		
+					-->
 
-						<!-- Button (Double) ->
+						<!-- Button (Double) -->
 						<div class="control-group">
 						  <label class="control-label">Double Button</label>
 						  <div class="controls">
-							<button id="button1id" name="button1id" class="btn btn-success">Good Button</button>
+							<input type="submit" value="Salvar" class="btn btn-primary" name="save_part">
+							<button id="save_part_id" name="save_part" class="btn btn-success">salvar</button>
 							<button id="button2id" name="button2id" class="btn btn-danger">Scary Button</button>
 						  </div>
 						</div>
-						-->
+						
 				</fieldset>
 			</form>
 		{% endif %}

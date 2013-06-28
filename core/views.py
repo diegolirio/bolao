@@ -219,13 +219,28 @@ def __get_code_randow__():
 
 def cadastre_se(request):
 	status_transation = 'I' # Insert
+	user_participante = get_participante_by_user(request.user)
 	if request.method == 'POST':
-		# if '_user' in request.POST:
-		form_user = UserForm(request.FILES, request.POST)
-		tem_participante = user_participante = Participante.objects.filter(user=user).count() > 0
-		if form_user.is_valid():
-			user = form_user.save()
-			if not tem_participante:
+		if request.user.is_authenticated():
+			if 'save_user' in request.POST:
+				form_user = UserForm(request.FILES, request.POST, instance=request.user)				
+				form_participante = ParticipanteForm(instance=user_participante)				
+				print('save_user in request.POST: <<<<<<<<<<<<<<<<<<<<<<< ' + str(form_user['username'].value))
+				if form_user.is_valid():
+					print('form_user.is_valid() <<<<<<<<<<<<<<<<<<<<<<< ')
+					if form_user['password'].value == form_user['password_confirm'].value:
+						print('form_user.save() <<<<<<<<<<<<<<<<<<<<<<< ')
+						form_user.save()
+					else:
+						return redirect('/home/')
+				status_transation = 'V'
+			else:
+				user_participante = get_participante_by_user(request.user)
+				form_participante = ParticipanteForm(request.FILES, request.POST, instance=user_participante)
+		else:
+			form_user = UserForm(request.FILES, request.POST)
+			if form_user.is_valid():
+				user = form_user.save()
 				participante_new = Participante()
 				participante_new.user = user
 				participante_new.apelido = user.username
@@ -233,30 +248,29 @@ def cadastre_se(request):
 				#participante_new.telefone = ...
 				participante_new.confirm_send_url = '/confirm_email/' + user.username + '/' + __get_code_randow__()
 				#user.email()
-			status_transation = 'V' # Visualizacao
-		elif tem_participante:		
-			status_transation = 'U' # Update
+				participante_new.save()
+				participante = get_participante_by_user(request.user)
+				form_participante = ParticipanteForm(instance=user_participante)
+				status_transation = 'V' # Visualizacao
+			else:
+				form_participante = ParticipanteForm()
 	else:
+		form_participante = ParticipanteForm()	
 		if request.user.is_authenticated():
-			form_user = UserForm(request.user)
-			user_participante = get_participante_by_user(request.user)
+			form_user = UserForm(instance=request.user)
 			if user_participante != None:
 				form_participante = ParticipanteForm(instance=user_participante)
-				if not user_participante.confirm_email:
-					status_transation = 'A' # Aguardando
-				else:
-					status_transation = 'V' # Visualizacao				
-			else:
-				form_participante = ParticipanteForm()	
+				status_transation = 'A' if not user_participante.confirm_email else 'V' # A=Aguardando | # V=Visualizacao
 		else:
-			form_participante = ParticipanteForm()
 			form_user = UserForm()
 	return render_to_response('_base.html', 
 	                          {'template': 'cadastre_se.html', 
-	                           'titulo': 'Cadastre-se', 
+	                           'titulo': 'Cadastre-se' if not request.user.is_authenticated() else 'Cadastro', 
 	                           'subtitulo': '',
+	                           'user_participante': user_participante,
 	                           'form_user': form_user,
-							   'form_participante': form_participante
+							   'form_participante': form_participante,
+							   'status_transation': status_transation
 	                           }, RequestContext(request))
 
 # begin system
