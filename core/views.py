@@ -223,7 +223,40 @@ def __get_code_randow__():
 		if i > 9:
 			break
 	return code
-
+	
+def cadastre_se(request):
+	status_transation = 'I'
+	user_participante = get_participante_by_user(request.user)
+	form_user = UserForm()
+	form_participante = ParticipanteForm()	
+	if request.method == 'POST':
+		if request.user.is_authenticated():
+			if 'save_user' in request.POST:
+				print('save_user >>>>>>>> somente user')
+			elif 'save_participante' in request.POST:
+				print('save_participante >>>>>>>> somente participante')
+		else:
+			form_user = UserForm(request.POST, request.FILES)
+			if form_user.is_valid():
+				# Validar senhas compativeis.... no link http://www.aprendendodjango.com/funcoes-de-usuarios/
+				print('save_user >>>>>>>> automatico participante e apos confirm_email')
+	else:
+		if request.user.is_authenticated():
+			form_user = UserForm(instance=request.user)
+			if user_participante != None:
+				form_participante = ParticipanteForm(instance=user_participante)	
+			status_transation = 'V'
+	return render_to_response('_base.html', 
+	                          {'template': 'cadastre_se.html', 
+	                           'titulo': 'Cadastre-se' if not request.user.is_authenticated() else 'Cadastro', 
+	                           'subtitulo': '',
+	                           'user_participante': user_participante,
+	                           'form_user': form_user,
+							   'form_participante': form_participante,
+							   'status_transation': status_transation
+	                           }, RequestContext(request))
+			
+"""
 def cadastre_se(request):
 	status_transation = 'I' # Insert
 	user_participante = get_participante_by_user(request.user)
@@ -280,6 +313,8 @@ def cadastre_se(request):
 							   'form_participante': form_participante,
 							   'status_transation': status_transation
 	                           }, RequestContext(request))
+
+"""
 
 """							   
 def confirm_email(request, username, codigo_confirm):

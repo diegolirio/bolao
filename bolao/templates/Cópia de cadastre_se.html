@@ -1,0 +1,114 @@
+<div class="row">
+	
+	<div class="span6">
+
+		<form action="" method="POST" class="form-horizontal"> {% csrf_token %}
+		<fieldset>
+
+		<!-- Form Name -->
+		<legend>Usuário</legend>
+
+		{{ form_user.as_p }}
+
+		<!--
+		<div class="control-group">
+		  <label class="control-label">Usuario</label>
+		  <div class="controls">
+			  {{ form_user.username }}
+			<!--<input id="username" name="username" type="text" placeholder="usuário" class="input-xlarge span2">--
+		  </div>
+		</div>
+
+		<!-- Password input--
+		<div class="control-group">
+		  <label class="control-label">Senha</label>
+		  <div class="controls">
+			<!--<input id="password" name="password" type="password" placeholder="senha" class="input-xlarge span2" >--
+			<input id="password" name="password" type="password" placeholder="senha" class="span2" value="{{form_user.password.value}}">
+		  </div>
+		</div>
+
+		<!-- Password input--
+		<div class="control-group">
+		  <label class="control-label">Confirmar Senha</label>
+		  <div class="controls">
+			<input id="password_confirm" name="password_confirm" type="password" placeholder="confirma senha" class="span2" value="{{form_user.password.value}}">
+		  </div>
+		</div>
+
+		<!-- Prepended text->
+		<div class="control-group">
+		  <label class="control-label">E-mail</label>
+		  <div class="controls">
+			<div class="input-prepend">
+			  <span class="add-on">@</span>
+			  {{ form_user.email }}
+			  <!--<input id="email" name="email" placeholder="email" type="text" class="span3">--
+			</div>
+			
+		  </div>
+		</div>
+		
+		<!-- Button -->
+		<div class="control-group">
+		  <div class="controls">
+			<input type="submit" value="Salvar" class="btn btn-primary" name="save_user">
+		  </div>
+		</div>		
+		
+		
+
+		</fieldset>
+		
+
+		</form>
+	</div>
+	<div class="span6">
+		{% if status_transation != 'I' %}
+			<form action="" method="POST" class="form-horizontal"> {% csrf_token %}
+				<fieldset>
+					<!-- Form Name -->
+					<legend>Participante</legend>
+					<!--<img src="" height="170" width="200"/>-->	
+				
+						{{form_participante}}
+					
+						<!--
+						<hr/>
+
+						<!-- Text input->
+						<div class="control-group">
+						  <label class="control-label">Apelido</label>
+						  <div class="controls">
+							<input id="apelido" name="apelido" type="text" placeholder="apelido" class="input-xlarge" required="">
+						  </div>
+						</div>
+						
+						<!-- Foto ->
+
+						<!-- Telefone input->
+						<div class="control-group">
+						  <label class="control-label">Telefone</label>
+						  <div class="controls">
+							<input id="ddd_id" name="ddd" type="text" placeholder="ddd" required="" class="span1">
+							<input id="telefone_id" name="telefone" type="text" placeholder="telefone" required="">			
+						  </div>
+						</div>		
+					-->
+
+						<!-- Button (Double) -->
+						<div class="control-group">
+						  <label class="control-label">Double Button</label>
+						  <div class="controls">
+							<input type="submit" value="Salvar" class="btn btn-primary" name="save_part">
+							<button id="save_part_id" name="save_part" class="btn btn-success">salvar</button>
+							<button id="button2id" name="button2id" class="btn btn-danger">Scary Button</button>
+						  </div>
+						</div>
+						
+				</fieldset>
+			</form>
+		{% endif %}
+	</div>
+
+</div>
