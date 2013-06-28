@@ -1,5 +1,6 @@
 from django.shortcuts import render_to_response
 from django.shortcuts import redirect
+from django.core.mail import send_mail
 from core.models import *
 
 def index(request):	
@@ -18,6 +19,10 @@ def index(request):
 				part_admin.confirm_send_url = '/confirm_email/' + part_admin.user.username + '/0123456789/'
 				part_admin.save()
 				#request.user.user.email_user('Confirmacao bolao', 'Segue url para confirmacao >>>', None)
+				# ------------------------- Email -----------------------------------------------
+				#send_mail('Subject', 'Message.', 'from@example.com', [email@provedor.com', email_2@provedor.com'])        
+				send_mail('Conrfimacao de cadastro Ferraz Bolao', 'http://127.0.0.1:8000'+part_admin.confirm_send_url, 'diegolirio.dl@gmail.com', [request.user.email])
+				# ------------------------- fim Email -----------------------------------------------
 				return redirect('/system/') # cadastrese_1
 			else:
 				return redirect('/cadastre_se/')				

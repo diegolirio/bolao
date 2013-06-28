@@ -1,6 +1,14 @@
 # Django settings for bolao project.
 import os
 
+# -----------------------------------------------------
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'diegolirio.dl@gmail.com'
+EMAIL_HOST_PASSWORD = 'dyegjava13'
+EMAIL_USE_TLS = True
+# -----------------------------------------------------
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 

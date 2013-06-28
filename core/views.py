@@ -11,6 +11,8 @@ from django.contrib.auth.decorators import login_required
 from core.const import *
 from core.models import *
 from core.forms import *
+import random
+from django.core.mail import send_mail
 #import datetime
 
 def user_login_is_valid(user_request, user_inscricao):
@@ -215,7 +217,12 @@ def perfil_competicao(request, competicao_pk, view_inscricao_pk):
 							   })
 							   
 def __get_code_randow__():
-	return '1234567890'
+	code = ''
+	for i in range(0,10):
+		code = code + str(random.randint(0,9))
+		if i > 9:
+			break
+	return code
 
 def cadastre_se(request):
 	status_transation = 'I' # Insert
@@ -247,11 +254,12 @@ def cadastre_se(request):
 				participante_new.ddd = 11
 				#participante_new.telefone = ...
 				participante_new.confirm_send_url = '/confirm_email/' + user.username + '/' + __get_code_randow__()
-				#user.email()
 				participante_new.save()
 				participante = get_participante_by_user(request.user)
 				form_participante = ParticipanteForm(instance=user_participante)
 				status_transation = 'V' # Visualizacao
+				#user.email()				
+				#send_mail('Conrfimacao de cadastro Bolao da Copa', 'http://127.0.0.1:8000'+participante.confirm_send_url, 'diegolirio.dl@gmail.com', [request.user.email])
 			else:
 				form_participante = ParticipanteForm()
 	else:
@@ -272,6 +280,17 @@ def cadastre_se(request):
 							   'form_participante': form_participante,
 							   'status_transation': status_transation
 	                           }, RequestContext(request))
+
+"""							   
+def confirm_email(request, username, codigo_confirm):
+    user = User.objects.filter(username=username)[0:1].get()
+	participante = Participante.objects.filter(user=user)[0:1].get()
+	if not participante.confirm_email:
+		participante.confirm_email = True
+		return redirect('/confirmado/')
+	else:
+		return redirect('/login/')
+"""
 
 # begin system
 
