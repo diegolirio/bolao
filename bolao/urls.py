@@ -55,6 +55,8 @@ urlpatterns = patterns('',
 	
     #url(r'^aposta_calc/(?P<campeonato>\d+)/$', 'core.views.aposta_calc'),
     
+    url(r'^solicita_inscricao/(?P<competicao_pk>\d+)/$', 'core.views.solicita_inscricao'),
+    
  )
 
 if settings.DEBUG:

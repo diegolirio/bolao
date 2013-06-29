@@ -107,4 +107,10 @@ class Aposta(models.Model):
 	class Meta:
 		unique_together = ('inscricao', 'jogo')		
 	
-	
+class Solicitacao(models.Model):
+	participante = models.ForeignKey(Participante)
+	competicao = models.ForeignKey(Competicao)
+	status = models.CharField(max_length=1, default='P') # P=Pendente | A=Aceita | R=Rejeitada
+	observacao = models.CharField(max_length=150, blank=True)
+	def __unicode__(self):
+		return 'Solicitacao: ' + self.status + ' - ' + self.participante.apelido + ' - ' + self.competicao.nome

@@ -9,7 +9,12 @@
 			<h4>{{c.campeonato.nome}}</h4> 
 			<br/>
 			<p>
-				<a href="/rancking/{{c.id}}/" class="btn btn-success btn-large">Entre e veja a competição</a>
+				<a href="/rancking/{{c.id}}/" class="btn btn-success btn-large">
+					Entre e veja a competição 
+					{% if c.status.codigo == 'E' %}
+						(inscrições abertas)
+					{% endif %}
+				</a>
 			</p>	
 		</div>		
 	</div>

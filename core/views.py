@@ -25,6 +25,8 @@ def get_participante_by_user(user):
 	if user.is_authenticated():
 		try:
 			user_participante = Participante.objects.filter(user=user)[0:1].get()
+			#if not user_participante.confirm_email:
+			#	return redirect('/cadastre_se/')
 		except:
 			return redirect('/cadastre_se/')
 	return user_participante			
@@ -344,6 +346,35 @@ def confirm_email(request, codigo_confirm):
 		return redirect('/confirmado/')
 	return redirect('/login/')
 
+def solicita_inscricao(request, competicao_pk):
+	msg = ''
+	competicao = Competicao.objects.get(pk=competicao_pk)
+	if request.user.is_authenticated:
+		if competicao.status.codigo == 'E':
+			user_participante = get_participante_by_user(request.user)
+			if Inscricao.objects.filter(participante=user_participante, competicao=competicao).count() == 0:
+				if Solicitacao.objects.filter(participante=user_participante, competicao=competicao, status='P').count() == 0:
+					solicitacao = Solicitacao()
+					solicitacao.participante = user_participante
+					solicitacao.competicao = competicao
+					solicitacao.save()
+					msg = 'Solicitacao concluída com sucesso'
+					send_mail('Solicitação', 'Solicitaçao enviada ..... http://localhost:8000/solicitacoes/', 'diegolirio.dl@gmail.com', 'diegolirio.dl@gmail.com')
+				else:
+					msg = 'Solicitacao já enviada, aguarde...'
+			else:
+				msg = 'Você ja está inscrito nesssa competição'
+		else:
+			msg = 'Competição já encontra-se em andamento ou finalizada'
+	else:
+		msg = 'Realize o Login para realizar uma solicitação para participar'
+	return render_to_response('_base.html', 
+							{'template': 'solicita_inscricao.html', 
+							 'message': msg, 
+							 'user_participante': user_participante,
+							 'competicao': competicao }
+							 )
+
 # begin system
 
 @login_required
@@ -508,6 +539,18 @@ def __calcula_rancking__(competicao):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+# ------- exclude abaixo
 
 	
 # Faz o Calculo do campeonato para todas as competicoes do mesmo.
