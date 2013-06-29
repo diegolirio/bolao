@@ -1,9 +1,4 @@
 # -*- encoding: utf-8 -*-
-
-"""
-ToDo...: Criar uma function que retorna a colocacao da aposta
-"""
-
 from django.shortcuts import render_to_response
 from django.shortcuts import redirect
 from django.template import RequestContext
@@ -256,9 +251,9 @@ def cadastre_se(request):
 				#participante.telefone = 
 				participante.confirm_send_url = __get_code_random__()
 				participante.save()
-				send_mail('Conrfimacao de cadastro Ferraz Bolao', 'http://localhost:8000/confirm_email/'+participante.confirm_send_url+ '/?user='+str(user.pk), 'diegolirio.dl@gmail.com', [user.email])
+				send_mail('Conrfimacao de cadastro Ferraz Bolao', 'clique no link para confirmar o cadastro  http://localhost:8000/confirm_email/'+participante.confirm_send_url+ '/?user='+str(user.pk), 'diegolirio.dl@gmail.com', [user.email])
 				status_transation = 'V'
-				# Realizar Login... aki.....
+				# ToDo...: Realizar Login... aki.....
 				return redirect('/cadastre_se/')
 	else:
 		if request.user.is_authenticated():
@@ -336,6 +331,13 @@ def cadastre_se(request):
 
 """
 
+@login_required
+def reenvio_confirm_email(request):
+	user_participante = get_participante_by_user(request.user)
+	if not user_participante.confirm_email:
+		send_mail('Conrfimacao de cadastro Ferraz Bolao', 'clique no link para confirmar o cadastro  http://localhost:8000/confirm_email/'+user_participante.confirm_send_url+ '/?user='+str(user_participante.user.pk), 'diegolirio.dl@gmail.com', [user_participante.user.email])
+	return redirect('/cadastre_se/')
+
 def confirm_email(request, codigo_confirm):
     #user = User.objects.filter(username=username)[0:1].get()
 	user = User.objects.get(pk=request.GET['user'])
@@ -346,6 +348,7 @@ def confirm_email(request, codigo_confirm):
 		return redirect('/confirmado/')
 	return redirect('/login/')
 
+@login_required
 def solicita_inscricao(request, competicao_pk):
 	msg = ''
 	competicao = Competicao.objects.get(pk=competicao_pk)
@@ -359,7 +362,7 @@ def solicita_inscricao(request, competicao_pk):
 					solicitacao.competicao = competicao
 					solicitacao.save()
 					msg = 'Solicitacao concluída com sucesso'
-					send_mail('Solicitação', 'Solicitaçao enviada ..... http://localhost:8000/solicitacoes/', 'diegolirio.dl@gmail.com', 'diegolirio.dl@gmail.com')
+					send_mail('Solicitação', 'Solicitaçao enviada: '+solicitacao.participante.apelido+' ... http://localhost:8000'+'/solicitacoes/', 'diegolirio.dl@gmail.com', ['diegolirio.dl@gmail.com'])
 				else:
 					msg = 'Solicitacao já enviada, aguarde...'
 			else:

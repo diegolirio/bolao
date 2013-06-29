@@ -32,7 +32,6 @@ urlpatterns = patterns('',
     url(r'^apostas_jogo/(?P<competicao_pk>\d+)/(?P<jogo_pk>\d+)/$', 'core.views.apostas_jogo'),
     url(r'^aposta_edit/(?P<user_aposta_pk>\d+)/$', 'core.views.aposta_edit'),
     url(r'^perfil_competicao/(?P<competicao_pk>\d+)/(?P<view_inscricao_pk>\d+)/$', 'core.views.perfil_competicao'),
-    url(r'^cadastre_se/$', 'core.views.cadastre_se'),
     url(r'^perfil/$', 'core.views.cadastre_se'),
     # Logado (privadas) >>> url fixado sempre a competicao como parametro
 
@@ -50,8 +49,10 @@ urlpatterns = patterns('',
     url(r'^system/campeonato_calc_jogos/(?P<campeonato_pk>\d+)/$', 'core.views.system_campeonato_calc_jogos'),
     url(r'^system/calcular_campeonato/(?P<campeonato_pk>\d+)/$', 'core.views.system_calcular_campeonato'),
     
+    url(r'^cadastre_se/$', 'core.views.cadastre_se'),
 	#url(r'^confirm_email/[username]/(?P<codigo_confirm>\d+)/(?P<campeonato_pk>\d+)/$', 'core.views.confirm_email'),
 	url(r'^confirm_email/(?P<codigo_confirm>\d{10})/$', 'core.views.confirm_email'),
+	url(r'^reenvio_confirm_email/$', 'core.views.reenvio_confirm_email'),
 	
     #url(r'^aposta_calc/(?P<campeonato>\d+)/$', 'core.views.aposta_calc'),
     
