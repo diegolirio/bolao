@@ -15,12 +15,12 @@ def user_login_is_valid(user_request, user_inscricao):
 		return True
 	return False
 	
-def get_participante_by_user(user):
+def get_participante_by_user(user, verifica_confirm_email=True):
 	user_participante = Participante()
 	if user.is_authenticated():
 		try:
 			user_participante = Participante.objects.filter(user=user)[0:1].get()
-			#if not user_participante.confirm_email:
+			#if (verifica_confirm_email) and (not user_participante.confirm_email):
 			#	return redirect('/cadastre_se/')
 		except:
 			return redirect('/cadastre_se/')
@@ -223,7 +223,7 @@ def __get_code_random__():
 	
 def cadastre_se(request):
 	status_transation = 'I'
-	user_participante = get_participante_by_user(request.user)
+	user_participante = get_participante_by_user(request.user, False)
 	form_user = UserForm()
 	form_participante = ParticipanteForm()	
 	if request.method == 'POST':
@@ -345,7 +345,7 @@ def confirm_email(request, codigo_confirm):
 	if not user_participante.confirm_email:
 		user_participante.confirm_email = True
 		user_participante.save()		
-		return redirect('/confirmado/')
+		return render_to_response('_base.html', {'template': 'confirmado.html', 'titulo': user_participante.apelido, 'subtitulo': 'Confirmado', 'user_participante': user_participante})
 	return redirect('/login/')
 
 @login_required
@@ -355,18 +355,21 @@ def solicita_inscricao(request, competicao_pk):
 	if request.user.is_authenticated:
 		if competicao.status.codigo == 'E':
 			user_participante = get_participante_by_user(request.user)
-			if Inscricao.objects.filter(participante=user_participante, competicao=competicao).count() == 0:
-				if Solicitacao.objects.filter(participante=user_participante, competicao=competicao, status='P').count() == 0:
-					solicitacao = Solicitacao()
-					solicitacao.participante = user_participante
-					solicitacao.competicao = competicao
-					solicitacao.save()
-					msg = 'Solicitacao concluída com sucesso'
-					send_mail('Solicitação', 'Solicitaçao enviada: '+solicitacao.participante.apelido+' ... http://localhost:8000'+'/solicitacoes/', 'diegolirio.dl@gmail.com', ['diegolirio.dl@gmail.com'])
+			if user_participante.confirm_email:
+				if Inscricao.objects.filter(participante=user_participante, competicao=competicao).count() == 0:
+					if Solicitacao.objects.filter(participante=user_participante, competicao=competicao, status='P').count() == 0:
+						solicitacao = Solicitacao()
+						solicitacao.participante = user_participante
+						solicitacao.competicao = competicao
+						solicitacao.save()
+						msg = 'Solicitacao concluída com sucesso'
+						send_mail('Solicitação', 'Solicitaçao enviada: '+solicitacao.participante.apelido+' ... http://localhost:8000'+'/solicitacoes/', 'diegolirio.dl@gmail.com', ['diegolirio.dl@gmail.com'])
+					else:
+						msg = 'Solicitacao já enviada, aguarde...'
 				else:
-					msg = 'Solicitacao já enviada, aguarde...'
+					msg = 'Você ja está inscrito nessa competição'
 			else:
-				msg = 'Você ja está inscrito nesssa competição'
+				msg = 'Para se solicitar uma inscrição, termine seu cadastro. Confirme seu cadastro em seu Email'
 		else:
 			msg = 'Competição já encontra-se em andamento ou finalizada'
 	else:

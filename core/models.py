@@ -31,10 +31,11 @@ class Competicao(models.Model):
 	campeonato = models.ForeignKey(Campeonato)
 	nome = models.CharField(max_length=50)	
 	status = models.ForeignKey(StatusJogo) # ToDo...: ,default='E'
+	presidente = models.ForeignKey(Participante)
 	def __unicode__(self):
 		return self.nome + " - " + self.campeonato.nome + " - " + self.status.descricao
 	class Meta:
-		unique_together = ('campeonato', 'nome')			
+		unique_together = ('campeonato', 'nome')
 	
 class Grupo(models.Model):
 	descricao = models.CharField(max_length=50)
@@ -114,3 +115,6 @@ class Solicitacao(models.Model):
 	observacao = models.CharField(max_length=150, blank=True)
 	def __unicode__(self):
 		return 'Solicitacao: ' + self.status + ' - ' + self.participante.apelido + ' - ' + self.competicao.nome
+
+#23 class Patrocinador(models.Model):
+#23 class Patrocinador_expecifico(models.Model):

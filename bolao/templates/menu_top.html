@@ -18,6 +18,7 @@
 				<li><a href="/system/">System</a></li>
 				<li><a href="/system/cadastrar_participante/">Cadastrar Participante</a></li>
 			  {% endif %}
+			  <li><a href="/minhas_competicoes/">Minhas competições só se realmente for presidente de alguma</a></li>
 			  <li><a href="/regras/">Regras</a></li>
 			  {% if user_participante.user.is_authenticated %}
 			    <li class="dropdown">
@@ -78,9 +79,12 @@
 					<li><a href="/aposta/{{competicao.id}}/">Minhas Aposta</a></li>
 				  {% endif %}
 				  {% if competicao.status.codigo == 'E' %}
-					<li class="pull-right"><a href="/patrocinadores/{{competicao.id}}/"><span class="text-info">Patrocionadores</span></a></li>
-					<li class="pull-right"><a href="/solicita_inscricao/{{competicao.id}}/"><span class="text-info">Solicitar Inscrição na Competição</span></a></li>
+					<li class="pull-right"><a href="/solicita_inscricao/{{competicao.id}}/"><span class="text-info"><b>Solicitar Inscrição na Competição</b></span></a></li>				  
 				  {% endif %}				  
+				  <li class="pull-right"><a href="/patrocinadores/{{competicao.id}}/"><span class="text-info">Patrocionadores</span></a></li>
+				  {% if competicao.presidente.pk == user_participante.pk %}
+					<li class="pull-right"><a href="/solicitacoes/{{competicao.id}}/"><span class="text-info">Solicitações</span></a></li>				  
+				  {% endif %}
 				</ul>
 			</div>
 			{% endif %}
