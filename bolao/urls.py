@@ -51,6 +51,7 @@ urlpatterns = patterns('',
     url(r'^system/calcular_campeonato/(?P<campeonato_pk>\d+)/$', 'core.views.system_calcular_campeonato'),
     
 	#url(r'^confirm_email/[username]/(?P<codigo_confirm>\d+)/(?P<campeonato_pk>\d+)/$', 'core.views.confirm_email'),
+	url(r'^confirm_email/(?P<codigo_confirm>\d{10})/$', 'core.views.confirm_email'),
 	
     #url(r'^aposta_calc/(?P<campeonato>\d+)/$', 'core.views.aposta_calc'),
     

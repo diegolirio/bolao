@@ -216,7 +216,7 @@ def perfil_competicao(request, competicao_pk, view_inscricao_pk):
 								'qtde_jogos': jogo_
 							   })
 							   
-def __get_code_randow__():
+def __get_code_random__():
 	code = ''
 	for i in range(0,10):
 		code = code + str(random.randint(0,9))
@@ -232,14 +232,32 @@ def cadastre_se(request):
 	if request.method == 'POST':
 		if request.user.is_authenticated():
 			if 'save_user' in request.POST:
-				print('save_user >>>>>>>> somente user')
+				form_user = UserForm(request.POST, request.FILES, instance=request.user)
+				if form_user.is_valid():
+					form_user.save()
+					return redirect('/cadastre_se/')
 			elif 'save_participante' in request.POST:
-				print('save_participante >>>>>>>> somente participante')
+				form_participante = ParticipanteForm(request.POST, request.FILES, instance=user_participante)
+				if form_participante.is_valid():
+					form_participante.save()
+					return redirect('/cadastre_se/')
 		else:
 			form_user = UserForm(request.POST, request.FILES)
 			if form_user.is_valid():
 				# Validar senhas compativeis.... no link http://www.aprendendodjango.com/funcoes-de-usuarios/
-				print('save_user >>>>>>>> automatico participante e apos confirm_email')
+				user = form_user.save()
+				print('save_user >>>>>>>> automatico participante e apos confirm_email ' + user.username)				
+				participante = Participante()
+				participante.user = user
+				participante.apelido = user.username
+				participante.ddd = 11
+				#participante.telefone = 
+				participante.confirm_send_url = __get_code_random__()
+				participante.save()
+				send_mail('Conrfimacao de cadastro Ferraz Bolao', 'http://localhost:8000/confirm_email/'+participante.confirm_send_url+ '/?user='+str(user.pk), 'diegolirio.dl@gmail.com', [user.email])
+				status_transation = 'V'
+				# Realizar Login... aki.....
+				return redirect('/cadastre_se/')
 	else:
 		if request.user.is_authenticated():
 			form_user = UserForm(instance=request.user)
@@ -316,16 +334,15 @@ def cadastre_se(request):
 
 """
 
-"""							   
-def confirm_email(request, username, codigo_confirm):
-    user = User.objects.filter(username=username)[0:1].get()
-	participante = Participante.objects.filter(user=user)[0:1].get()
-	if not participante.confirm_email:
-		participante.confirm_email = True
+def confirm_email(request, codigo_confirm):
+    #user = User.objects.filter(username=username)[0:1].get()
+	user = User.objects.get(pk=request.GET['user'])
+	user_participante = get_participante_by_user(user)
+	if not user_participante.confirm_email:
+		user_participante.confirm_email = True
+		user_participante.save()		
 		return redirect('/confirmado/')
-	else:
-		return redirect('/login/')
-"""
+	return redirect('/login/')
 
 # begin system
 

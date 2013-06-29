@@ -10,7 +10,7 @@ class Participante(models.Model):
 	#foto = models.ImageField(upload_to="images/users")
 	apelido = models.CharField(max_length=30)	
 	ddd = models.IntegerField(default=11, max_length=2)
-	telefone = models.IntegerField(blank=True)
+	telefone = models.IntegerField(blank=True, null=True)
 	confirm_email = models.BooleanField(default=False)
 	confirm_send_url = models.CharField(max_length=100)
 	def __unicode__(self):
