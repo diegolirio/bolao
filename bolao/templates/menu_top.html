@@ -18,7 +18,9 @@
 				<li><a href="/system/">System</a></li>
 				<li><a href="/system/cadastrar_participante/">Cadastrar Participante</a></li>
 			  {% endif %}
-			  <li><a href="/minhas_competicoes/">Minhas competições só se realmente for presidente de alguma</a></li>
+			  {% if my_count > 0 %}
+				<li><a href="/minhas_competicoes/">Minhas competições</a></li>
+			  {% endif %}
 			  <li><a href="/regras/">Regras</a></li>
 			  {% if user_participante.user.is_authenticated %}
 			    <li class="dropdown">

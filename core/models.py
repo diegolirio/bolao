@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from core.const import *
+from datetime import datetime
 
 # Create your models here.
 
@@ -113,6 +114,7 @@ class Solicitacao(models.Model):
 	competicao = models.ForeignKey(Competicao)
 	status = models.CharField(max_length=1, default='P') # P=Pendente | A=Aceita | R=Rejeitada
 	observacao = models.CharField(max_length=150, blank=True)
+	data_hora = models.DateTimeField(default=datetime.now)
 	def __unicode__(self):
 		return 'Solicitacao: ' + self.status + ' - ' + self.participante.apelido + ' - ' + self.competicao.nome
 

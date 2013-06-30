@@ -1,0 +1,33 @@
+	<table class="table table-striped table-hover well">		
+		<tr>
+			<td class="text-error">Solicitação</td>
+			<td class="text-error">Participante</td>
+			<td class="text-error">Data e hora</td>
+			<td class="text-error">Status</td>
+			<td class="text-error"><center>Ação</center></td>			
+		</tr>
+		{% for s in solicitacoes %}
+		<tr>
+			<td>{{ s.id }}</td>
+			<td>{{ s.participante.apelido }}</td>
+			<td>{{ s.data_hora }}</td>
+			<td>{{ s.status }}</td>
+			<td>
+				<center>
+				<div class="btn-group">
+				  <a class="btn dropdown-toggle btn-small" data-toggle="dropdown" href="#">
+					<i class="icon-list"></i>
+					<span class="caret"></span>
+				  </a>
+				  <ul class="dropdown-menu">
+						<li><a href="#"><i class="icon-edit"></i>  Aceitar</a></li>
+						<li><a href="#"><i class="icon-trash"></i>  Rejeitar</a></li>
+				  </ul>
+				</div>
+				</center>
+			</td>
+		</tr>
+		{% empty %}
+			<h1>Não há Solicitações para esta competição</h1>
+		{% endfor %}
+	</table>

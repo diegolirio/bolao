@@ -57,7 +57,9 @@ urlpatterns = patterns('',
 	
     #url(r'^aposta_calc/(?P<campeonato>\d+)/$', 'core.views.aposta_calc'),
     
-    url(r'^solicita_inscricao/(?P<competicao_pk>\d+)/$', 'core.views.solicita_inscricao'),
+    url(r'^solicita_inscricao/(?P<competicao_pk>\d+)/$', 'core.views.solicita_inscricao'),    
+    url(r'^minhas_competicoes/$', 'core.views.minhas_competicoes'),
+    url(r'^solicitacoes/(?P<competicao_pk>\d+)/$', 'core.views.solicitacoes'),
     
  )
 

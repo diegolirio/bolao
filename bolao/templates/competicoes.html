@@ -1,0 +1,38 @@
+
+<div class="row">
+{% for c in competicoes %}
+		<!--<h1><a href="/rancking/{{c.id}}/">{{ c.nome }}</a></h1>-->
+	<div class="span6">
+		<div class="hero-unit">
+			<a href="/rancking/{{c.id}}/"><img src="/media/images/gold_cup_100X124.png" /></a>
+			<h2>{{c.nome}}</h2>
+			<h4>{{c.campeonato.nome}}</h4> 
+			<br/>
+			<p>
+				<a href="{{url}}{{c.id}}/" class="btn btn-success btn-large">
+					Entre e veja a competição 
+					{% if c.status.codigo == 'E' %}
+						(inscrições abertas)
+					{% endif %}
+				</a>
+			</p>	
+		</div>		
+	</div>
+	<!--
+	<div id="preview">
+	<ul class="thumbnails">
+	<li class="span5 clearfix">
+	  <div class="thumbnail clearfix">
+		<img src="http://placehold.it/320x200" alt="ALT NAME" class="pull-left span2 clearfix" style='margin-right:10px'>
+		<div class="caption">
+		  <a href="http://bootsnipp.com/" class="btn btn-primary icon  pull-right">Select</a>
+		  <h4>      
+		  <a href="#" >Luis Felipe Kaufmann</a>
+		  </h4>
+		  <small><b>RG: </b>99384877</small>
+		</div>
+	  </div>
+	</li>
+	-->	
+{% endfor %}
+</div>

@@ -29,10 +29,13 @@ def get_participante_by_user(user, verifica_confirm_email=True):
 def home(request):
 	competicoes = Competicao.objects.all()	
 	user_participante = get_participante_by_user(request.user)
+	my_count = Competicao.objects.filter(presidente=user_participante).count()
 	return render_to_response('_base.html',{	'template': 'index.html',
 												'titulo': 'Troféu Bolão',
 												'subtitulo': '',
 												'user_participante': user_participante,
+												'my_count': my_count,
+												'url': '/rancking/',
 												'competicoes': competicoes
 											})
 											
@@ -228,14 +231,17 @@ def cadastre_se(request):
 	form_participante = ParticipanteForm()	
 	if request.method == 'POST':
 		if request.user.is_authenticated():
+			status_transation = 'V'
 			if 'save_user' in request.POST:
 				form_user = UserForm(request.POST, request.FILES, instance=request.user)
+				form_participante = ParticipanteForm(instance=user_participante)	
 				if form_user.is_valid():
 					form_user.save()
 					return redirect('/cadastre_se/')
 			elif 'save_participante' in request.POST:
 				form_participante = ParticipanteForm(request.POST, request.FILES, instance=user_participante)
-				if form_participante.is_valid():
+				form_user = UserForm(instance=request.user)
+				if form_participante.is_valid():	
 					form_participante.save()
 					return redirect('/cadastre_se/')
 		else:
@@ -363,7 +369,7 @@ def solicita_inscricao(request, competicao_pk):
 						solicitacao.competicao = competicao
 						solicitacao.save()
 						msg = 'Solicitacao concluída com sucesso'
-						send_mail('Solicitação', 'Solicitaçao enviada: '+solicitacao.participante.apelido+' ... http://localhost:8000'+'/solicitacoes/', 'diegolirio.dl@gmail.com', ['diegolirio.dl@gmail.com'])
+						send_mail('Solicitacao', 'Solicitacao enviada: '+solicitacao.participante.apelido+' ... http://localhost:8000'+'/solicitacoes/', 'diegolirio.dl@gmail.com', ['diegolirio.dl@gmail.com'])
 					else:
 						msg = 'Solicitacao já enviada, aguarde...'
 				else:
@@ -381,13 +387,38 @@ def solicita_inscricao(request, competicao_pk):
 							 'competicao': competicao }
 							 )
 
+def minhas_competicoes(request):
+	user_participante = get_participante_by_user(request.user)
+	competicoes = Competicao.objects.filter(presidente=user_participante)	
+	return render_to_response('_base.html',{	'template': 'competicoes.html',
+												'titulo': 'Minhas Competições',
+												'subtitulo': '',
+												'user_participante': user_participante,
+												'url': '/solicitacoes/',
+												'competicoes': competicoes
+											})
+											
+def solicitacoes(request, competicao_pk):
+	user_participante = get_participante_by_user(request.user)
+	competicao = Competicao.objects.get(pk=competicao_pk)
+	solicitacoes = Solicitacao.objects.filter(competicao=competicao)
+	return render_to_response('_base.html', 
+	                          {    'template':'solicitacoes.html', 
+								   'titulo': 'Solicitações',
+	                               'subtitulo': competicao.nome,
+	                               'user_participante': user_participante,
+	                               'solicitacoes': solicitacoes,
+	                               'competicao': competicao
+	                          })											
+	
+
 # begin system
 
 @login_required
 def system(request):
 	campeonatos = Campeonato.objects.all()
 	user_participante = get_participante_by_user(request.user)
-	return render_to_response('_base.html', {'template': 'system/campeonatos.html', 'titulo': 'Sistema', 'subtitulo': 'Campeonatos: Calcular e Alterar placar', 'user_participante': user_participante, 'campeonatos': campeonatos})
+	return render_to_response('_base.html', {'template': 'system/index_campeonatos.html', 'titulo': 'Sistema', 'subtitulo': 'Campeonatos: Calcular e Alterar placar', 'user_participante': user_participante, 'campeonatos': campeonatos})
 
 @login_required
 def system_campeonato_calc_jogos(request, campeonato_pk):
