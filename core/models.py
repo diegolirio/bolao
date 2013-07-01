@@ -74,7 +74,7 @@ class Jogo(models.Model):
 ###########################################################
 
 class Inscricao(models.Model):
-	data = models.DateField()
+	data = models.DateField(default=datetime.now)
 	participante = models.ForeignKey(Participante)
 	competicao = models.ForeignKey(Competicao)
 	# Pontucao (Analisar se compensa mover para um Model)

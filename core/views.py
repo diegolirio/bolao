@@ -257,7 +257,7 @@ def cadastre_se(request):
 				#participante.telefone = 
 				participante.confirm_send_url = __get_code_random__()
 				participante.save()
-				send_mail('Conrfimacao de cadastro Ferraz Bolao', 'clique no link para confirmar o cadastro  http://localhost:8000/confirm_email/'+participante.confirm_send_url+ '/?user='+str(user.pk), 'diegolirio.dl@gmail.com', [user.email])
+				send_mail('Conrfimacao de cadastro Ferraz Bolao', 'Usuario: '+ user.username +', clique no link para confirmar o cadastro  http://localhost:8000/confirm_email/'+participante.confirm_send_url+ '/?user='+str(user.pk), 'diegolirio.dl@gmail.com', [user.email])
 				status_transation = 'V'
 				# ToDo...: Realizar Login... aki.....
 				return redirect('/cadastre_se/')
@@ -284,7 +284,7 @@ def cadastre_se(request):
 	if request.method == 'POST':
 		if request.user.is_authenticated():
 			if 'save_user' in request.POST:
-				form_user = UserForm(request.FILES, request.POST, instance=request.user)				
+				form_user = UserForm(request.POST, request.FILES, instance=request.user)				
 				form_participante = ParticipanteForm(instance=user_participante)				
 				print('save_user in request.POST: <<<<<<<<<<<<<<<<<<<<<<< ' + str(form_user['username'].value))
 				if form_user.is_valid():
@@ -368,14 +368,14 @@ def solicita_inscricao(request, competicao_pk):
 						solicitacao.participante = user_participante
 						solicitacao.competicao = competicao
 						solicitacao.save()
-						msg = 'Solicitacao concluída com sucesso'
+						msg = 'Solicitacao enviada com sucesso, aguarde.'
 						send_mail('Solicitacao', 'Solicitacao enviada: '+solicitacao.participante.apelido+' ... http://localhost:8000'+'/solicitacoes/', 'diegolirio.dl@gmail.com', ['diegolirio.dl@gmail.com'])
 					else:
 						msg = 'Solicitacao já enviada, aguarde...'
 				else:
 					msg = 'Você ja está inscrito nessa competição'
 			else:
-				msg = 'Para se solicitar uma inscrição, termine seu cadastro. Confirme seu cadastro em seu Email'
+				msg = 'Para solicitar uma inscrição, termine seu cadastro. Confirme seu cadastro em seu Email'
 		else:
 			msg = 'Competição já encontra-se em andamento ou finalizada'
 	else:
@@ -387,8 +387,12 @@ def solicita_inscricao(request, competicao_pk):
 							 'competicao': competicao }
 							 )
 
+# Para o Presidente
+@login_required
 def minhas_competicoes(request):
 	user_participante = get_participante_by_user(request.user)
+	if Competicao.objects.filter(presidente=user_participante).count() <= 0:
+		return redirect('/')
 	competicoes = Competicao.objects.filter(presidente=user_participante)	
 	return render_to_response('_base.html',{	'template': 'competicoes.html',
 												'titulo': 'Minhas Competições',
@@ -397,22 +401,65 @@ def minhas_competicoes(request):
 												'url': '/solicitacoes/',
 												'competicoes': competicoes
 											})
-											
+
+# Para o Presidente											
+@login_required
 def solicitacoes(request, competicao_pk):
 	user_participante = get_participante_by_user(request.user)
 	competicao = Competicao.objects.get(pk=competicao_pk)
-	solicitacoes = Solicitacao.objects.filter(competicao=competicao)
+	#print(request.GET['status'])
+	try:
+		status = request.GET['status']
+	except:
+		status = 'P'
+	solicitacoes = Solicitacao.objects.filter(competicao=competicao,status=status)
+	if user_participante.pk != competicao.presidente.pk:
+		return redirect('/')
 	return render_to_response('_base.html', 
 	                          {    'template':'solicitacoes.html', 
 								   'titulo': 'Solicitações',
 	                               'subtitulo': competicao.nome,
 	                               'user_participante': user_participante,
 	                               'solicitacoes': solicitacoes,
-	                               'competicao': competicao
-	                          })											
-	
+	                               'competicao': competicao,
+								   'message': 'None'
+	                          })			
 
-# begin system
+def aceitar_solicitacao(request, solicitacao_pk):
+	user_participante = get_participante_by_user(request.user)
+	solicitacao = Solicitacao.objects.get(pk=solicitacao_pk)
+	message = 'None'
+	if Inscricao.objects.filter(participante=solicitacao.participante, competicao=solicitacao.competicao).count() > 0:
+		message = 'Já existe esse participante inscrito para esta competição'
+	else:
+		inscricao_new = Inscricao()
+		inscricao_new.competicao = solicitacao.competicao
+		inscricao_new.participante = solicitacao.participante
+		inscricao_new.save()
+		inscr = Inscricao.objects.filter(participante=solicitacao.participante, competicao=solicitacao.competicao)[0:1].get()
+		grupos = Grupo.objects.filter(campeonato=solicitacao.competicao.campeonato)
+		for g in grupos:
+			jogos = Jogo.objects.filter(grupo=g)
+			for j in jogos:
+				aposta = Aposta()
+				aposta.inscricao = inscr
+				aposta.jogo = j
+				aposta.save()		
+		solicitacao.status = 'A'
+		solicitacao.save()
+		return redirect('/rancking/'+str(solicitacao.competicao.pk))
+	solicitacoes = Solicitacao.objects.filter(pk=solicitacao_pk)
+	return render_to_response('_base.html', 
+	                          {    'template':'solicitacoes.html', 
+								   'titulo': 'Solicitações',
+	                               'subtitulo': solicitacao.competicao.nome,
+	                               'user_participante': user_participante,
+	                               'solicitacoes': solicitacoes,
+	                               'competicao': solicitacao.competicao,
+								   'message': message
+	                          })	
+							 
+# begin system <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 @login_required
 def system(request):
@@ -423,8 +470,46 @@ def system(request):
 @login_required
 def system_campeonato_calc_jogos(request, campeonato_pk):
 	campeonato = Campeonato.objects.get(pk=campeonato_pk)
+	grupos = Grupo.objects.filter(campeonato=campeonato)
+	for g in grupos:
+		jogos = Jogo.objects.filter(grupo=g)
 	user_participante = get_participante_by_user(request.user)
-	return render_to_response('_base.html', {'template': 'system/campeonato_calc_jogos.html', 'titulo': 'Calcular ' + campeonato.nome, 'subtitulo': 'Placar e calculo', 'user_participante': user_participante, 'campeonato': campeonato})
+	return render_to_response('_base.html', 
+	                          {   'template': 'system/campeonato_calc_jogos.html', 
+							      'titulo': 'Calcular ' + campeonato.nome, 
+								  'subtitulo': 'Placar e calculo', 
+								  'user_participante': user_participante, 
+								  'campeonato': campeonato,
+								  'jogos' : jogos})
+								  
+def system_jogo_edit(request, campeonato_pk, jogo_pk):
+	campeonato = Campeonato.objects.get(pk=campeonato_pk)
+	jogo = Jogo()
+	form = JogoForm()
+	execute_transation = 'N'
+	mensagem = ''
+	if request.method == 'POST':
+		if jogo_pk != '0':
+			jogo = Jogo.objects.get(pk=jogo_pk)
+			form = JogoForm(request.FILES, request.POST, instance=jogo)		
+		else:
+			form = JogoForm(request.FILES, request.POST)		
+		if form.is_valid():
+			form.save()
+			execute_transation = 'S'
+			mensagem = 'Jogo alterado com sucesso!!!' if jogo_pk == '0' else 'Jogo gravado com sucesso!!!'
+	else:
+		if jogo_pk != '0':
+			jogo = Jogo.objects.get(pk=jogo_pk)
+			form = JogoForm(instance=jogo)
+	return render_to_response('_base_simple.html', 
+							  { 'template': 'jogo_edit.html',
+                                'execute_transation': execute_transation,
+	                            'campeonato': campeonato, 
+								'jogo': jogo, 
+	                            'form': form, 
+	                            'mensagem': mensagem},
+							  context_instance=RequestContext(request))	     
 
 @login_required
 def system_calcular_campeonato(request, campeonato_pk):
@@ -572,7 +657,7 @@ def __calcula_rancking__(competicao):
 		qtde_av = i.quantidade_acerto_vencedor
 		qtde_ae = i.quantidade_acerto_empate_erro_placar
 		
-#end system	---------------------------------------------------------------------------
+# end system	<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 
@@ -733,3 +818,15 @@ def calcula_rancking_historico(competicao, jogo, aposta):
 		a = Aposta.objects.filter(jogo=jogo, inscricao=i)[0:1].get()
 		a.colocacao = i.colocacao
 		a.save()
+		
+		
+def regras(request):
+	return render_to_response('_base.html', 
+	                          { 'template': 'regras.html',
+							    'titulo': 'Regras',
+								'subtitulo': 'Regras'}
+							 )
+		
+		
+		
+		

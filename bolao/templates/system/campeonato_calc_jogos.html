@@ -1,17 +1,87 @@
 <!--
 	<a href="/aposta_calc/{{competicao.campeonato.pk}}/" class="btn btn-success">Calcular {{competicao.campeonato.nome}}</a>
--->
-	
+-->	
 	  <div class="btn-group pull-right">
-		<a class="btn btn-success btn-large" href="#">Calcular (Prévia)</a>
+		<!--<a class="btn btn-success btn-large" href="/system/jogo_edit/{{campeonato.id}}/0/" onclick="show__(this.href); return false;">Casdastrar Novo Jogo</a>-->
+		<a class="btn btn-success btn-large" href="/admin/core/jogo/add/?_popup=1/" onclick="show__(this.href); return false;">Casdastrar Novo Jogo</a>
 		<a class="btn btn-success dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
 		<ul class="dropdown-menu">
+		  <li><a href="#" onclick="alert('Em desenvolvimento...');">Calcular (Prévia)</a></li>
 		  <li><a href="/system/calcular_campeonato/{{campeonato.pk}}/">Calcular definitivo</a></li>
 		  <li class="divider"></li>
 		  <li><a href="#">Forçar Calculo já definido</a></li>
 		</ul>
 	  </div>	
 	  
+	  <h3>Calcular</h3>
+	  
 	  <br/>
 
-	  {% include 'tabela.html' %}
+	<div class="pagination pagination-centered">
+	  <ul>
+		<li><a href="#">&larr;</a></li>
+		<li><a href="#">1</a></li>
+		<li><a href="#">&rarr;</a></li>
+	  </ul>
+	</div>			
+	
+	<div class="pull-right">
+		<img src="/media/images/editar_24.png"/> <i class="icon-arrow-right"></i> Em aberto/Editavel
+		<img src="/media/images/bola__32.png" class="offset1"/> <i class="icon-arrow-right"></i> Em andamento/Bola rolando
+		<img src="/media/images/apito_24.png" class="offset1"/> <i class="icon-arrow-right"></i> Finalizado
+	</div>
+
+	<br/>
+	<br/>
+
+	<table class="table table-striped table-hover well">		
+		<tr>
+			<td class="text-error" colspan="5"><center>Jogo</center></td>
+			<td class="text-error">Data e hora</td>
+			<td class="text-error">Local</td>
+			<td class="text-error"><center>Status</center></td>
+			<td class="text-error"><center>Alterar</center></td>			
+		</tr>
+		{% for j in jogos %}
+		<tr>
+			<td>{{ j.time_a }}</td>
+			<td>
+				{% if j.status.codigo != 'E' %}
+					{{ j.resultado_a }}
+				{% endif %}
+			</td>
+			<td>X</td>
+			<td>
+				{% if j.status.codigo != 'E' %}
+					{{ j.resultado_b }}
+				{% endif %}
+			</td>
+			<td>{{ j.time_b }}</td>
+			<td>{{ j.data_hora }}</td>
+			<td>{{ j.local }}</td>
+			<td>
+				<center>
+				{% if j.status.codigo == 'E' %} 
+					<img src="/media/images/editar_24.png" title="{{j.status.descricao}}"/>
+				{% elif j.status.codigo == 'A' %}
+					<img src="/media/images/bola__32.png" title="{{j.status.descricao}}"/>
+				{% elif j.status.codigo == 'F' %}
+					<img src="/media/images/apito_24.png" title="{{j.status.descricao}}"/>
+				{% endif %}
+				</center>
+			</td>
+			<td>
+				<center>
+					<a href="/admin/core/jogo/{{ j.id }}/" title="Alterar Jogo" onclick="show__(this.href); return false;">
+					<!--
+					<a href="/system/jogo_edit/{{ campeonato.id }}/{{ j.id }}/" title="Alterar Jogo" onclick="show__(this.href); return false;">
+					-->
+						<img src="/media/images/dinheiro_moedas_32.png"/>
+					</a>
+				</center>
+			</td>
+		</tr>
+		{% empty %}
+			<h1>Não há Jogos cadastrados</h1>
+		{% endfor %}
+	</table>

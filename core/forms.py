@@ -1,6 +1,7 @@
 from django.forms import ModelForm
 from core.models import Aposta
 from core.models import Participante
+from core.models import Jogo
 from django.contrib.auth.models import User
 
 from django import forms
@@ -9,6 +10,10 @@ class ApostaForm(ModelForm):
 	class Meta:
 		model = Aposta
 
+class JogoForm(ModelForm):
+	class Meta:
+		model = Jogo		
+		
 class ParticipanteForm(ModelForm):
 	class Meta:
 		model = Participante

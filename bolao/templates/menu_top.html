@@ -80,6 +80,7 @@
 				  {% if user_inscricao.pk > 0 %}
 					<li><a href="/aposta/{{competicao.id}}/">Minhas Aposta</a></li>
 				  {% endif %}
+				  <li class="pull-center" id="aguarde_id"></li>
 				  {% if competicao.status.codigo == 'E' %}
 					<li class="pull-right"><a href="/solicita_inscricao/{{competicao.id}}/"><span class="text-info"><b>Solicitar Inscrição na Competição</b></span></a></li>				  
 				  {% endif %}				  

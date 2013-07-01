@@ -1,3 +1,14 @@
+	<script type="text/javascript">
+		{% if message != 'None' %}
+			alert('{{message}}');
+		{% endif %}
+	</script>
+	
+	<div class="pull-right">
+		<p><a href="/solicitacoes/{{competicao.id}}/?status=A">Solicitações Aceitas</a></p>
+		<p><a href="/solicitacoes/{{competicao.id}}/?status=R">Solicitações Rejeitadas</a></p>
+	</div>
+
 	<table class="table table-striped table-hover well">		
 		<tr>
 			<td class="text-error">Solicitação</td>
@@ -20,14 +31,14 @@
 					<span class="caret"></span>
 				  </a>
 				  <ul class="dropdown-menu">
-						<li><a href="#"><i class="icon-edit"></i>  Aceitar</a></li>
-						<li><a href="#"><i class="icon-trash"></i>  Rejeitar</a></li>
+						<li><a href="/aceitar_solicitacao/{{s.id}}/"><i class="icon-edit"></i>  Aceitar</a></li>
+						<li><a href="/rejeitar_solicitacao/{{s.id}}/"><i class="icon-trash"></i>  Rejeitar</a></li>
 				  </ul>
 				</div>
 				</center>
 			</td>
 		</tr>
 		{% empty %}
-			<h1>Não há Solicitações para esta competição</h1>
+			<h1>Não há Solicitações </h1>
 		{% endfor %}
 	</table>
