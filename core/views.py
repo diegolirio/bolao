@@ -9,6 +9,7 @@ from core.forms import *
 import random
 from django.core.mail import send_mail
 #import datetime
+from django.contrib.auth import authenticate, login
 
 def user_login_is_valid(user_request, user_inscricao):
 	if user_request.pk == user_inscricao.pk:
@@ -224,46 +225,51 @@ def __get_code_random__():
 			break
 	return code
 	
+def __new_participante__(user):
+	participante = Participante()
+	participante.user = user
+	participante.apelido = user.username
+	participante.ddd = 11
+	#participante.telefone = 
+	participante.confirm_send_url = __get_code_random__()
+	participante.save()	
+	
 def cadastre_se(request):
 	status_transation = 'I'
 	user_participante = get_participante_by_user(request.user, False)
-	form_user = UserForm()
+	form_user = UserNewForm()
 	form_participante = ParticipanteForm()	
 	if request.method == 'POST':
 		if request.user.is_authenticated():
 			status_transation = 'V'
 			if 'save_user' in request.POST:
-				form_user = UserForm(request.POST, request.FILES, instance=request.user)
+				form_user = UserEditForm(request.POST, request.FILES, instance=request.user)
 				form_participante = ParticipanteForm(instance=user_participante)	
 				if form_user.is_valid():
 					form_user.save()
 					return redirect('/cadastre_se/')
 			elif 'save_participante' in request.POST:
 				form_participante = ParticipanteForm(request.POST, request.FILES, instance=user_participante)
-				form_user = UserForm(instance=request.user)
+				form_user = UserEditForm(instance=request.user)
 				if form_participante.is_valid():	
 					form_participante.save()
 					return redirect('/cadastre_se/')
 		else:
-			form_user = UserForm(request.POST, request.FILES)
+			form_user = UserNewForm(request.POST, request.FILES)
 			if form_user.is_valid():
 				# Validar senhas compativeis.... no link http://www.aprendendodjango.com/funcoes-de-usuarios/
 				user = form_user.save()
-				print('save_user >>>>>>>> automatico participante e apos confirm_email ' + user.username)				
-				participante = Participante()
-				participante.user = user
-				participante.apelido = user.username
-				participante.ddd = 11
-				#participante.telefone = 
-				participante.confirm_send_url = __get_code_random__()
-				participante.save()
+				print('save_user >>>>>>>> automatico participante e apos confirm_email ' + user.username)		
+				__new_participante__(user)
 				send_mail('Conrfimacao de cadastro Ferraz Bolao', 'Usuario: '+ user.username +', clique no link para confirmar o cadastro  http://localhost:8000/confirm_email/'+participante.confirm_send_url+ '/?user='+str(user.pk), 'diegolirio.dl@gmail.com', [user.email])
 				status_transation = 'V'
 				# ToDo...: Realizar Login... aki.....
+				#user = authenticate(username=user.username, password=user.password)
+				#login(request, user)
 				return redirect('/cadastre_se/')
 	else:
 		if request.user.is_authenticated():
-			form_user = UserForm(instance=request.user)
+			form_user = UserEditForm(instance=request.user)
 			if user_participante != None:
 				form_participante = ParticipanteForm(instance=user_participante)	
 			status_transation = 'V'
@@ -444,6 +450,8 @@ def aceitar_solicitacao(request, solicitacao_pk):
 				aposta = Aposta()
 				aposta.inscricao = inscr
 				aposta.jogo = j
+				if j.status.codigo == 'F':
+					aposta.calculado = True
 				aposta.save()		
 		solicitacao.status = 'A'
 		solicitacao.save()

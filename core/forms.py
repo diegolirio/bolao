@@ -18,7 +18,7 @@ class ParticipanteForm(ModelForm):
 	class Meta:
 		model = Participante
 
-class UserForm(forms.ModelForm):
+class UserNewForm(forms.ModelForm):
 	class Meta:
 		model = User		
 		fields = ('username','email','password')
@@ -28,7 +28,7 @@ class UserForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		self.base_fields['password'].help_text = 'Informe uma senha segura'
 		self.base_fields['password'].widget = forms.PasswordInput()
-		super(UserForm, self).__init__(*args, **kwargs)		
+		super(UserNewForm, self).__init__(*args, **kwargs)		
 		
 	def clean_confirme_a_senha(self):
 		if self.cleaned_data['confirme_a_senha'] != self.data['password']:
@@ -41,12 +41,16 @@ class UserForm(forms.ModelForm):
 		return self.cleaned_data['username']
 		
 	def save(self, commit=True):
-		usuario = super(UserForm, self).save(commit=False)
+		usuario = super(UserNewForm, self).save(commit=False)
 		usuario.set_password(self.cleaned_data['password'])
 		if commit:
 			usuario.save()
 		return usuario
 		
+class UserEditForm(forms.ModelForm):
+	class Meta:
+		model = User		
+		fields = ('username','email','first_name','last_name')
 		
 		
 		

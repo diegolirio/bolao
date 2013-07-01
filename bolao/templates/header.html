@@ -19,23 +19,9 @@
 						</div>							
 					{% else %}
 						<a href="/cadastre_se/" class="btn pull-right">Cadastre-se</a>						  
-					{% endif %}
+					{% endif %}					
 				</div>
 			</div>
 		</div>
-			
-		<div class="subnav">
-			{% if competicao.id > 0 %}
-			<div class="container">
-				<ul class="nav nav-pills">
-				  <li><a href="/rancking/{{competicao.id}}/">Rancking</a></li>
-				  <li><a href="/tabela/{{competicao.id}}">Tabela</a></li>
-				  {% if user_inscricao.pk > 0 %}
-					<li><a href="/aposta/{{competicao.id}}/">Aposta</a></li>
-				  {% endif %}
-				</ul>
-			</div>
-			{% endif %}
-		</div>
-			
-	</div>
+		
+		{% include 'menu_header.html' %}

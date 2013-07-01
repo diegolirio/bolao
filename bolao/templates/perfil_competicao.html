@@ -46,18 +46,12 @@
       google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart);
 
-      function drawChart() {
-	    
+      function drawChart() {	    
 	    var data = new google.visualization.DataTable();
-		
-		
-					
 		data.addColumn('string', 'Jogos');
 		data.addColumn('number', 'Colocação');
-        //data.addColumn('number', 'Expenses');
-        
-        data.addRows({{qtde_jogos}});
-		
+        //data.addColumn('number', 'Expenses');        
+        data.addRows({{qtde_jogos}});		
 		var i = 0;
 		{% for a in apostas %}
 			data.setValue(i, 0, '{{ a.jogo.time_a}} X {{ a.jogo.time_b }}');
@@ -65,15 +59,36 @@
 			//data.setValue(0, 2, 400);
 			i++;
 		{% endfor %}
-
         var options = {
           title: 'Histórico de Colocação',
           vAxis: {maxValue: 10, direction: -1} // Inverte a Coluna em ordem crescente...
         };
-
         var chart = new google.visualization.LineChart(document.getElementById('chart_div'));		
         chart.draw(data, options);
       }
+	  /*
+	  function drawChartCompare() {
+	    var data = new google.visualization.DataTable();
+		data.addColumn('string', 'Jogos');
+		data.addColumn('number', 'Colocação');
+        data.addColumn('number', 'Minha Colocação');        
+        data.addRows({{qtde_jogos}});		
+		var i = 0;
+		{% for a in apostas %}
+			data.setValue(i, 0, '{{ a.jogo.time_a}} X {{ a.jogo.time_b }}');
+			data.setValue(i, 1, {{a.colocacao}});
+			//data.setValue(0, 2, 400);
+			i++;
+		{% endfor %}
+        var options = {
+          title: 'Histórico de Colocação',
+          vAxis: {maxValue: 10, direction: -1} // Inverte a Coluna em ordem crescente...
+        };
+        var chart = new google.visualization.LineChart(document.getElementById('chart_compare_div'));		
+        chart.draw(data, options);	  
+	  }
+	  */
+	  
     </script>
     
     
