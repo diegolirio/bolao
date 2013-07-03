@@ -236,6 +236,7 @@ def __new_participante__(user):
 	return participante
 	
 def cadastre_se(request):
+	message = ''
 	status_transation = 'I'
 	user_participante = get_participante_by_user(request.user, False)
 	form_user = UserNewForm()
@@ -248,13 +249,15 @@ def cadastre_se(request):
 				form_participante = ParticipanteForm(instance=user_participante)	
 				if form_user.is_valid():
 					form_user.save()
-					return redirect('/cadastre_se/')
+					message = 'Informações de usuário gravado com sucesso!'
+					#return redirect('/cadastre_se/')
 			elif 'save_participante' in request.POST:
 				form_participante = ParticipanteForm(request.POST, request.FILES, instance=user_participante)
 				form_user = UserEditForm(instance=request.user)
 				if form_participante.is_valid():	
 					form_participante.save()
-					return redirect('/cadastre_se/')
+					message = 'Informações de participante gravado com sucesso!'
+					#return redirect('/cadastre_se/')
 		else:
 			form_user = UserNewForm(request.POST, request.FILES)
 			if form_user.is_valid():
@@ -267,7 +270,8 @@ def cadastre_se(request):
 				# ToDo...: Realizar Login... aki.....
 				#user = authenticate(username=user.username, password=user.password)
 				#login(request, user)
-				return redirect('/cadastre_se/')
+				message = 'Cadastro realizado com sucesso, para terminar seu cadastro entre em seu email e faça a confirmação!'
+				#return redirect('/cadastre_se/')
 	else:
 		if request.user.is_authenticated():
 			form_user = UserEditForm(instance=request.user)
@@ -281,7 +285,8 @@ def cadastre_se(request):
 	                           'user_participante': user_participante,
 	                           'form_user': form_user,
 							   'form_participante': form_participante,
-							   'status_transation': status_transation
+							   'status_transation': status_transation,
+							   'message': message
 	                           }, RequestContext(request))
 			
 """

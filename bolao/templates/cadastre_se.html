@@ -1,3 +1,24 @@
+{% if message != "" %}
+	<script type="text/javascript">
+		alert('{{message}}');
+	</script>
+{% endif %}
+<!--
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+		<h3 id="myModalLabel">>>>>>>>>>>></h3>
+  </div>
+  <div class="modal-body">
+		<h3>{{ message }}</h3>
+  </div>
+  <div class="modal-footer">
+		<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Fechar</button>
+  </div>
+</div>
+-->
+
+
 <div class="row">
 	<div class="span6">
 		<form action="" method="POST" class="form-horizontal"> {% csrf_token %}
