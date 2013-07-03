@@ -18,15 +18,13 @@ class ParticipanteForm(ModelForm):
 	class Meta:
 		model = Participante
 
-class UserNewForm(forms.ModelForm):
-	
-	senha_atual = forms.CharField(max_length=30, widget=forms.PasswordInput)
-	
+class UserNewForm(forms.ModelForm):	
 	class Meta:
 		model = User		
 		fields = ('username','email','password')
 		
 	confirme_a_senha = forms.CharField(max_length=30, widget=forms.PasswordInput)
+	senha_atual = forms.CharField(max_length=30, widget=forms.PasswordInput)
   
 	def __init__(self, *args, **kwargs):
 		self.base_fields['password'].help_text = 'Informe uma senha segura'
@@ -62,6 +60,7 @@ class UserPasswordForm(forms.ModelForm):
 		fields = ('username','email','password')
 		
 	confirme_a_senha = forms.CharField(max_length=30, widget=forms.PasswordInput)
+	senha_atual = forms.CharField(max_length=30, widget=forms.PasswordInput)
   
 	def __init__(self, *args, **kwargs):
 		self.base_fields['password'].help_text = 'Informe uma senha segura'
@@ -72,6 +71,12 @@ class UserPasswordForm(forms.ModelForm):
 		if self.cleaned_data['confirme_a_senha'] != self.data['password']:
 			raise forms.ValidationError('Confirmacao de senha nao confere!')
 		return self.cleaned_data['confirme_a_senha']
+		
+	def clean_senha_atual(self):
+		user = User.objects.filter(username=self.cleaned_data['username'])[0:1].get()
+		if user.password != self.cleaned_data['senha_atual']:
+			raise forms.ValidationError('Senha atual incorreta!')
+		return self.cleaned_data['senha_atual']
 		
 	def save(self, commit=True):
 		usuario = super(UserPasswordForm, self).save(commit=False)

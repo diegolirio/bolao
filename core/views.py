@@ -293,7 +293,13 @@ def cadastre_se(request):
 def alterar_senha(request):
 	execute_transation = 'N'
 	mensagem = ''
-	form = UserPasswordForm(instance=request.user)
+	form = UserPasswordForm()
+	if request.method == 'POST':
+		form = UserPasswordForm(request.FILES, request.POST, request.user)
+		if form.is_valid():
+			form.save(commit)
+			execute_transation = 'S'
+			mensagem = 'Senha Alterada com sucesso!'
 	return render_to_response('_base_simple.html',
 	                          { 'template': 'alterar_senha.html', 
 	                               'execute_transation': execute_transation,
