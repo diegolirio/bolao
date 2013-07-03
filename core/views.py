@@ -233,6 +233,7 @@ def __new_participante__(user):
 	#participante.telefone = 
 	participante.confirm_send_url = __get_code_random__()
 	participante.save()	
+	return participante
 	
 def cadastre_se(request):
 	status_transation = 'I'
@@ -260,7 +261,7 @@ def cadastre_se(request):
 				# Validar senhas compativeis.... no link http://www.aprendendodjango.com/funcoes-de-usuarios/
 				user = form_user.save()
 				print('save_user >>>>>>>> automatico participante e apos confirm_email ' + user.username)		
-				__new_participante__(user)
+				participante = __new_participante__(user)
 				send_mail('Conrfimacao de cadastro Ferraz Bolao', 'Usuario: '+ user.username +', clique no link para confirmar o cadastro  http://localhost:8000/confirm_email/'+participante.confirm_send_url+ '/?user='+str(user.pk), 'diegolirio.dl@gmail.com', [user.email])
 				status_transation = 'V'
 				# ToDo...: Realizar Login... aki.....

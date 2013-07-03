@@ -1,45 +1,48 @@
+<div class="row">
+	<div class="span10">
+		{% include 'legenda_pontos.html' %}
+		<div class="pagination pagination-centered">
+		  <ul>
+			<li><a href="#">&larr;</a></li>
+			<li><a href="#">1</a></li>
+			<li><a href="#">&rarr;</a></li>
+		  </ul>
+		</div>			
 
-<div class="span10">
-	{% include 'legenda_pontos.html' %}
-	<div class="pagination pagination-centered">
-	  <ul>
-		<li><a href="#">&larr;</a></li>
-		<li><a href="#">1</a></li>
-		<li><a href="#">&rarr;</a></li>
-	  </ul>
-	</div>			
-
-	<table class="table table-striped table-hover well">
-		<tr>
-			<td class="text-error">Colocação</td>
-			<td class="text-error">Nome</td>
-			<td class="text-error">Inscrição</td>
-			<td class="text-error" title="Pontos">Pontos</td>
-			<td class="text-error" title="Acerto do Placar">AP</td>
-			<td class="text-error" title="Acerto do Vencedor e quantidade de gols de um Time">AR</td>
-			<td class="text-error" title="Acerto do Vencedor">AV</td>
-			<td class="text-error" title="Acerto de Empate com placar diferente">AE</td>
-			<td class="text-error" title="Acerto de Somente da quantidade de gols de um Time">AS</td>
-			<td class="text-error" title="Acerto de Somente da quantidade de gols de um Time">ER</td>
-		</tr>
-		{% for ip in inscricoes_competicao %}
-		<tr {% if ip.participante.id == user_participante.id %} style="background-color: #64FE2E;" {% endif %}>
-			<td class="text-info">{{ ip.colocacao}}º</td>
-			<td><a href="/perfil_competicao/{{competicao.id}}/{{ip.id}}/" class="text-info">{{ ip.participante }}</a></td>
-			<td>{{ ip.id }}</td>
-			<td class="text-info">{{ ip.pontos }}</td>
-			<td>{{ ip.quantidade_acerto_placar }}</td>
-			<td>{{ ip.quantidade_acerto_vencedor_um_resultado_correto }}</td>
-			<td>{{ ip.quantidade_acerto_vencedor }}</td>
-			<td>{{ ip.quantidade_acerto_empate_erro_placar }}</td>
-			<td>{{ ip.quantidade_acerto_somente_resultado_um_time }}</td>
-			<td>{{ ip.quantidade_erro }}</td>
-		</tr>
-		{% empty %}
-			<h1>Não há participantes cadastrados</h1>
-		{% endfor %}
-	</table>
-</div>
-<div class="span2">
-	Anunicios
+		<table class="table table-striped table-hover well">
+			<tr>
+				<td class="text-error">Colocação</td>
+				<td class="text-error">Nome</td>
+				<td class="text-error">Inscrição</td>
+				<td class="text-error" title="Pontos">Pontos</td>
+				<td class="text-error" title="Acerto do Placar">AP</td>
+				<td class="text-error" title="Acerto do Vencedor e quantidade de gols de um Time">AR</td>
+				<td class="text-error" title="Acerto do Vencedor">AV</td>
+				<td class="text-error" title="Acerto de Empate com placar diferente">AE</td>
+				<td class="text-error" title="Acerto de Somente da quantidade de gols de um Time">AS</td>
+				<td class="text-error" title="Acerto de Somente da quantidade de gols de um Time">ER</td>
+			</tr>
+			{% for ip in inscricoes_competicao %}
+			<tr {% if ip.participante.id == user_participante.id %} style="background-color: #64FE2E;" {% endif %}>
+				<td class="text-info">{{ ip.colocacao}}º</td>
+				<td><a href="/perfil_competicao/{{competicao.id}}/{{ip.id}}/" class="text-info">{{ ip.participante }}</a></td>
+				<td>{{ ip.id }}</td>
+				<td class="text-info">{{ ip.pontos }}</td>
+				<td>{{ ip.quantidade_acerto_placar }}</td>
+				<td>{{ ip.quantidade_acerto_vencedor_um_resultado_correto }}</td>
+				<td>{{ ip.quantidade_acerto_vencedor }}</td>
+				<td>{{ ip.quantidade_acerto_empate_erro_placar }}</td>
+				<td>{{ ip.quantidade_acerto_somente_resultado_um_time }}</td>
+				<td>{{ ip.quantidade_erro }}</td>
+			</tr>
+			{% empty %}
+				<h1>Não há participantes cadastrados</h1>
+			{% endfor %}
+		</table>
+	</div>
+	<div class="span2">
+		<a href="http://www.asisco.com.br" target="_blank"><img src="/media/images/patrocinadores/logo.gif"/></a>
+		<br/><br/>
+		<img src="/media/images/patrocinadores/anuncie.gif"/>
+	</div>
 </div>
