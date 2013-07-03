@@ -288,6 +288,20 @@ def cadastre_se(request):
 							   'status_transation': status_transation,
 							   'message': message
 	                           }, RequestContext(request))
+				
+@login_required				
+def alterar_senha(request):
+	execute_transation = 'N'
+	mensagem = ''
+	form = UserPasswordForm(instance=request.user)
+	return render_to_response('_base_simple.html',
+	                          { 'template': 'alterar_senha.html', 
+	                               'execute_transation': execute_transation,
+	                               'user': request.user, 
+	                               'form': form, 
+	                               'mensagem': mensagem
+							}, RequestContext(request))
+							 
 			
 """
 def cadastre_se(request):

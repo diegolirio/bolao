@@ -51,6 +51,7 @@ urlpatterns = patterns('',
 	url(r'^system/jogo_edit/(?P<campeonato_pk>\d+)/(?P<jogo_pk>\d+)/$', 'core.views.system_jogo_edit'),
     
     url(r'^cadastre_se/$', 'core.views.cadastre_se'),
+	url(r'^cadastre_se/alterar_senha/$', 'core.views.alterar_senha'),
 	#url(r'^confirm_email/[username]/(?P<codigo_confirm>\d+)/(?P<campeonato_pk>\d+)/$', 'core.views.confirm_email'),
 	url(r'^confirm_email/(?P<codigo_confirm>\d{10})/$', 'core.views.confirm_email'),
 	url(r'^reenvio_confirm_email/$', 'core.views.reenvio_confirm_email'),
