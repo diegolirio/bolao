@@ -1,11 +1,24 @@
 
 <div class="row">
+	<p>Publicidade</p>
+	<div class="span4">	
+		<h1>Anuncio Patrocinador</h1>
+	</div>
+	<div class="span4">	
+		<h1>Anuncio Patrocinador</h1>
+	</div>
+	<div class="span4">	
+		<h1>Anuncio Patrocinador</h1>
+	</div>
+	
+</div>	
+<div class="row">
 {% for c in competicoes %}
 		<!--<h1><a href="/rancking/{{c.id}}/">{{ c.nome }}</a></h1>-->
 	<div class="span6">
 		<div class="hero-unit">
 			<a href="/rancking/{{c.id}}/"><img src="/media/images/gold_cup_100X124.png" /></a>
-			<h2>{{c.nome}}</h2>
+			<h2>Copa <a href="{{c.patrocinador.url_site}}" target="_blank">{{c.patrocinador.nome_visual}}</a> {{c.nome}}</h2>
 			<h4>{{c.campeonato.nome}}</h4> 
 			<br/>
 			<p>

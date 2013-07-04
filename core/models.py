@@ -26,13 +26,23 @@ class StatusJogo(models.Model):
 	codigo = models.CharField(max_length=1)# { F, A, E }
 	descricao = models.CharField(max_length=30, unique=True)	# {F:(finalizado), A: (em andamento, atualizando processo), E: (Edicao)}
 	def __unicode__(self):
-		return "["+self.codigo+"] " + self.descricao			
+		return "["+self.codigo+"] " + self.descricao	
+		
+#23		
+class Patrocinador(models.Model):
+	nome_visual = models.CharField(max_length=30)	
+	nome = models.CharField(max_length=50)	
+	url_site = models.CharField(max_length=100)	
+	# ToDo..:
+	#image_aside = models.ImageField # padrao 200X200 analisar
+	#image_center = models.ImageField # padrao 200X400 analisar	
 		
 class Competicao(models.Model):
 	campeonato = models.ForeignKey(Campeonato)
 	nome = models.CharField(max_length=50)	
-	status = models.ForeignKey(StatusJogo) # ToDo...: ,default='E'
+	status = models.ForeignKey(StatusJogo,default='E')
 	presidente = models.ForeignKey(Participante)
+	patrocinador = models.ForeignKey(Patrocinador) # # ToDo...:  blank=True
 	def __unicode__(self):
 		return self.nome + " - " + self.campeonato.nome + " - " + self.status.descricao
 	class Meta:
@@ -118,5 +128,12 @@ class Solicitacao(models.Model):
 	def __unicode__(self):
 		return 'Solicitacao: ' + self.status + ' - ' + self.participante.apelido + ' - ' + self.competicao.nome
 
-#23 class Patrocinador(models.Model):
-#23 class Patrocinador_expecifico(models.Model):
+#23 
+class PatrocinadorLocal(models.Model):
+	nome_pagina = models.CharField(max_length=50) # Home | Tabela | Rancking ou popup_float
+	codigo_pagina = models.CharField(max_length=50) # H | T | R | F
+	
+
+
+
+

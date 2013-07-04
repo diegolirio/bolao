@@ -12,7 +12,9 @@
 				<legend>Usuário</legend>
 
 				{{ form_user.as_p }}
-				<a href="/cadastre_se/alterar_senha/" onclick="show__(this.href); return false;" class="pull-left">Alterar senha</a>
+				{% if user_participante.user.is_authenticated %}
+					<a href="/cadastre_se/alterar_senha/" onclick="show__(this.href); return false;" class="pull-left">Alterar senha</a>
+				{% endif %}
 				<!-- Button -->
 				<div class="control-group">
 				  <div class="controls">

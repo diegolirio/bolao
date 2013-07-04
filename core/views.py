@@ -293,13 +293,14 @@ def cadastre_se(request):
 def alterar_senha(request):
 	execute_transation = 'N'
 	mensagem = ''
-	form = UserPasswordForm()
 	if request.method == 'POST':
-		form = UserPasswordForm(request.FILES, request.POST, request.user)
+		form = UserPasswordForm(request.POST, request.FILES, instance=request.user)
 		if form.is_valid():
-			form.save(commit)
+			form.save()
 			execute_transation = 'S'
 			mensagem = 'Senha Alterada com sucesso!'
+	else:
+		form = UserPasswordForm(instance=request.user)
 	return render_to_response('_base_simple.html',
 	                          { 'template': 'alterar_senha.html', 
 	                               'execute_transation': execute_transation,
@@ -401,7 +402,7 @@ def solicita_inscricao(request, competicao_pk):
 						solicitacao.competicao = competicao
 						solicitacao.save()
 						msg = 'Solicitacao enviada com sucesso, aguarde.'
-						send_mail('Solicitacao', 'Solicitacao enviada: '+solicitacao.participante.apelido+' ... http://localhost:8000'+'/solicitacoes/', 'diegolirio.dl@gmail.com', ['diegolirio.dl@gmail.com'])
+						send_mail('Solicitacao', 'Solicitacao enviada: '+solicitacao.participante.apelido+' ... http://localhost:8000'+'/solicitacoes/'+str(competicao.pk), 'diegolirio.dl@gmail.com', ['diegolirio.dl@gmail.com'])
 					else:
 						msg = 'Solicitacao já enviada, aguarde...'
 				else:

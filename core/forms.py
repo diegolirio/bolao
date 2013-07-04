@@ -24,7 +24,6 @@ class UserNewForm(forms.ModelForm):
 		fields = ('username','email','password')
 		
 	confirme_a_senha = forms.CharField(max_length=30, widget=forms.PasswordInput)
-	senha_atual = forms.CharField(max_length=30, widget=forms.PasswordInput)
   
 	def __init__(self, *args, **kwargs):
 		self.base_fields['password'].help_text = 'Informe uma senha segura'
@@ -57,11 +56,11 @@ class UserEditForm(forms.ModelForm):
 class UserPasswordForm(forms.ModelForm):
 	class Meta:
 		model = User		
-		fields = ('username','email','password')
-		
+		fields = ('username', 'password')		
+	
 	confirme_a_senha = forms.CharField(max_length=30, widget=forms.PasswordInput)
-	senha_atual = forms.CharField(max_length=30, widget=forms.PasswordInput)
-  
+	#senha_atual = forms.CharField(max_length=30, widget=forms.PasswordInput)
+	
 	def __init__(self, *args, **kwargs):
 		self.base_fields['password'].help_text = 'Informe uma senha segura'
 		self.base_fields['password'].widget = forms.PasswordInput()
@@ -70,21 +69,23 @@ class UserPasswordForm(forms.ModelForm):
 	def clean_confirme_a_senha(self):
 		if self.cleaned_data['confirme_a_senha'] != self.data['password']:
 			raise forms.ValidationError('Confirmacao de senha nao confere!')
-		return self.cleaned_data['confirme_a_senha']
+		return self.cleaned_data['confirme_a_senha']		
 		
-	def clean_senha_atual(self):
-		user = User.objects.filter(username=self.cleaned_data['username'])[0:1].get()
-		if user.password != self.cleaned_data['senha_atual']:
-			raise forms.ValidationError('Senha atual incorreta!')
-		return self.cleaned_data['senha_atual']
+	#def clean_senha_atual(self):
+	#	user = User.objects.filter(username=self.cleaned_data['username'])[0:1].get()
+	#	print(self.cleaned_data['senha_atual'])
+	#	if self.cleaned_data['senha_atual'] != user.password:
+	#		raise forms.ValidationError('Senha atual incorreta!')
+	#	return self.cleaned_data['senha_atual']		
 		
 	def save(self, commit=True):
 		usuario = super(UserPasswordForm, self).save(commit=False)
 		usuario.set_password(self.cleaned_data['password'])
 		if commit:
 			usuario.save()
-		return usuario				
-		
+		return usuario						
+
+
 		
 		
 		
