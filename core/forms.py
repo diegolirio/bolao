@@ -40,6 +40,11 @@ class UserNewForm(forms.ModelForm):
 			raise forms.ValidationError('Ja existe um usuario com este username')
 		return self.cleaned_data['username']
 		
+	def clean_email(self):
+		if self.cleaned_data['email'] == '':
+			raise forms.ValidationError('Digite um email valido!')
+		return self.cleaned_data['email']		
+		
 	def save(self, commit=True):
 		usuario = super(UserNewForm, self).save(commit=False)
 		usuario.set_password(self.cleaned_data['password'])

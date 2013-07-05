@@ -3,19 +3,136 @@
 		alert('{{message}}');
 	</script>
 {% endif %}
+	
+	<div class="row well">
+		<div class="span5">
+			<form action="" method="POST" class="form-horizontal"> {% csrf_token %}
+			    <div id="legend">
+				   <legend><h3>Usuário</h3></legend>
+			    </div>			
+				<div class="control-group">
+					<label class="control-label">{{ form_user.username.label }}</label>										
+					<div class="controls">
+						{{ form_user.username }}
+						{% if form_user.username.errors %}
+							{% for error in form_user.username.errors %}
+								<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
+							{% endfor %}
+						{% endif %} 							
+					</div>	
+				</div>
+				<div class="control-group">
+					<label class="control-label">{{ form_user.email.label }}</label>										
+					<div class="controls">
+						{{ form_user.email }}
+						{% if form_user.email.errors %}
+							{% for error in form_user.email.errors %}
+								<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
+							{% endfor %}
+						{% endif %} 									
+					</div>	
+				</div>					
+				
+				<!-- Nao Logado -->
+				{% if not user_participante.user.is_authenticated %}
+					<div class="control-group">
+						<label class="control-label">{{ form_user.password.label }}</label>										
+						<div class="controls">
+							{{ form_user.password }}
+							{% if form_user.password.errors %}
+								{% for error in form_user.password.errors %}
+									<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
+								{% endfor %}
+							{% endif %} 									
+						</div>	
+					</div>		
+					<div class="control-group">
+						<label class="control-label">{{ form_user.confirme_a_senha.label }}</label>										
+						<div class="controls">
+							{{ form_user.confirme_a_senha }}
+							{% if form_user.confirme_a_senha.errors %}
+								{% for error in form_user.confirme_a_senha.errors %}
+									<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
+								{% endfor %}
+							{% endif %} 									
+						</div>	
+					</div>	
+				{% endif %}		
+				<!-- Fim Nao Logado -->
+				
+				<!-- Logado -->
+				{% if user_participante.user.is_authenticated %}
+					<div class="control-group">
+						<label class="control-label">{{ form_user.first_name.label }}</label>										
+						<div class="controls">
+							{{ form_user.first_name }}
+							{% if form_user.first_name.errors %}
+								{% for error in form_user.first_name.errors %}
+									<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
+								{% endfor %}
+							{% endif %} 									
+						</div>	
+					</div>			
+					<div class="control-group">
+						<label class="control-label">{{ form_user.last_name.label }}</label>										
+						<div class="controls">
+							{{ form_user.last_name }}
+							{% if form_user.last_name.errors %}
+								{% for error in form_user.last_name.errors %}
+									<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
+								{% endfor %}
+							{% endif %} 									
+						</div>	
+					</div>					
+					<!-- Fim Logado -->				
+					
+					<a href="/cadastre_se/alterar_senha/" onclick="show__(this.href); return false;" class="pull-left">Alterar senha</a>
+				{% endif %}		
+				<div class="form-actions">		
+					<button type="submit" class="btn btn-primary" name="save_user"><i class="icon-ok" ></i> Salvar </button>
+				</div>
 
-<div class="row">
-	<div class="span6">
+			</form>
+		</div> <!-- .span8 -->
+		<div class="span6">
+			{% if status_transation != 'I' %}
+				{% if user_participante.confirm_email %}
+						<form action="" method="POST" class="form-horizontal"> {% csrf_token %}
+							<fieldset>
+								<!-- Form Name -->
+								<legend>Participante</legend>
+
+								{{ form_participante.as_p }}
+								
+								<!-- Button -->
+								<div class="control-group">
+								  <div class="controls">
+									<input type="submit" value="Salvar" class="btn btn-primary" name="save_participante">
+								  </div>
+								</div>	
+							</fieldset>
+						</form>				
+				{% else %}		
+					<h3 class="text-warning">Confirme seu cadastro em seu email</h3>
+					<a href="/reenvio_confirm_email/">Reenviar email</a>
+				{% endif %}
+			{% endif %}
+		</div>		
+	</div>
+	
+	
+	
+	<!--
 		<form action="" method="POST" class="form-horizontal"> {% csrf_token %}
 			<fieldset>
-				<!-- Form Name -->
+				<!-- Form Name --
 				<legend>Usuário</legend>
 
 				{{ form_user.as_p }}
 				{% if user_participante.user.is_authenticated %}
 					<a href="/cadastre_se/alterar_senha/" onclick="show__(this.href); return false;" class="pull-left">Alterar senha</a>
 				{% endif %}
-				<!-- Button -->
+				<!-- Button --
 				<div class="control-group">
 				  <div class="controls">
 					<input type="submit" value="Salvar" class="btn btn-primary" name="save_user"><br/>
@@ -24,30 +141,5 @@
 				
 			</fieldset>
 		</form>
-	</div>
-	<div class="span6">
-		{% if status_transation != 'I' %}
-			{% if user_participante.confirm_email %}
-					<form action="" method="POST" class="form-horizontal"> {% csrf_token %}
-						<fieldset>
-							<!-- Form Name -->
-							<legend>Participante</legend>
+	-->
 
-							{{ form_participante.as_p }}
-							
-							<!-- Button -->
-							<div class="control-group">
-							  <div class="controls">
-								<input type="submit" value="Salvar" class="btn btn-primary" name="save_participante">
-							  </div>
-							</div>	
-						</fieldset>
-					</form>				
-			{% else %}		
-				<h3 class="text-warning">Confirme seu cadastro em seu email</h3>
-				<a href="/reenvio_confirm_email/">Reenviar email</a>
-			{% endif %}
-		{% endif %}
-	</div>
-
-</div>
