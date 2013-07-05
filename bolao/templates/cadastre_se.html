@@ -17,6 +17,7 @@
 				<div class="control-group">
 					<label class="control-label">{{ form_user.username.label }}</label>										
 					<div class="controls">
+						<span class="add-on"><i class="icon-user"></i></span>
 						{{ form_user.username }}
 						{% if form_user.username.errors %}
 							{% for error in form_user.username.errors %}
@@ -28,6 +29,7 @@
 				<div class="control-group">
 					<label class="control-label">{{ form_user.email.label }}</label>										
 					<div class="controls">
+						<span class="add-on"><i class="icon-envelope"></i></span>
 						{{ form_user.email }}
 						{% if form_user.email.errors %}
 							{% for error in form_user.email.errors %}
@@ -42,6 +44,7 @@
 					<div class="control-group">
 						<label class="control-label">{{ form_user.password.label }}</label>										
 						<div class="controls">
+							<span class="add-on"><i class="icon-lock"></i></span>
 							{{ form_user.password }}
 							{% if form_user.password.errors %}
 								{% for error in form_user.password.errors %}
@@ -53,6 +56,7 @@
 					<div class="control-group">
 						<label class="control-label">{{ form_user.confirme_a_senha.label }}</label>										
 						<div class="controls">
+							<span class="add-on"><i class="icon-lock"></i></span>
 							{{ form_user.confirme_a_senha }}
 							{% if form_user.confirme_a_senha.errors %}
 								{% for error in form_user.confirme_a_senha.errors %}
@@ -69,6 +73,7 @@
 					<div class="control-group">
 						<label class="control-label">{{ form_user.first_name.label }}</label>										
 						<div class="controls">
+							<span class="add-on"><i class="icon-user"></i></span>
 							{{ form_user.first_name }}
 							{% if form_user.first_name.errors %}
 								{% for error in form_user.first_name.errors %}
@@ -80,6 +85,7 @@
 					<div class="control-group">
 						<label class="control-label">{{ form_user.last_name.label }}</label>										
 						<div class="controls">
+							<span class="add-on"><i class="icon-user"></i></span>
 							{{ form_user.last_name }}
 							{% if form_user.last_name.errors %}
 								{% for error in form_user.last_name.errors %}
@@ -100,22 +106,70 @@
 		</div> <!-- .span8 -->
 		<div class="span6">
 			{% if status_transation != 'I' %}
-				{% if user_participante.confirm_email %}
-						<form action="" method="POST" class="form-horizontal"> {% csrf_token %}
-							<fieldset>
-								<!-- Form Name -->
-								<legend>Participante</legend>
+				{% if user_participante.confirm_email %}	
 
-								{{ form_participante.as_p }}
-								
-								<!-- Button -->
-								<div class="control-group">
-								  <div class="controls">
-									<input type="submit" value="Salvar" class="btn btn-primary" name="save_participante">
-								  </div>
-								</div>	
-							</fieldset>
-						</form>				
+					
+					<form action="" method="POST" class="form-horizontal"> {% csrf_token %}
+						<div id="legend">
+						   <legend><h3>Participante</h3></legend>
+						</div>			
+						<div class="control-group">
+							<label class="control-label">{{ form_participante.username.label }}</label>										
+							<div class="controls">
+								<span class="add-on"><i class="icon-user"></i></span>
+								<span class="label label-important">{{ user_participante.user.username }}</span>
+								<input type="hidden" value="{{form_participante.user.value}}" name="user">
+								{% if form_participante.username.errors %}
+									{% for error in form_participante.username.errors %}
+										<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
+									{% endfor %}
+								{% endif %} 							
+							</div>	
+						</div>		
+						<div class="control-group">
+							<label class="control-label">{{ form_participante.apelido.label }}</label>										
+							<div class="controls">
+								<span class="add-on"><i class="icon-user"></i></span>
+								{{ form_participante.apelido }}
+								{% if form_participante.apelido.errors %}
+									{% for error in form_participante.apelido.errors %}
+										<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
+									{% endfor %}
+								{% endif %} 									
+							</div>	
+						</div>		
+						<div class="control-group">
+							<label class="control-label">{{ form_participante.ddd.label }}</label>										
+							<div class="controls">
+								<span class="add-on"><i class="icon-user"></i></span>
+								<input type="number" style="width: 45px; padding: 1px" value="{{form_participante.ddd.value}}" name="ddd"> 
+								{% if form_participante.ddd.errors %}
+									{% for error in form_participante.ddd.errors %}
+										<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
+									{% endfor %}
+								{% endif %} 									
+							</div>	
+						</div>			
+						<div class="control-group">
+							<label class="control-label">{{ form_participante.telefone.label }}</label>										
+							<div class="controls">
+								<span class="add-on"><i class="icon-user"></i></span>
+								<input id="id_apelido" maxlength="30" name="telefone" type="text" {% if form_participante.telefone.value != None %} value="{{ form_participante.telefone.value }}"{% endif %} />
+								{% if form_participante.telefone.errors %}
+									{% for error in form_participante.telefone.errors %}
+										<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
+									{% endfor %}
+								{% endif %} 									
+							</div>	
+						</div>							
+						<div class="control-group">
+						  <div class="controls">
+							<input type="submit" value="Salvar" class="btn btn-primary" name="save_participante">
+						  </div>
+						</div>	
+					</form>
+					
+		
 				{% else %}		
 					<h3 class="text-warning">Confirme seu cadastro em seu email</h3>
 					<a href="/reenvio_confirm_email/">Reenviar email</a>
@@ -145,5 +199,10 @@
 				
 			</fieldset>
 		</form>
+		
 	-->
+		
+		
+		
+	
 
