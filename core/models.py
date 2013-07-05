@@ -7,8 +7,7 @@ from datetime import datetime
 
 class Participante(models.Model):
 	user = models.ForeignKey(User, unique=True)
-	# ToDo...: Instalar ImageField
-	#foto = models.ImageField(upload_to="images/users")
+	foto = models.ImageField(upload_to="images/users", blank=True)
 	apelido = models.CharField(max_length=30)	
 	ddd = models.IntegerField(default=11, max_length=2)
 	telefone = models.IntegerField(blank=True, null=True)

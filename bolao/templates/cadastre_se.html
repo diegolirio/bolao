@@ -109,10 +109,13 @@
 				{% if user_participante.confirm_email %}	
 
 					
-					<form action="" method="POST" class="form-horizontal"> {% csrf_token %}
+					<form action="" method="POST" class="form-horizontal" enctype="multipart/form-data"> {% csrf_token %}
 						<div id="legend">
 						   <legend><h3>Participante</h3></legend>
 						</div>			
+						
+						{{ form_participante.foto }}
+						
 						<div class="control-group">
 							<label class="control-label">{{ form_participante.username.label }}</label>										
 							<div class="controls">
