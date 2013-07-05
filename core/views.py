@@ -108,7 +108,7 @@ def apostas_jogo(request, competicao_pk, jogo_pk):
 	user_inscricao = get_inscricao(competicao, user_participante)
 	jogo = Jogo.objects.get(pk=jogo_pk)
 	if (jogo.status.codigo == 'E'):
-		return redirect(URL_TABELA+str(competicao.pk)+'/')		
+		return redirect('/tabela/'+str(competicao.pk)+'/')		
 	apostas_jogos_competicao = get_palpites_all_participantes(jogo, competicao)
 	return render_to_response('_base.html', 
 	                          {   'template': 'apostas_jogo.html', 
@@ -231,7 +231,7 @@ def __new_participante__(user):
 	participante.apelido = user.username
 	participante.ddd = 11
 	#participante.telefone = 
-	participante.confirm_send_url = __get_code_random__()
+	participante.confirm_send_code = __get_code_random__()
 	participante.save()	
 	return participante
 	
@@ -265,7 +265,7 @@ def cadastre_se(request):
 				user = form_user.save()
 				print('save_user >>>>>>>> automatico participante e apos confirm_email ' + user.username)		
 				participante = __new_participante__(user)
-				send_mail('Conrfimacao de cadastro Ferraz Bolao', 'Usuario: '+ user.username +', clique no link para confirmar o cadastro  http://localhost:8000/confirm_email/'+participante.confirm_send_url+ '/?user='+str(user.pk), 'diegolirio.dl@gmail.com', [user.email])
+				send_mail('Conrfimacao de cadastro Ferraz Bolao', 'Usuario: '+ user.username +', clique no link para confirmar o cadastro  http://localhost:8000/confirm_email/'+participante.confirm_send_code+ '/?user='+str(user.pk), 'diegolirio.dl@gmail.com', [user.email])
 				status_transation = 'V'
 				# ToDo...: Realizar Login... aki.....
 				#user = authenticate(username=user.username, password=user.password)
@@ -340,13 +340,13 @@ def cadastre_se(request):
 				participante_new.apelido = user.username
 				participante_new.ddd = 11
 				#participante_new.telefone = ...
-				participante_new.confirm_send_url = '/confirm_email/' + user.username + '/' + __get_code_randow__()
+				participante_new.confirm_send_code = '/confirm_email/' + user.username + '/' + __get_code_randow__()
 				participante_new.save()
 				participante = get_participante_by_user(request.user)
 				form_participante = ParticipanteForm(instance=user_participante)
 				status_transation = 'V' # Visualizacao
 				#user.email()				
-				#send_mail('Conrfimacao de cadastro Bolao da Copa', 'http://127.0.0.1:8000'+participante.confirm_send_url, 'diegolirio.dl@gmail.com', [request.user.email])
+				#send_mail('Conrfimacao de cadastro Bolao da Copa', 'http://127.0.0.1:8000'+participante.confirm_send_code, 'diegolirio.dl@gmail.com', [request.user.email])
 			else:
 				form_participante = ParticipanteForm()
 	else:
@@ -374,7 +374,7 @@ def cadastre_se(request):
 def reenvio_confirm_email(request):
 	user_participante = get_participante_by_user(request.user)
 	if not user_participante.confirm_email:
-		send_mail('Conrfimacao de cadastro Ferraz Bolao', 'clique no link para confirmar o cadastro  http://localhost:8000/confirm_email/'+user_participante.confirm_send_url+ '/?user='+str(user_participante.user.pk), 'diegolirio.dl@gmail.com', [user_participante.user.email])
+		send_mail('Conrfimacao de cadastro Ferraz Bolao', 'clique no link para confirmar o cadastro  http://localhost:8000/confirm_email/'+user_participante.confirm_send_code+ '/?user='+str(user_participante.user.pk), 'diegolirio.dl@gmail.com', [user_participante.user.email])
 	return redirect('/cadastre_se/')
 
 def confirm_email(request, codigo_confirm):

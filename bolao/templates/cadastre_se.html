@@ -1,7 +1,11 @@
 {% if message != "" %}
+	{% if not user_participante.user.is_authenticated %}
+		<meta http-equiv="refresh" content="5; url=/login/"/>
+	{% endif %}
+	
 	<script type="text/javascript">
 		alert('{{message}}');
-	</script>
+	</script>		
 {% endif %}
 	
 	<div class="row well">

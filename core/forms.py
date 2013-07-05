@@ -17,6 +17,7 @@ class JogoForm(ModelForm):
 class ParticipanteForm(ModelForm):
 	class Meta:
 		model = Participante
+		fields = ('user','apelido','ddd','telefone')
 
 class UserNewForm(forms.ModelForm):	
 	class Meta:

@@ -13,7 +13,7 @@ class Participante(models.Model):
 	ddd = models.IntegerField(default=11, max_length=2)
 	telefone = models.IntegerField(blank=True, null=True)
 	confirm_email = models.BooleanField(default=False)
-	confirm_send_url = models.CharField(max_length=100)
+	confirm_send_code = models.CharField(max_length=100)
 	def __unicode__(self):
 		return self.apelido
 	
@@ -42,7 +42,7 @@ class Competicao(models.Model):
 	nome = models.CharField(max_length=50)	
 	status = models.ForeignKey(StatusJogo,default='E')
 	presidente = models.ForeignKey(Participante)
-	patrocinador = models.ForeignKey(Patrocinador) # # ToDo...:  blank=True
+	patrocinador = models.ForeignKey(Patrocinador, blank=True, null=True)
 	def __unicode__(self):
 		return self.nome + " - " + self.campeonato.nome + " - " + self.status.descricao
 	class Meta:
