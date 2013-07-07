@@ -68,7 +68,9 @@ urlpatterns = patterns('',
 	url(r'^aceitar_solicitacao/(?P<solicitacao_pk>\d+)/$', 'core.views.aceitar_solicitacao'),
 	
 	url(r'^regras/$', 'core.views.regras'),
-	
+
+
+	url(r'^pre_cadastro/', 'core.pre_cadastro.pre_cadastro')
     
  )
 
