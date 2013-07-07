@@ -57,7 +57,12 @@ class Time(models.Model):
 	nome = models.CharField(max_length=50, unique=True)
 	def __unicode__(self):
 		return self.nome
-			
+		
+class Local(models.Model):
+	descricao = models.CharField(max_length=50)
+	def __unicode__(self):
+		return self.descricao
+					
 class Jogo(models.Model):
 	#time_a = models.ForeignKey(Time)
 	#time_b = models.ForeignKey(Time)
@@ -69,7 +74,7 @@ class Jogo(models.Model):
 	data_hora = models.DateTimeField()
 	#hora = models.CharField(max_length=15)
 	vencedor = models.CharField(max_length=1, blank=True) # (A - B - E)
-	local = models.CharField(max_length=50, blank=True)
+	local = models.ForeignKey(Local, blank=True, null=True)
 	status = models.ForeignKey(StatusJogo) 
 	def __unicode__(self):
 		r_a = ""
@@ -78,7 +83,7 @@ class Jogo(models.Model):
 			r_a = str(self.resultado_a)
 			r_b = str(self.resultado_b)	
 		
-		return self.time_a + " " + r_a + " X " + r_b + " " + self.time_b + " / " + str(self.data_hora) + " - " + self.status.descricao + " / Local: " + self.local
+		return self.time_a + " " + r_a + " X " + r_b + " " + self.time_b + " / " + str(self.data_hora) + " - " + self.status.descricao + " / Local: " + self.local.descricao
 
 ###########################################################
 

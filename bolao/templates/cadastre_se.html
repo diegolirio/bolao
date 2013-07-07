@@ -87,7 +87,7 @@
 						<div class="controls">
 							<span class="add-on"><i class="icon-user"></i></span>
 							{{ form_user.last_name }}
-							{% if form_user.last_name.errors %}
+								{% if form_user.last_name.errors %}
 								{% for error in form_user.last_name.errors %}
 									<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
 								{% endfor %}
@@ -107,14 +107,16 @@
 		<div class="span6">
 			{% if status_transation != 'I' %}
 				{% if user_participante.confirm_email %}	
-
 					
-					<form action="" method="POST" class="form-horizontal" enctype="multipart/form-data"> {% csrf_token %}
+					<form action="" method="POST" enctype="multipart/form-data"> {% csrf_token %}
 						<div id="legend">
 						   <legend><h3>Participante</h3></legend>
 						</div>			
 						
-						{{ form_participante.foto }}
+						{{ form_participante.foto.label }}<br/>
+						<a href="/photo/" onclick="show__(this.href); return false;">
+							<img src="/media/{{ form_participante.foto.value }}" height="200" width="200" class="img-rounded"/>
+						</a>
 						
 						<div class="control-group">
 							<label class="control-label">{{ form_participante.username.label }}</label>										

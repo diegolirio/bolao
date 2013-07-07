@@ -56,6 +56,8 @@ urlpatterns = patterns('',
 	url(r'^confirm_email/(?P<codigo_confirm>\d{10})/$', 'core.views.confirm_email'),
 	url(r'^reenvio_confirm_email/$', 'core.views.reenvio_confirm_email'),
 	#url(r'^confirmado/(?P<competicao_pk>\d+)/$', 'core.views.confirmado'),
+
+	url(r'^photo/$', 'core.views.photo'),
 	
     #url(r'^aposta_calc/(?P<campeonato>\d+)/$', 'core.views.aposta_calc'),
     
@@ -72,6 +74,6 @@ urlpatterns = patterns('',
 
 if settings.DEBUG:
 	urlpatterns += patterns('', 
-	                        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
 	                        (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
     )
+

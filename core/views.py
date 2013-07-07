@@ -308,7 +308,25 @@ def alterar_senha(request):
 	                               'form': form, 
 	                               'mensagem': mensagem
 							}, RequestContext(request))
-							 
+
+def photo(request):
+	user_participante = get_participante_by_user(request.user)
+	mensagem = ''
+	execute_transation = 'N'
+	if request.method == 'POST':
+		form = ParticipanteFotoForm(request.POST, request.FILES, instance=user_participante)
+		if form.is_valid():
+			form.save()
+			execute_transation = 'S'
+			mensagem = 'Foto alterada com sucesso!!!'
+	else:
+		form = ParticipanteFotoForm(instance=user_participante)
+	return render_to_response('_base_simple.html', 
+	                          {'template': 'photo.html', 
+	                           'form': form,
+	                           'execute_transation': execute_transation,
+	                           'mensagem': mensagem
+	                          }, RequestContext(request))
 			
 """
 def cadastre_se(request):

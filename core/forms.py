@@ -18,6 +18,11 @@ class ParticipanteForm(ModelForm):
 	class Meta:
 		model = Participante
 		fields = ('user','apelido','ddd','telefone', 'foto')
+
+class ParticipanteFotoForm(ModelForm):
+	class Meta:
+		model = Participante
+		fields = ('user', 'foto')
 		
 class UserNewForm(forms.ModelForm):	
 	class Meta:

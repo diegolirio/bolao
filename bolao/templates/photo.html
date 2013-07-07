@@ -1,0 +1,25 @@
+					
+	<form action="" method="POST" enctype="multipart/form-data"> {% csrf_token %}
+		
+		<div id="legend">
+		   <legend><h3>{{user.username}}</h3></legend>
+		</div>			
+
+		<input type="hidden" name="user" value="{{form.user.value}}">
+		
+		{{ form.foto.label }}<br/>
+		<a href="/photo/" onclick="show__(this.href); return false;">
+			<img src="/media/{{ form.foto.value }}" height="200" width="200" class="img-rounded"/>
+		</a>
+		
+		<br/>
+		
+		{{ form.foto }}
+		
+		<div class="form-actions">		
+			<button type="submit" class="btn btn-primary" name="save_user"><i class="icon-ok" ></i> Salvar </button>
+		</div>
+		
+		
+	</form>
+
