@@ -476,6 +476,19 @@ def solicitacoes(request, competicao_pk):
 								   'message': 'None'
 	                          })			
 
+def __apostas_save_all__(participante, competicao):
+	inscr = Inscricao.objects.filter(participante=participante, competicao=competicao)[0:1].get()
+	grupos = Grupo.objects.filter(campeonato=competicao.campeonato)
+	for g in grupos:
+		jogos = Jogo.objects.filter(grupo=g)
+		for j in jogos:
+			aposta = Aposta()
+			aposta.inscricao = inscr
+			aposta.jogo = j
+			if j.status.codigo == 'F':
+				aposta.calculado = True
+			aposta.save()			
+
 def aceitar_solicitacao(request, solicitacao_pk):
 	user_participante = get_participante_by_user(request.user)
 	solicitacao = Solicitacao.objects.get(pk=solicitacao_pk)
@@ -487,17 +500,7 @@ def aceitar_solicitacao(request, solicitacao_pk):
 		inscricao_new.competicao = solicitacao.competicao
 		inscricao_new.participante = solicitacao.participante
 		inscricao_new.save()
-		inscr = Inscricao.objects.filter(participante=solicitacao.participante, competicao=solicitacao.competicao)[0:1].get()
-		grupos = Grupo.objects.filter(campeonato=solicitacao.competicao.campeonato)
-		for g in grupos:
-			jogos = Jogo.objects.filter(grupo=g)
-			for j in jogos:
-				aposta = Aposta()
-				aposta.inscricao = inscr
-				aposta.jogo = j
-				if j.status.codigo == 'F':
-					aposta.calculado = True
-				aposta.save()		
+		__apostas_save_all__(solicitacao.participante, solicitacao.competicao)
 		solicitacao.status = 'A'
 		solicitacao.save()
 		return redirect('/rancking/'+str(solicitacao.competicao.pk))
