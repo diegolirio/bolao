@@ -17,33 +17,6 @@ def __apostas_save_all__(participante, competicao):
 					aposta.calculado = True
 				aposta.save()			
 
-def __carla_save__():
-	if User.objects.filter(username='carla').count() == 0:
-		carla = User()
-		carla.username = 'carla'
-		carla.email = 'diegolirio.dl@gmail.com'
-		carla.password = 'carla'
-		carla.first_name = 'Carla'
-		carla.last_name = 'Arjona'
-		carla.save()
-	else:
-		carla = User.objects.filter(username='carla')[0:1].get()
-	
-	if Participante.objects.filter(apelido='Carla Arjona').count() == 0:
-		# Participante
-		pcarla = Participante()
-		pcarla.user = carla
-		pcarla.apelido = 'Carla Arjona'
-		pcarla.ddd = 11
-		pcarla.telefone = 999999999
-		pcarla.confirm_email = True
-		pcarla.confirm_send_code = 1234567890
-		pcarla.save()
-	else:
-		pcarla = Participante.objects.filter(apelido='Diego Lirio')[0:1].get()
-	return pcarla
-
-
 def global_():
 	# User
 	if User.objects.filter(username='diego').count() == 0:
@@ -365,24 +338,7 @@ def competicao_copa_confederacoes():
 	jogo_12.local = Local.objects.filter(descricao='Recife')[0:1].get()
 	jogo_12.status = e						
 	jogo_12.save()
-	####################################################
-	
-	# Inscricao
-	idiego = Inscricao()
-	idiego.participante = pdiego
-	idiego.competicao = comp_teste
-	idiego.save()
-	# Apostas
-	__apostas_save_all__(pdiego, comp_teste)
-	
-	# ---------------------------------------------------
-	pcarla = __carla_save__()
-	icarla = Inscricao()
-	icarla.participante = pcarla
-	icarla.competicao = comp_teste
-	icarla.save()
-	# Apostas
-	__apostas_save_all__(pcarla, comp_teste)		
+	####################################################	
 
 def pre_cadastro(request):
 	global_()

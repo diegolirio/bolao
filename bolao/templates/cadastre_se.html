@@ -112,12 +112,7 @@
 						<div id="legend">
 						   <legend><h3>Participante</h3></legend>
 						</div>			
-						
-						{{ form_participante.foto.label }}<br/>
-						<a href="/photo/" onclick="show__(this.href); return false;">
-							<img src="/media/{{ form_participante.foto.value }}" height="200" width="200" class="img-rounded"/>
-						</a>
-						
+
 						<div class="control-group">
 							<label class="control-label">{{ form_participante.username.label }}</label>										
 							<div class="controls">
@@ -131,6 +126,17 @@
 								{% endif %} 							
 							</div>	
 						</div>		
+
+						<a href="/photo/" onclick="show__(this.href); return false;">
+							{% if form_participante.foto.value != '' %}
+								{{ form_participante.foto.label }}<br/>
+								<img src="/media/{{ form_participante.foto.value }}" height="200" width="200" class="img-rounded"/>
+							{% else %}
+								<p>Adicionar Foto</p>
+							{% endif %}
+						</a>
+						
+						<br/><br/>
 						<div class="control-group">
 							<label class="control-label">{{ form_participante.apelido.label }}</label>										
 							<div class="controls">

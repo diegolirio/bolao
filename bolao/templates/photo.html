@@ -8,9 +8,11 @@
 		<input type="hidden" name="user" value="{{form.user.value}}">
 		
 		{{ form.foto.label }}<br/>
-		<a href="/photo/" onclick="show__(this.href); return false;">
+		{% if form.foto.value != '' %}
 			<img src="/media/{{ form.foto.value }}" height="200" width="200" class="img-rounded"/>
-		</a>
+		{% else %}
+			<p>Sem Foto</p>
+		{% endif %}			
 		
 		<br/>
 		

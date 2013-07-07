@@ -526,9 +526,10 @@ def system(request):
 @login_required
 def system_campeonato_calc_jogos(request, campeonato_pk):
 	campeonato = Campeonato.objects.get(pk=campeonato_pk)
-	grupos = Grupo.objects.filter(campeonato=campeonato)
-	for g in grupos:
-		jogos = Jogo.objects.filter(grupo=g)
+	#grupos = Grupo.objects.filter(campeonato=campeonato)
+	#for g in grupos:
+	#	jogos = Jogo.objects.filter(grupo=g)
+	jogos = get_jogos_of_the_campeonato(campeonato)
 	user_participante = get_participante_by_user(request.user)
 	return render_to_response('_base.html', 
 	                          {   'template': 'system/campeonato_calc_jogos.html', 
