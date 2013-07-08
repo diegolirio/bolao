@@ -1,55 +1,60 @@
 
 <div class="row">
 	<div class="span8">
-		<form action="" method="POST"> {% csrf_token %}
-			<div id="legend">
-			   <legend>
-				   <h3>
-					   Aposta em
-					   {{ aposta.jogo.status.descricao }} até {{ aposta.jogo.data_hora }}
-				   </h3>
-			   </legend>
-			</div>						
-			
-			<div class="control-big ">	
-				<input type="hidden" value="{{aposta.inscricao.id}}" name="inscricao" class="span1">
-				<input type="hidden" value="{{aposta.jogo.id}}" name="jogo" class="span1">
+		<center>
+			<form action="" method="POST"> {% csrf_token %}
+				<div id="legend">
+				   <legend>
+					   <h3>
+						   <span class="muted">Aposta em
+						   {{ aposta.jogo.status.descricao }} até </span> {{ aposta.jogo.data_hora }}
+					   </h3>
+				   </legend>
+				</div>						
 				
-				{% if form.resultado_a.errors %}
-					{% for error in form.resultado_a.errors %}
-						<span class="help-inline"><span class="text-error"> Resultado {{ aposta.jogo.time_a }} {{ error|escape }}</span></span>
-					{% endfor %}
-				{% endif %} 			
-				<br/>	
-				{% if form.resultado_b.errors %}
-					{% for error in form.resultado_b.errors %}
-						<span class="help-inline"><span class="text-error">Resultado {{ aposta.jogo.time_b }} {{ error|escape }}</span></span>
-					{% endfor %}
-				{% endif %} 				
+				<br/><br/>
 				
-				<h3>
-					{{ aposta.jogo.time_a }} 
-					<!--<input type="text" value="{{ aposta.resultado_a }}" name="resultado_a">-->
-					<!--{ form.resultado_a }-->
-					<input type="number" id="id_resultado_a" style="width: 45px; padding: 1px" value="{{form.resultado_a.value}}" name="resultado_a"> 
-					X 
-					<!--<input type="text" value="{{ aposta.resultado_b }}" name="resultado_b">-->
-					<!--{ form.resultado_b }-->
-					<input id="id_resultado_b" name="resultado_b" type="text" value="{{ form.resultado_b.value }}" />
-					{{ aposta.jogo.time_b }}
-				</h3>
+				<div class="control-big ">	
+					<input type="hidden" value="{{aposta.inscricao.id}}" name="inscricao" class="span1">
+					<input type="hidden" value="{{aposta.jogo.id}}" name="jogo" class="span1">
+					
+					{% if form.resultado_a.errors %}
+						{% for error in form.resultado_a.errors %}
+							<span class="help-inline"><span class="text-error"> Resultado {{ aposta.jogo.time_a }} {{ error|escape }}</span></span>
+						{% endfor %}
+					{% endif %} 			
+					<br/>	
+					{% if form.resultado_b.errors %}
+						{% for error in form.resultado_b.errors %}
+							<span class="help-inline"><span class="text-error">Resultado {{ aposta.jogo.time_b }} {{ error|escape }}</span></span>
+						{% endfor %}
+					{% endif %} 				
+					
+					<h3>
+						{{ aposta.jogo.time_a }} 
+						<!--<input type="text" value="{{ aposta.resultado_a }}" name="resultado_a">-->
+						<!--{ form.resultado_a }-->
+						<input type="number" id="id_resultado_a" style="width: 45px; padding: 1px" value="{{form.resultado_a.value}}" name="resultado_a"> 
+						X 
+						<!--<input type="text" value="{{ aposta.resultado_b }}" name="resultado_b">-->
+						<!--{ form.resultado_b }-->
+						<!--<input id="id_resultado_b" name="resultado_b" type="text" value="{{ form.resultado_b.value }}" />-->
+						<input type="number" id="id_resultado_b" style="width: 45px; padding: 1px" value="{{form.resultado_b.value}}" name="resultado_b"> 
+						{{ aposta.jogo.time_b }}
+					</h3>
+					
+					<input type="hidden" value="{{aposta.pontos}}" name="pontos">
+					<input type="hidden" value="{{aposta.vencedor}}" name="vencedor">
+					<input type="hidden" value="{{aposta.colocacao}}" name="colocacao">
+					<input type="hidden" value="{{aposta.calculado}}" name="calculado">
+				</div>	
 				
-				<input type="hidden" value="{{aposta.pontos}}" name="pontos">
-				<input type="hidden" value="{{aposta.vencedor}}" name="vencedor">
-				<input type="hidden" value="{{aposta.colocacao}}" name="colocacao">
-				<input type="hidden" value="{{aposta.calculado}}" name="calculado">
-			</div>	
-			
-			<div class="pull-rigth">
-				<input type="submit" value="Salvar" class="btn btn-large btn-success" name="save"/>						
-				<a href="#" onclick="close__('N')" class="btn btn-danger btn-large">Cancelar</a>		
-			</div>
-			
-		</form>
+				<div class="pull-rigth">
+					<input type="submit" value="Salvar" class="btn btn-large btn-success" name="save"/>						
+					<a href="#" onclick="close__('N')" class="btn btn-danger btn-large">Cancelar</a>		
+				</div>
+				
+			</form>
+		</center>
 	</div>
 </div>

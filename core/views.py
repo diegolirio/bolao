@@ -25,7 +25,14 @@ def get_participante_by_user(user, verifica_confirm_email=True):
 			#	return redirect('/cadastre_se/')
 		except:
 			return redirect('/cadastre_se/')
-	return user_participante			
+	return user_participante		
+
+def __get_patrocinador_principal__(competicao):
+	try:
+		patrocinador = Competicao_Patrocinadores.objects.filter(competicao=competicao, principal=True)[0:1].get()
+	except:
+		patrocinador = Competicao_Patrocinadores()
+	return patrocinador
 	
 def home(request):
 	competicoes = Competicao.objects.all()	
@@ -52,6 +59,7 @@ def get_inscricao(competicao, participante):
 
 def rancking(request, competicao_pk):
 	competicao = Competicao.objects.get(pk=competicao_pk)	
+	patrocinador = __get_patrocinador_principal__(competicao)
 	user_participante = get_participante_by_user(request.user)
 	user_inscricao = get_inscricao(competicao, user_participante)
 	inscricoes_competicao = get_rancking_by_competicao(competicao)
@@ -62,6 +70,7 @@ def rancking(request, competicao_pk):
 							        'user_participante': user_participante,
 							        'user_inscricao': user_inscricao,
 							        'competicao': competicao,
+									'patrocinador': patrocinador,
 							        #-----------------------------------
 							        'inscricoes_competicao': inscricoes_competicao
 							        })
@@ -77,6 +86,7 @@ def get_jogos_of_the_campeonato(campeonato):
 
 def tabela(request, competicao_pk):	
 	competicao = Competicao.objects.get(pk=competicao_pk)	
+	patrocinador = __get_patrocinador_principal__(competicao)
 	user_participante = get_participante_by_user(request.user)
 	user_inscricao = get_inscricao(competicao, user_participante)
 	jgs = get_jogos_of_the_campeonato(competicao.campeonato)
@@ -87,6 +97,7 @@ def tabela(request, competicao_pk):
 								      'user_participante': user_participante,
 								      'user_inscricao': user_inscricao,
 								      'competicao': competicao,
+									  'patrocinador': patrocinador,
 								      #----
 									  'jogos': jgs
 							 })
@@ -104,6 +115,7 @@ def get_palpites_all_participantes(jogo, competicao):
 # apostas de um soh jogo e competicao Ex: Brasil X Italia (Copa do Mundo 2014 - Della Volpe)
 def apostas_jogo(request, competicao_pk, jogo_pk):
 	competicao = Competicao.objects.get(pk=competicao_pk)	
+	patrocinador = __get_patrocinador_principal__(competicao)
 	user_participante = get_participante_by_user(request.user)
 	user_inscricao = get_inscricao(competicao, user_participante)
 	jogo = Jogo.objects.get(pk=jogo_pk)
@@ -116,7 +128,8 @@ def apostas_jogo(request, competicao_pk, jogo_pk):
 								  'subtitulo': competicao.campeonato.nome + ' ' + competicao.nome,
 								  'user_participante': user_participante,
 								  'user_inscricao': user_inscricao,
-								  'competicao': competicao,								  
+								  'competicao': competicao,	
+								  'patrocinador': patrocinador,								  
 	                              'jogo': jogo, 
 	                              'apostas': apostas_jogos_competicao
 	                           })	
@@ -124,6 +137,7 @@ def apostas_jogo(request, competicao_pk, jogo_pk):
 @login_required
 def aposta(request, competicao_pk):	
 	competicao = Competicao.objects.get(pk=competicao_pk)	
+	patrocinador = __get_patrocinador_principal__(competicao)
 	user_participante = get_participante_by_user(request.user)
 	user_inscricao = get_inscricao(competicao, user_participante)			
 	apts = Aposta.objects.filter(inscricao=user_inscricao)
@@ -134,7 +148,9 @@ def aposta(request, competicao_pk):
 	                              'user_participante': user_participante,
 	                              'user_inscricao': user_inscricao,
 	                              'competicao': competicao,
+								  'patrocinador': patrocinador,		
 	                              'apostas': apts, 
+								  'total_pontos': user_inscricao.pontos,
 	                              'user_inscricao': user_inscricao
 	                          })
 
@@ -189,6 +205,7 @@ def __get_jogos_not_edition_by_campeonato__(campeonato):
 
 def perfil_competicao(request, competicao_pk, view_inscricao_pk):
 	competicao = Competicao.objects.get(pk=competicao_pk)	
+	patrocinador = __get_patrocinador_principal__(competicao)
 	user_participante = get_participante_by_user(request.user)
 	user_inscricao = get_inscricao(competicao, user_participante)
 	view_inscricao = Inscricao.objects.get(pk=view_inscricao_pk)
@@ -207,14 +224,18 @@ def perfil_competicao(request, competicao_pk, view_inscricao_pk):
 						      {  
 								'template': 'perfil_competicao.html',
 								'titulo': view_inscricao.participante.apelido,
-								'subtitulo': view_inscricao.competicao.campeonato.nome + ' ' + view_inscricao.competicao.nome,
+								'subtitulo': '', #view_inscricao.competicao.campeonato.nome + ' ' + view_inscricao.competicao.nome,
 								'user_participante': user_participante,
 								'user_inscricao': user_inscricao,
-								'competicao': competicao, 								
+								'competicao': competicao, 	
+								'patrocinador': patrocinador,									
 								'view_inscricao': view_inscricao,
 								'apostas': view_apostas, # apostas do participante, nao alterar chave por manter mesmo da apostas.html
+								'total_pontos': view_inscricao.pontos,
 								#'view_apostas_chart': view_apostas_chart,
-								'qtde_jogos': jogo_
+								'qtde_jogos': jogo_,
+								'perfil': True,
+								'foto': view_inscricao.participante.foto,
 							   })
 							   
 def __get_code_random__():
@@ -476,7 +497,7 @@ def solicitacoes(request, competicao_pk):
 								   'message': 'None'
 	                          })			
 
-def __apostas_save_all__(participante, competicao):
+def __apostas_create_all__(participante, competicao):
 	inscr = Inscricao.objects.filter(participante=participante, competicao=competicao)[0:1].get()
 	grupos = Grupo.objects.filter(campeonato=competicao.campeonato)
 	for g in grupos:
@@ -500,7 +521,7 @@ def aceitar_solicitacao(request, solicitacao_pk):
 		inscricao_new.competicao = solicitacao.competicao
 		inscricao_new.participante = solicitacao.participante
 		inscricao_new.save()
-		__apostas_save_all__(solicitacao.participante, solicitacao.competicao)
+		__apostas_create_all__(solicitacao.participante, solicitacao.competicao)
 		solicitacao.status = 'A'
 		solicitacao.save()
 		return redirect('/rancking/'+str(solicitacao.competicao.pk))
@@ -623,6 +644,8 @@ def __calcula_apostas__(jogo):
 			a.pontos = PONTOS_ERRO
 		if a.jogo.status.codigo == 'F':
 			a.calculado = True
+			a.colocacao = -1
+		elif a.jogo.status.codigo == 'A':
 			a.colocacao = -1
 		a.save()
 		if (competicao != a.inscricao.competicao) or (i == apostas.count()):
@@ -882,11 +905,12 @@ def calcula_rancking_historico(competicao, jogo, aposta):
 		
 		
 def regras(request):
+	user_participante = get_participante_by_user(request.user)
 	return render_to_response('_base.html', 
-	                          { 'template': 'regras.html',
-							    'titulo': 'Regras',
-								'subtitulo': 'Regras'}
-							 )
+	                          {   'template': 'regras.html', 
+							      'titulo': 'Regras ', 
+								  'subtitulo': 'Regras', 
+								  'user_participante': user_participante})	
 		
 		
 		

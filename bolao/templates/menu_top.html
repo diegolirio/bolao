@@ -49,7 +49,11 @@
 		<div class="container">
 			<div class="row-fluid">
 				<div class="span5">
-						<img class="pull-left" src="/media/images/trofeu_bolao_72.png"/>
+						{% if perfil %}
+							<img class="pull-left" src="/media/{{foto}}" height="90" width="80"/> 
+						{% else %}
+							<img class="pull-left" src="/media/images/trofeu_bolao_72.png"/>
+						{% endif %}
 						<div class="offset2">
 							<h1 class="muted">{{ titulo }}</h1>
 							<p>{{ subtitulo }}</p>

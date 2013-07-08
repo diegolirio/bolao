@@ -7,8 +7,8 @@ from datetime import datetime
 
 class Participante(models.Model):
 	user = models.ForeignKey(User, unique=True)
-	foto = models.ImageField(upload_to="images/users", blank=True)
-	apelido = models.CharField(max_length=30)	
+	foto = models.ImageField(upload_to="images/users/", blank=True, default="images/users/user_xxx.jpg")
+	apelido = models.CharField('Apelido/Nome', max_length=30)	
 	ddd = models.IntegerField(default=11, max_length=2)
 	telefone = models.IntegerField(blank=True, null=True)
 	confirm_email = models.BooleanField(default=False)
@@ -41,11 +41,20 @@ class Competicao(models.Model):
 	nome = models.CharField(max_length=50)	
 	status = models.ForeignKey(StatusJogo,default='E')
 	presidente = models.ForeignKey(Participante)
-	patrocinador = models.ForeignKey(Patrocinador, blank=True, null=True)
+	#patrocinador = models.ForeignKey(Patrocinador, blank=True, null=True)
+	patrocinadores = models.ManyToManyField(Patrocinador, through='Competicao_Patrocinadores') #, blank=True,null=True)
+	#patrocinadores = models.ManyToManyField(Patrocinador)
 	def __unicode__(self):
 		return self.nome + " - " + self.campeonato.nome + " - " + self.status.descricao
 	class Meta:
 		unique_together = ('campeonato', 'nome')
+		
+class Competicao_Patrocinadores(models.Model):
+	patrocinador = models.ForeignKey(Patrocinador)
+	competicao = models.ForeignKey(Competicao)
+	principal = models.BooleanField(default=False)
+	class Meta:
+		unique_together = ('patrocinador', 'competicao')	
 	
 class Grupo(models.Model):
 	descricao = models.CharField(max_length=50)
@@ -110,6 +119,9 @@ class Inscricao(models.Model):
 	
 ###########################################################
 class Aposta(models.Model):
+	class Meta:
+		unique_together = ('inscricao', 'jogo')		
+		
 	inscricao = models.ForeignKey(Inscricao)
 	jogo = models.ForeignKey(Jogo)
 	resultado_a = models.IntegerField(default=0)
@@ -120,8 +132,6 @@ class Aposta(models.Model):
 	colocacao = models.IntegerField(default=0)
 	def __unicode__(self):
 		return self.inscricao.participante.apelido + " / " + self.jogo.time_a + " " + str(self.jogo.resultado_a) + " X " + str(self.jogo.resultado_b) + " " + self.jogo.time_b + " / " + str(self.jogo.data_hora) + " / Local: " + self.jogo.local.descricao + " / " + self.jogo.status.descricao + " - Aposta: " + str(self.resultado_a) + " X " + str(self.resultado_b)
-	class Meta:
-		unique_together = ('inscricao', 'jogo')		
 	
 class Solicitacao(models.Model):
 	participante = models.ForeignKey(Participante)

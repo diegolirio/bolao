@@ -21,7 +21,7 @@ def index(request):
 				#request.user.user.email_user('Confirmacao bolao', 'Segue url para confirmacao >>>', None)
 				# ------------------------- Email -----------------------------------------------
 				#send_mail('Subject', 'Message.', 'from@example.com', [email@provedor.com', email_2@provedor.com'])        
-				send_mail('Conrfimacao de cadastro Ferraz Bolao', 'http://127.0.0.1:8000'+part_admin.confirm_send_url, 'diegolirio.dl@gmail.com', [request.user.email])
+				send_mail('Conrfimacao de cadastro Ferraz Bolao', 'http://localhost:8000/confirm_email/'+part_admin.confirm_send_code+ '/?user='+str(request.user.pk), 'diegolirio.dl@gmail.com', [request.user.email])																   
 				# ------------------------- fim Email -----------------------------------------------
 				return redirect('/system/') # cadastrese_1
 			else:

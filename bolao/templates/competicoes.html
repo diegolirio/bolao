@@ -1,6 +1,12 @@
 
 <div class="row">
 {% for c in competicoes %}
+
+	Pegar somente o principal....
+	{% for p in c.patrocinadores.all %}
+		<h1>{{ p.nome }}</h1>
+	{% endfor %}
+
 		<!--<h1><a href="/rancking/{{c.id}}/">{{ c.nome }}</a></h1>-->
 	<div class="span6">
 		<div class="hero-unit">
