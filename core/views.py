@@ -695,7 +695,8 @@ def __limpa_pontuacao__(inscricao):
 #Calcula Rancking/colocacao
 def __calcula_rancking__(competicao):
 	inscricoes = Inscricao.objects.filter(competicao=competicao).order_by('-pontos','-quantidade_acerto_placar', '-quantidade_acerto_vencedor_um_resultado_correto', '-quantidade_acerto_vencedor','-quantidade_acerto_empate_erro_placar', '-quantidade_acerto_somente_resultado_um_time')
-	col = 0
+	col_inc_ = 0
+	col_real = 0
 	pt_anterior = 0
 	qtde_ap = 0
 	qtde_ar = 0
@@ -703,16 +704,19 @@ def __calcula_rancking__(competicao):
 	qtde_ae = 0
 	qtde_as = 0
 	for i in inscricoes:
-		col = col + 1		
+		col_inc_ = col_inc_ + 1		
 		if (i.pontos != pt_anterior) or (i.quantidade_acerto_vencedor_um_resultado_correto != qtde_ar) or (i.quantidade_acerto_placar != qtde_ap) or (i.quantidade_acerto_vencedor != qtde_av) or (i.quantidade_acerto_empate_erro_placar != qtde_ae) or (i.quantidade_acerto_somente_resultado_um_time != qtde_as):			
-			i.colocacao = col
+			col_real = col_inc_
+			i.colocacao = col_real
 		else:
-			i.colocacao = col-1
+			i.colocacao = col_real
 		i.save()
 		pt_anterior = i.pontos
 		qtde_ap = i.quantidade_acerto_placar
+		qtde_ar = i.quantidade_acerto_vencedor_um_resultado_correto
 		qtde_av = i.quantidade_acerto_vencedor
 		qtde_ae = i.quantidade_acerto_empate_erro_placar
+		qtde_as = i.quantidade_acerto_somente_resultado_um_time
 		
 # end system	<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
