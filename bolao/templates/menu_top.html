@@ -24,7 +24,10 @@
 			  <li><a href="/regras/">Regras</a></li>
 			  {% if user_participante.user.is_authenticated %}
 			    <li class="dropdown">
-				   <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{ user_participante.apelido }}<b class="caret"></b></a>
+				   <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+					   <img src="/media/{{ form_participante.foto.value }}" height="30" width="25" class="img-rounded"/>
+					   {{ user_participante.apelido }}<b class="caret"></b>
+				   </a>
 				   <ul class="dropdown-menu" id="swatch-menu">
 					  <li><a href="/perfil/">Perfil</a></li>					    
 					  <li><a href="/logout/">Sair</a></li>					    
