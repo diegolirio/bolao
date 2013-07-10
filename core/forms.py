@@ -9,6 +9,16 @@ from django import forms
 class ApostaForm(ModelForm):
 	class Meta:
 		model = Aposta
+		
+	def clean_resultado_a(self):
+		if int(self.cleaned_data['resultado_a']) < 0:
+			raise forms.ValidationError('O Resultado deve ser igual ou maior que ZERO!')
+		return self.cleaned_data['resultado_a']	
+
+	def clean_resultado_b(self):
+		if int(self.cleaned_data['resultado_b']) < 0:
+			raise forms.ValidationError('O Resultado deve ser igual ou maior que ZERO!')
+		return self.cleaned_data['resultado_b']			
 
 class JogoForm(ModelForm):
 	class Meta:
@@ -22,7 +32,7 @@ class ParticipanteForm(ModelForm):
 class ParticipanteFotoForm(ModelForm):
 	class Meta:
 		model = Participante
-		fields = ('user', 'foto')
+		fields = ('user', 'foto')		
 		
 class UserNewForm(forms.ModelForm):	
 	class Meta:

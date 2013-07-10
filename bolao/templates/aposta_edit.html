@@ -20,13 +20,13 @@
 					
 					{% if form.resultado_a.errors %}
 						{% for error in form.resultado_a.errors %}
-							<span class="help-inline"><span class="text-error"> Resultado {{ aposta.jogo.time_a }} {{ error|escape }}</span></span>
+							<span class="help-inline"><span class="text-error"> Resultado {{ aposta.jogo.time_a }}: {{ error|escape }}</span></span>
 						{% endfor %}
 					{% endif %} 			
 					<br/>	
 					{% if form.resultado_b.errors %}
 						{% for error in form.resultado_b.errors %}
-							<span class="help-inline"><span class="text-error">Resultado {{ aposta.jogo.time_b }} {{ error|escape }}</span></span>
+							<span class="help-inline"><span class="text-error">Resultado {{ aposta.jogo.time_b }}: {{ error|escape }}</span></span>
 						{% endfor %}
 					{% endif %} 				
 					
