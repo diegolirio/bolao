@@ -5,7 +5,10 @@ register = template.Library()
 @register.filter('kclass')
 def kclass(obj):
     return  'Ola ' + obj
-
+	
+@register.filter('cut')
 def cut(value, arg):
     """Removes all values of arg from the given string"""
     return value.replace(arg, '')	
+
+	

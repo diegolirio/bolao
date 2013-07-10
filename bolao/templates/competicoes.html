@@ -4,7 +4,9 @@
 
 	Pegar somente o principal....
 	{% for p in c.patrocinadores.all %}
-		<h1>{{ p.nome|cut:'a' }}</h1>
+		<h4 class="text-info">{{ p.nome|cut:'a' }}</h4>
+		<h4 class="text-warning">{{ p.nome|kclass }}</h4>
+		<!--<h4 class="text-warning">{ p.nome|lower }</h4>-->
 		<!--% if field.field.widget|kclass == 'Textarea' %-->
 	{% endfor %}
 
