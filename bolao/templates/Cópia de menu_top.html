@@ -45,64 +45,58 @@
 		 </div>
 	   </div>
 	 </div>
-	 
-	 <br/><br/><br/><br/>
-	 
-	{% if not not_header %}
-	 
-			</br/>
-			
+	
+	<br/><br/><br/>
+	
+	<div class="head">
+		<div class="container">
+			<div class="row-fluid">
+				<div class="span5">
+						{% if perfil %}
+							<img class="pull-left" src="/media/{{foto}}" height="90" width="80"/> 
+						{% else %}
+							<img class="pull-left" src="/media/images/trofeu_bolao_72.png"/>
+						{% endif %}
+						<div class="offset2">
+							<h1 class="muted">{{ titulo }}</h1>
+							<p>{{ subtitulo }}</p>
+						</div>
+				</div>
+				<div class="span7">
+					{% if user_participante.user.is_authenticated %}
+						<div class="pull-right">
+							<!--
+							<h3>{{ user_participante }}</h3>
+							<p>{{ inscricao.colocacao }}º Colocação</p>
+							<p><span class="offset3">{{ inscricao.pontos }} pontos.</span></p>
+							-->
+						</div>							
+					{% else %}
+						<a href="/cadastre_se/" class="btn pull-right">Cadastre-se</a>						  
+					{% endif %}					
+				</div>
+			</div>
+		</div>
+		
+		<div class="subnav">
+			{% if competicao.id > 0 %}
 			<div class="container">
-				<header class="jumbotron subhead" id="overview">
-				  <div class="row">
-					<div class="span6">
-								{% if perfil %}
-									<img class="pull-left" src="/media/{{foto}}" height="90" width="80"/> 
-								{% else %}
-									<img class="pull-left" src="/media/images/trofeu_bolao_72.png"/>
-								{% endif %}
-								<div class="offset2">
-									<h1 class="muted">{{ titulo }}</h1>
-									<p>{{ subtitulo }}</p>
-								</div>
-					</div>
-					<div class="span6">
-					  <div class="bsa well">
-							{% if user_participante.user.is_authenticated %}
-								<div class="pull-right">
-									<!--
-									<h3>{{ user_participante }}</h3>
-									<p>{{ inscricao.colocacao }}º Colocação</p>
-									<p><span class="offset3">{{ inscricao.pontos }} pontos.</span></p>
-									-->
-								</div>							
-							{% else %}
-								<a href="/cadastre_se/" class="btn pull-right">Cadastre-se</a>						  
-							{% endif %}						  
-					  </div>
-					</div>
-				  </div>
-				  <div class="subnav">
-					{% if competicao.id > 0 %}
-					<div class="container">
-						<ul class="nav nav-pills">
-						  <li><a href="/rancking/{{competicao.id}}/">Rancking</a></li>
-						  <li><a href="/tabela/{{competicao.id}}/">Tabela</a></li>
-						  {% if user_inscricao.pk > 0 %}
-							<li><a href="/aposta/{{competicao.id}}/">Minhas Aposta</a></li>
-						  {% endif %}
-						  <li class="pull-center" id="aguarde_id"></li>
-						  {% if competicao.status.codigo == 'E' %}
-							<li class="pull-right"><a href="/solicita_inscricao/{{competicao.id}}/"><span class="text-info"><b>Solicitar Inscrição na Competição</b></span></a></li>				  
-						  {% endif %}				  
-						  <li class="pull-right"><a href="/patrocinadores/{{competicao.id}}/"><span class="text-info">Patrocionadores</span></a></li>
-						  {% if competicao.presidente.pk == user_participante.pk %}
-							<li class="pull-right"><a href="/solicitacoes/{{competicao.id}}/"><span class="text-info">Solicitações</span></a></li>				  
-						  {% endif %}
-						</ul>
-					</div>
-					{% endif %}
-				  </div>
-				</header>
-			</div>	
-	{% endif %}
+				<ul class="nav nav-pills">
+				  <li><a href="/rancking/{{competicao.id}}/">Rancking</a></li>
+				  <li><a href="/tabela/{{competicao.id}}/">Tabela</a></li>
+				  {% if user_inscricao.pk > 0 %}
+					<li><a href="/aposta/{{competicao.id}}/">Minhas Aposta</a></li>
+				  {% endif %}
+				  <li class="pull-center" id="aguarde_id"></li>
+				  {% if competicao.status.codigo == 'E' %}
+					<li class="pull-right"><a href="/solicita_inscricao/{{competicao.id}}/"><span class="text-info"><b>Solicitar Inscrição na Competição</b></span></a></li>				  
+				  {% endif %}				  
+				  <li class="pull-right"><a href="/patrocinadores/{{competicao.id}}/"><span class="text-info">Patrocionadores</span></a></li>
+				  {% if competicao.presidente.pk == user_participante.pk %}
+					<li class="pull-right"><a href="/solicitacoes/{{competicao.id}}/"><span class="text-info">Solicitações</span></a></li>				  
+				  {% endif %}
+				</ul>
+			</div>
+			{% endif %}
+		</div>
+	</div>			
