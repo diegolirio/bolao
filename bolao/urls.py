@@ -48,7 +48,8 @@ urlpatterns = patterns('',
     url(r'^system/$', 'core.views.system'),
     url(r'^system/campeonato_calc_jogos/(?P<campeonato_pk>\d+)/$', 'core.views.system_campeonato_calc_jogos'),
     url(r'^system/calcular_campeonato/(?P<campeonato_pk>\d+)/$', 'core.views.system_calcular_campeonato'),
-	url(r'^system/jogo_edit/(?P<campeonato_pk>\d+)/(?P<jogo_pk>\d+)/$', 'core.views.system_jogo_edit'),
+	url(r'^system/jogo_edit/(?P<campeonato_pk>\d+)/(?P<jogo_pk>\d+)/$', 'core.views.system_jogo_edit'),	
+	url(r'^system/cadastrar_participante/(?P<user_pk>\d+)$', 'core.views.system_cadastrar_participante'),
     
     url(r'^cadastre_se/$', 'core.views.cadastre_se'),
 	url(r'^cadastre_se/alterar_senha/$', 'core.views.alterar_senha'),
@@ -63,11 +64,12 @@ urlpatterns = patterns('',
     
     url(r'^solicita_inscricao/(?P<competicao_pk>\d+)/$', 'core.views.solicita_inscricao'),    
     url(r'^minhas_competicoes/$', 'core.views.minhas_competicoes'),
-    url(r'^solicitacoes/(?P<competicao_pk>\d+)/$', 'core.views.solicitacoes'),
-	
+    url(r'^solicitacoes/(?P<competicao_pk>\d+)/$', 'core.views.solicitacoes'),	
 	url(r'^aceitar_solicitacao/(?P<solicitacao_pk>\d+)/$', 'core.views.aceitar_solicitacao'),
 	
 	url(r'^regras/$', 'core.views.regras'),
+	
+	url(r'^patrocinadores/(?P<competicao_pk>\d+)/$', 'core.views.patrocinadores'),
 
 
 	url(r'^pre_cadastro/', 'core.pre_cadastro.pre_cadastro')

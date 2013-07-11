@@ -1,0 +1,11 @@
+<div class="row">
+	
+	<h3>Copa <a href="{{patrocinador.patrocinador.url_site}}" target="_blank">{{patrocinador.patrocinador.nome_visual}}</a> {{competicao.nome}}</h3>
+
+	<hr/>
+	
+	{% for p in patrocinadores %}
+		<h1>{{p.patrocinador.nome_visual}}</h1>
+	{% endfor %}
+	
+</div>

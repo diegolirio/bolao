@@ -11,6 +11,8 @@ from django.core.mail import send_mail
 #import datetime
 from django.contrib.auth import authenticate, login
 
+envia_email = False
+
 def user_login_is_valid(user_request, user_inscricao):
 	if user_request.pk == user_inscricao.pk:
 		return True
@@ -43,7 +45,6 @@ def home(request):
 												'subtitulo': '',
 												'user_participante': user_participante,
 												'my_count': my_count,
-												'url': '/rancking/',
 												'competicoes': competicoes
 											})
 											
@@ -228,7 +229,7 @@ def perfil_competicao(request, competicao_pk, view_inscricao_pk):
 								'user_participante': user_participante,
 								'user_inscricao': user_inscricao,
 								'competicao': competicao, 	
-								'patrocinador': patrocinador,									
+								'patrocinador': patrocinador,										
 								'view_inscricao': view_inscricao,
 								'apostas': view_apostas, # apostas do participante, nao alterar chave por manter mesmo da apostas.html
 								'total_pontos': view_inscricao.pontos,
@@ -430,8 +431,9 @@ def confirm_email(request, codigo_confirm):
 def solicita_inscricao(request, competicao_pk):
 	msg = ''
 	competicao = Competicao.objects.get(pk=competicao_pk)
+	patrocinador = __get_patrocinador_principal__(competicao)
 	if request.user.is_authenticated:
-		if competicao.status.codigo == 'E':
+		if competicao.campeonato.status.codigo == 'E':
 			user_participante = get_participante_by_user(request.user)
 			if user_participante.confirm_email:
 				if Inscricao.objects.filter(participante=user_participante, competicao=competicao).count() == 0:
@@ -456,7 +458,8 @@ def solicita_inscricao(request, competicao_pk):
 							{'template': 'solicita_inscricao.html', 
 							 'message': msg, 
 							 'user_participante': user_participante,
-							 'competicao': competicao }
+							 'competicao': competicao,
+							'patrocinador': patrocinador}
 							 )
 
 # Para o Presidente
@@ -479,6 +482,7 @@ def minhas_competicoes(request):
 def solicitacoes(request, competicao_pk):
 	user_participante = get_participante_by_user(request.user)
 	competicao = Competicao.objects.get(pk=competicao_pk)
+	user_inscricao = get_inscricao(competicao, user_participante)
 	#print(request.GET['status'])
 	try:
 		status = request.GET['status']
@@ -492,6 +496,7 @@ def solicitacoes(request, competicao_pk):
 								   'titulo': 'Solicitações',
 	                               'subtitulo': competicao.nome,
 	                               'user_participante': user_participante,
+								   'user_inscricao': user_inscricao,
 	                               'solicitacoes': solicitacoes,
 	                               'competicao': competicao,
 								   'message': 'None'
@@ -514,6 +519,7 @@ def aceitar_solicitacao(request, solicitacao_pk):
 	user_participante = get_participante_by_user(request.user)
 	solicitacao = Solicitacao.objects.get(pk=solicitacao_pk)
 	message = 'None'
+	user_inscricao = Inscricao()
 	if Inscricao.objects.filter(participante=solicitacao.participante, competicao=solicitacao.competicao).count() > 0:
 		message = 'Já existe esse participante inscrito para esta competição'
 	else:
@@ -524,6 +530,7 @@ def aceitar_solicitacao(request, solicitacao_pk):
 		__apostas_create_all__(solicitacao.participante, solicitacao.competicao)
 		solicitacao.status = 'A'
 		solicitacao.save()
+		user_inscricao = get_inscricao(solicitacao.competicao, user_participante)
 		return redirect('/rancking/'+str(solicitacao.competicao.pk))
 	solicitacoes = Solicitacao.objects.filter(pk=solicitacao_pk)
 	return render_to_response('_base.html', 
@@ -531,6 +538,7 @@ def aceitar_solicitacao(request, solicitacao_pk):
 								   'titulo': 'Solicitações',
 	                               'subtitulo': solicitacao.competicao.nome,
 	                               'user_participante': user_participante,
+								   'user_inscricao': user_inscricao,
 	                               'solicitacoes': solicitacoes,
 	                               'competicao': solicitacao.competicao,
 								   'message': message
@@ -591,12 +599,8 @@ def system_jogo_edit(request, campeonato_pk, jogo_pk):
 
 @login_required
 def system_calcular_campeonato(request, campeonato_pk):
+	envia_email = False
 	campeonato = Campeonato.objects.get(pk=campeonato_pk)
-	#grupos = Grupo.objects.filter(campeonato=campeonato)
-	#status = StatusJogo.objects.filter(codigo='E')[0:1].get()
-	#for g in grupos:
-		# Pego todos os jogos do grupo que nao estejam com status em Edicao
-		#jogos = Jogo.objects.filter(grupo=g).exclude(status=status).order_by('data_hora')
 	jogos = __get_jogos_not_edition_by_campeonato__(campeonato)
 	for j in jogos:
 		print(j.time_a + " X " + j.time_b)
@@ -611,8 +615,29 @@ def system_calcular_campeonato(request, campeonato_pk):
 			# somatorio na inscricao,
 			__soma_pontuacao__(i)		
 		#Calcula Rancking/colocacao
-		__calcula_rancking__(c)
+		__calcula_rancking__(c)	
+		# ToDo..: envia email
+		#if envia_email:
+		#	para todos os participante dessa competicao.
 	return redirect('/home/')
+	
+@login_required	
+def system_cadastrar_participante(request, user_pk):
+	message = ''
+	status_transation = 'I'
+	user_participante = get_participante_by_user(request.user, False)
+	form_user = UserNewForm()
+	form_participante = ParticipanteForm()	
+	return render_to_response('_base.html', 
+	                          {'template': 'cadastre_se.html', 
+	                           'titulo': 'Cadastro System', 
+	                           'subtitulo': '',
+	                           'user_participante': user_participante,
+	                           'form_user': form_user,
+							   'form_participante': form_participante,
+							   'status_transation': status_transation,
+							   'message': message
+	                           }, RequestContext(request))	
 	
 def __calcular_vencedor_jogo__(j):
 	if j.resultado_a > j.resultado_b:
@@ -642,9 +667,11 @@ def __calcula_apostas__(jogo):
 			a.pontos = PONTOS_SOMENTE_RESULTADO_GOLS_UM_TIME
 		else:
 			a.pontos = PONTOS_ERRO
+		# somente entre no blobo if abaixo os Finalizados com nao calculados
 		if a.jogo.status.codigo == 'F':
 			a.calculado = True
 			a.colocacao = -1
+			envia_email = True
 		elif a.jogo.status.codigo == 'A':
 			a.colocacao = -1
 		a.save()
@@ -903,6 +930,23 @@ def calcula_rancking_historico(competicao, jogo, aposta):
 		a.colocacao = i.colocacao
 		a.save()
 		
+def patrocinadores(request, competicao_pk):
+	competicao = Competicao.objects.get(pk=competicao_pk)
+	patrocinadores = Competicao_Patrocinadores.objects.filter(competicao=competicao)
+	patrocinador = __get_patrocinador_principal__(competicao)
+	user_participante = get_participante_by_user(request.user)
+	user_inscricao = get_inscricao(competicao, user_participante)
+	return render_to_response('_base.html', 
+	                          {    'template':'patrocinadores.html', 
+								   'titulo': 'Patrocinadores',
+	                               'subtitulo': u'Competição: Copa ' + competicao.nome,
+	                               'user_participante': user_participante,
+								   'user_inscricao': user_inscricao,
+	                               'patrocinadores': patrocinadores,
+								   'patrocinador': patrocinador,
+	                               'competicao': competicao
+	                          })				
+	
 		
 def regras(request):
 	user_participante = get_participante_by_user(request.user)

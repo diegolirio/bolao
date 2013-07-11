@@ -1,0 +1,93 @@
+	<form action="" method="POST" class="form-horizontal"> {% csrf_token %}
+		<div id="legend">
+		   <legend><h3>Usuário</h3></legend>
+		</div>			
+		<div class="control-group">
+			<label class="control-label">{{ form_user.username.label }}</label>										
+			<div class="controls">
+				<span class="add-on"><i class="icon-user"></i></span>
+				{{ form_user.username }}
+				{% if form_user.username.errors %}
+					{% for error in form_user.username.errors %}
+						<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
+					{% endfor %}
+				{% endif %} 							
+			</div>	
+		</div>
+		<div class="control-group">
+			<label class="control-label">{{ form_user.email.label }}</label>										
+			<div class="controls">
+				<span class="add-on"><i class="icon-envelope"></i></span>
+				{{ form_user.email }}
+				{% if form_user.email.errors %}
+					{% for error in form_user.email.errors %}
+						<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
+					{% endfor %}
+				{% endif %} 									
+			</div>	
+		</div>					
+		
+		<!-- Nao Logado -->
+		{% if not user_participante.user.is_authenticated %}
+			<div class="control-group">
+				<label class="control-label">{{ form_user.password.label }}</label>										
+				<div class="controls">
+					<span class="add-on"><i class="icon-lock"></i></span>
+					{{ form_user.password }}
+					{% if form_user.password.errors %}
+						{% for error in form_user.password.errors %}
+							<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
+						{% endfor %}
+					{% endif %} 									
+				</div>	
+			</div>		
+			<div class="control-group">
+				<label class="control-label">{{ form_user.confirme_a_senha.label }}</label>										
+				<div class="controls">
+					<span class="add-on"><i class="icon-lock"></i></span>
+					{{ form_user.confirme_a_senha }}
+					{% if form_user.confirme_a_senha.errors %}
+						{% for error in form_user.confirme_a_senha.errors %}
+							<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
+						{% endfor %}
+					{% endif %} 									
+				</div>	
+			</div>	
+		{% endif %}		
+		<!-- Fim Nao Logado -->
+		
+		<!-- Logado -->
+		{% if user_participante.user.is_authenticated %}
+			<div class="control-group">
+				<label class="control-label">{{ form_user.first_name.label }}</label>										
+				<div class="controls">
+					<span class="add-on"><i class="icon-user"></i></span>
+					{{ form_user.first_name }}
+					{% if form_user.first_name.errors %}
+						{% for error in form_user.first_name.errors %}
+							<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
+						{% endfor %}
+					{% endif %} 									
+				</div>	
+			</div>			
+			<div class="control-group">
+				<label class="control-label">{{ form_user.last_name.label }}</label>										
+				<div class="controls">
+					<span class="add-on"><i class="icon-user"></i></span>
+					{{ form_user.last_name }}
+						{% if form_user.last_name.errors %}
+						{% for error in form_user.last_name.errors %}
+							<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
+						{% endfor %}
+					{% endif %} 									
+				</div>	
+			</div>					
+			<!-- Fim Logado -->				
+			
+			<a href="/cadastre_se/alterar_senha/" onclick="show__(this.href); return false;" class="pull-left">Alterar senha</a>
+		{% endif %}		
+		<div class="form-actions">		
+			<button type="submit" class="btn btn-primary" name="save_user"><i class="icon-ok" ></i> Salvar </button>
+		</div>
+
+	</form>

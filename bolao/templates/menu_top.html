@@ -13,10 +13,14 @@
 				<li><a href="/home/">Competições</a></li>
 			</ul>
 			<ul class="nav pull-right" id="main-menu-right">
-			  {% if user_participante.user.username == 'admin' %}
-				<li><a href="/admin/">Admin</a></li>
-				<li><a href="/system/">System</a></li>
-				<li><a href="/system/cadastrar_participante/">Cadastrar Participante</a></li>
+			  {% if user_participante.user.username == 'admin' %}				
+			    <li class="dropdown">
+				   <a class="dropdown-toggle" data-toggle="dropdown" href="#">System<b class="caret"></b></a>
+				   <ul class="dropdown-menu" id="swatch-menu">
+					  <li><a href="/admin/">Admin</a></li>					    
+					  <li><a href="/system/cadastrar_participante/0/">Cadastrar Participante</a></li>
+				   </ul>
+				</li>  				
 			  {% endif %}
 			  {% if my_count > 0 %}
 				<li><a href="/minhas_competicoes/">Minhas competições</a></li>
@@ -92,7 +96,7 @@
 							<li><a href="/aposta/{{competicao.id}}/">Minhas Aposta</a></li>
 						  {% endif %}
 						  <li class="pull-center" id="aguarde_id"></li>
-						  {% if competicao.status.codigo == 'E' %}
+						  {% if competicao.campeonato.status.codigo == 'E' %}
 							<li class="pull-right"><a href="/solicita_inscricao/{{competicao.id}}/"><span class="text-info"><b>Solicitar Inscrição na Competição</b></span></a></li>				  
 						  {% endif %}				  
 						  <li class="pull-right"><a href="/patrocinadores/{{competicao.id}}/"><span class="text-info">Patrocionadores</span></a></li>

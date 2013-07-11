@@ -15,17 +15,18 @@ class Participante(models.Model):
 	confirm_send_code = models.CharField(max_length=100)
 	def __unicode__(self):
 		return self.apelido
-	
-class Campeonato(models.Model):
-	nome = models.CharField(max_length=50, unique=True)	
-	def __unicode__(self):
-		return self.nome
 		
 class StatusJogo(models.Model):
 	codigo = models.CharField(max_length=1)# { F, A, E }
 	descricao = models.CharField(max_length=30, unique=True)	# {F:(finalizado), A: (em andamento, atualizando processo), E: (Edicao)}
 	def __unicode__(self):
-		return "["+self.codigo+"] " + self.descricao	
+		return "["+self.codigo+"] " + self.descricao			
+	
+class Campeonato(models.Model):
+	nome = models.CharField(max_length=50, unique=True)	
+	status = models.ForeignKey(StatusJogo,default='E')
+	def __unicode__(self):
+		return self.nome + ' ' + self.status.descricao
 		
 #23		
 class Patrocinador(models.Model):
@@ -39,20 +40,19 @@ class Patrocinador(models.Model):
 class Competicao(models.Model):
 	campeonato = models.ForeignKey(Campeonato)
 	nome = models.CharField(max_length=50)	
-	status = models.ForeignKey(StatusJogo,default='E')
 	presidente = models.ForeignKey(Participante)
 	#patrocinador = models.ForeignKey(Patrocinador, blank=True, null=True)
 	patrocinadores = models.ManyToManyField(Patrocinador, through='Competicao_Patrocinadores') #, blank=True,null=True)
 	#patrocinadores = models.ManyToManyField(Patrocinador)
 	def __unicode__(self):
-		return self.nome + " - " + self.campeonato.nome + " - " + self.status.descricao
+		return self.nome + " - " + self.campeonato.nome
 	class Meta:
 		unique_together = ('campeonato', 'nome')
 		
 class Competicao_Patrocinadores(models.Model):
 	patrocinador = models.ForeignKey(Patrocinador)
 	competicao = models.ForeignKey(Competicao)
-	principal = models.BooleanField(default=False)
+	principal = models.BooleanField(default=False) # Principal Cobrar dominio 30, mais hospedagem 20 = (50)
 	class Meta:
 		unique_together = ('patrocinador', 'competicao')	
 	
@@ -143,11 +143,27 @@ class Solicitacao(models.Model):
 		return 'Solicitacao: ' + self.status + ' - ' + self.participante.apelido + ' - ' + self.competicao.nome
 
 #23 
-class PatrocinadorLocal(models.Model):
+class PatrocinioLocal(models.Model):
+	# H = Home
+	# T = Tabela ( 5 lateral ) R$ 6 (principal ganha 1)
+ 	# R = Rancking ( 5 lateral ) R$ 8 (principal ganha 1)
+	# A = Aposta do Jogo | talvez minhas apostas ( 5 lateral ) R$ 5
+	# I = LogIn (nenhum)
+	# O = LogOut (1 lateral) R$ 3
+	# F = Popup Float ( ? ? )
+	# S = Solicitacao Inscricao... (2 top) R$ 1
+	# C = Confirmado ( 1 lateral ) R$ 1
 	nome_pagina = models.CharField(max_length=50) # Home | Tabela | Rancking ou popup_float
-	codigo_pagina = models.CharField(max_length=50) # H | T | R | F
+	codigo_pagina = models.CharField(max_length=1) # H | T | R | F
+	qtde_total = models.IntegerField()
+	valor = models.FloatField()
 	
-
+"""	
+class PatrocinadorCompeticaoLocal(models.Model):
+	patrocinador = models.ForeignKey(Patrocinador)
+	competicao = models.ForeignKey(Competicao)
+	local = models.ForeignKey(PatrocinioLocal)
+"""	
 
 
 

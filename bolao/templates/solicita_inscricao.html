@@ -1,2 +1,20 @@
-<p><a href="#">Voltar</a></p>
-<h1>{{ message }}</h1>
+<div class="row">
+	<div class="span6">
+		<img class="img-rounded" src="/media/images/patrocinadores/patrocinio.jpg"/>
+	</div>
+	<div class="span6">
+		<img class="img-rounded" src="/media/images/patrocinadores/patrocinio.jpg"/>
+	</div>	
+</div>
+<br/>
+<div class="row">
+	<p><a href="#">Voltar</a></p>
+	<br/>
+	<div class="span9">
+		<h4>Copa <a href="{{patrocinador.patrocinador.url_site}}" target="_blank">{{patrocinador.patrocinador.nome_visual}}</a> {{competicao.nome}}</h4>
+		<h1 class="text-warning">{{ message }}</h1>		
+	</div>
+	<div class="span3">		
+		<img class="img-rounded" src="/media/images/patrocinadores/anuncie.gif"/>
+	</div>
+</div>	

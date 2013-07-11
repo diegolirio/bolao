@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
 from core.models import *
 import datetime
 
@@ -20,27 +21,14 @@ def __apostas_save_all__(participante, competicao):
 def global_():
 	# User
 	if User.objects.filter(username='diego').count() == 0:
-		diego = User()
-		diego.username = 'diego'
-		diego.email = 'diegolirio.dl@gmail.com'
-		diego.password = 'diego'
-		diego.first_name = 'Diego'
-		diego.last_name = 'Lirio'
-		diego.save()
+		raise Exception('Cadastre o diego')
 	else:
 		diego = User.objects.filter(username='diego')[0:1].get()
 	
+	# Participante
+	
 	if Participante.objects.filter(apelido='Diego Lirio').count() == 0:
-		# Participante
-		pdiego = Participante()
-		diego_p = User.objects.filter(username=diego.username)[0:1].get()
-		pdiego.user = diego_p
-		pdiego.apelido = 'Diego Lirio'
-		pdiego.ddd = 11
-		pdiego.telefone = 61409798
-		pdiego.confirm_email = True
-		pdiego.confirm_send_code = 1234567890
-		pdiego.save()
+		raise Exception('Altere o para Diego Lirio')
 	else:
 		pdiego = Participante.objects.filter(apelido='Diego Lirio')[0:1].get()
 
@@ -77,11 +65,44 @@ def global_():
 	else:
 		asisco = Patrocinador.objects.filter(nome_visual='Asisco')[0:1].get()
 
+	# Local Patrocinio
+	if PatrocinioLocal.objects.filter(codigo_pagina='R').count() == 0:		
+		rancking = PatrocinioLocal()
+		rancking.nome_pagina = 'Rancking'
+		rancking.codigo_pagina = 'R'
+		rancking.qtde_total = 5
+		rancking.valor = 8		
+	if PatrocinioLocal.objects.filter(codigo_pagina='T').count() == 0:		
+		rancking = PatrocinioLocal()
+		rancking.nome_pagina = 'Tabela'
+		rancking.codigo_pagina = 'T'
+		rancking.qtde_total = 5
+		rancking.valor = 6		
+	if PatrocinioLocal.objects.filter(codigo_pagina='A').count() == 0:		
+		rancking = PatrocinioLocal()
+		rancking.nome_pagina = 'Aposta do Jogo'
+		rancking.codigo_pagina = 'A'
+		rancking.qtde_total = 5
+		rancking.valor = 5		
+	if PatrocinioLocal.objects.filter(codigo_pagina='O').count() == 0:		
+		rancking = PatrocinioLocal()
+		rancking.nome_pagina = 'Logout'
+		rancking.codigo_pagina = 'O'
+		rancking.qtde_total = 1
+		rancking.valor = 3		
+	if PatrocinioLocal.objects.filter(codigo_pagina='S').count() == 0:		
+		rancking = PatrocinioLocal()
+		rancking.nome_pagina = 'Solicitacao da inscricao'
+		rancking.codigo_pagina = 'S'
+		rancking.qtde_total = 2
+		rancking.valor = 1	
+
 def copa_mundo_teste():
 	# Campeonato
 	if Campeonato.objects.filter(nome='Copa do Mundo 2014').count() == 0:
 		campeonato = Campeonato()
 		campeonato.nome = 'Copa do Mundo 2014'
+		campeonato.status = StatusJogo.objects.filter(codigo='E')[0:1].get()
 		campeonato.save()
 	else:
 		campeonato = Campeonato.objects.filter(nome='Copa do Mundo 2014')[0:1].get()
@@ -89,16 +110,22 @@ def copa_mundo_teste():
 	# competicao
 	pdiego = Participante.objects.filter(apelido='Diego Lirio')[0:1].get()
 	asisco = Patrocinador.objects.filter(nome_visual='Asisco')[0:1].get()
-	if Competicao.objects.filter(nome='Ferraz').count() == 0:
+	if Competicao.objects.filter(nome='Ferraz', campeonato=campeonato).count() == 0:
 		comp = Competicao()
 		comp.campeonato = campeonato
 		comp.nome = 'Ferraz'
-		comp.status = StatusJogo.objects.filter(codigo='E')[0:1].get()
 		comp.presidente = pdiego
-		comp.patrocinador = asisco
+		#comp.patrocinador = asisco
 		comp.save()	
 	else:
-		comp = Competicao.objects.filter(nome='Ferraz')[0:1].get()
+		comp = Competicao.objects.filter(nome='Ferraz', campeonato=campeonato)[0:1].get()
+	
+	if Competicao_Patrocinadores.objects.filter(competicao=comp, patrocinador=asisco).count() == 0:
+		com_p = Competicao_Patrocinadores()
+		com_p.competicao = comp
+		com_p.patrocinador = asisco
+		com_p.principal = True
+		com_p.save()		
 		
 	# Grupo
 	if Grupo.objects.filter(descricao='Grupo A').count() == 0:
@@ -166,18 +193,32 @@ def competicao_copa_confederacoes():
 	e = StatusJogo.objects.filter(codigo='E')[0:1].get()
 	
 	# conf
-	conf = Campeonato()
-	conf.nome = 'Copa das Conferederacoes'
-	conf.save()
+	if Campeonato.objects.filter(nome='Copa das Conferederacoes').count() == 0:
+		conf = Campeonato()
+		conf.nome = 'Copa das Conferederacoes'
+		conf.status = StatusJogo.objects.filter(codigo='E')[0:1].get()
+		conf.save()
+	else:
+		conf = Campeonato.objects.filter(nome='Copa das Conferederacoes')[0:1].get()
 	###############################################
 	# comp_teste
-	comp_teste = Competicao()
-	comp_teste.campeonato = conf
-	comp_teste.nome = 'Ferraz'
-	comp_teste.status = e
-	comp_teste.presidente = pdiego
-	comp_teste.patrocinador = asisco
-	comp_teste.save()
+	if Competicao.objects.filter(nome='Ferraz', campeonato=conf).count() == 0:
+		comp_teste = Competicao()
+		comp_teste.campeonato = conf
+		comp_teste.nome = 'Ferraz'
+		comp_teste.status = e
+		comp_teste.presidente = pdiego
+		#comp_teste.patrocinador = asisco
+		comp_teste.save()
+	else:
+		comp_teste = Competicao.objects.filter(nome='Ferraz', campeonato=conf)[0:1].get()
+	##################################################
+	if Competicao_Patrocinadores.objects.filter(competicao=comp_teste, patrocinador=asisco).count() == 0:
+		com_pa = Competicao_Patrocinadores()
+		com_pa.competicao = comp_teste
+		com_pa.patrocinador = asisco
+		com_pa.principal = True
+		com_pa.save()			
 	##################################################
 	# Grupo_Conf
 	a_ = Grupo()
@@ -340,11 +381,13 @@ def competicao_copa_confederacoes():
 	jogo_12.save()
 	####################################################	
 
+@login_required	
 def pre_cadastro(request):
-	global_()
-	__local__()
-	copa_mundo_teste()	
-	competicao_copa_confederacoes()
+	if request.user.username == 'admin':
+		global_()
+		__local__()
+		copa_mundo_teste()	
+		competicao_copa_confederacoes()
 	return redirect('/')
 	
 	
