@@ -1,44 +1,56 @@
-
+<div class="row">	
 	<h3>Copa <a href="{{competicao.patrocinador.url_site}}" target="_blank">{{competicao.patrocinador.nome_visual}}</a> {{competicao.nome}}</h3>
 
+	<div class="span10">
+		<a href="{{ url_tabela }}" class="btn btn-small active"><i class="icon-arrow-left"></i>Voltar</a>
 
-<a href="{{ url_tabela }}" class="btn btn-small active"><i class="icon-arrow-left"></i>Voltar</a>
+		<div class="text-center">
+			<span class="label label-important">{{jogo.status.descricao}}</span>
+			<h2>
+				{{ jogo.time_a }} <span class="text-warning">{{ jogo.resultado_a }}</span> X <span class="text-warning">{{ jogo.resultado_b }}</span> {{ jogo.time_b }}
+				<br/>
+				{% if jogo.status.codigo == 'A' %}
+					<img src="/media/images/bola_72.png"/>
+				{% elif jogo.status.codigo == 'F' %}
+					<img src="/media/images/apito_72.png"/>
+				{% endif %}
+			</h2>
+		</div>
 
-<div class="text-center">
-	<span class="label label-important">{{jogo.status.descricao}}</span>
-	<h2>
-		{{ jogo.time_a }} <span class="text-warning">{{ jogo.resultado_a }}</span> X <span class="text-warning">{{ jogo.resultado_b }}</span> {{ jogo.time_b }}
-		<br/>
-		{% if jogo.status.codigo == 'A' %}
-			<img src="/media/images/bola_72.png"/>
-		{% elif jogo.status.codigo == 'F' %}
-			<img src="/media/images/apito_72.png"/>
-		{% endif %}
-	</h2>
-</div>
-
-<table class="table table-striped table-hover well">
-	<tr>
-		<td class="text-error">Participante</td>
-		<td class="text-error" colspan="5">Jogo</td>
-		<td class="text-error">Pontos</td>
-		<td class="text-error">Colocação</td>
-	</tr>
-	{% for a in apostas %}
-	<tr>
-		<td><a href="/perfil_competicao/{{competicao.id}}/{{a.inscricao.id}}/"><span class="text-info">{{ a.inscricao.participante.apelido }}</span></a></td>
-		<td>{{ a.jogo.time_a }}</td>
-		<td>{{ a.resultado_a }}</td>
-		<td>X</td>
-		<td>{{ a.resultado_b }}</td>
-		<td>{{ a.jogo.time_b }}</td>
-		<td>{{ a.pontos }}</td>
-		<td>{{ a.colocacao }}</td>
-	</tr>
-	{% empty %}
-		<h1>Não há palpites cadastrados para este jogo</h1>
-	{% endfor %}
-</table>
+		<table class="table table-striped table-hover well">
+			<tr>
+				<td class="text-error">Participante</td>
+				<td class="text-error" colspan="5">Jogo</td>
+				<td class="text-error">Pontos</td>
+				<td class="text-error">Colocação</td>
+			</tr>
+			{% for a in apostas %}
+			<tr>
+				<td><a href="/perfil_competicao/{{competicao.id}}/{{a.inscricao.id}}/"><span class="text-info">{{ a.inscricao.participante.apelido }}</span></a></td>
+				<td>{{ a.jogo.time_a }}</td>
+				<td>{{ a.resultado_a }}</td>
+				<td>X</td>
+				<td>{{ a.resultado_b }}</td>
+				<td>{{ a.jogo.time_b }}</td>
+				<td>{{ a.pontos }}</td>
+				<td>{{ a.colocacao }}</td>
+			</tr>
+			{% empty %}
+				<h1>Não há palpites cadastrados para este jogo</h1>
+			{% endfor %}
+		</table>
+	</div>
+	<div class="span2">
+		<span class="text-warning">publicidade</span><br/>
+		<div class="patrocinador">
+			<a href="http://www.asisco.com.br" target="_blank"><img class="img-rounded" src="http://www.asisco.com.br/images/simple_img_1.jpg"/></a> <!-- src="/media/images/patrocinadores/logo.gif"/></a>-->
+			<br/><br/>
+		</div>
+		<div class="patrocinador">
+			<img class="img-rounded" src="/media/images/patrocinadores/anuncie.gif"/>
+		</div>	
+	</div>		
+</div>	
 
 
 

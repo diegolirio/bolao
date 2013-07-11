@@ -621,15 +621,28 @@ def system_calcular_campeonato(request, campeonato_pk):
 		#	para todos os participante dessa competicao.
 	return redirect('/home/')
 	
+@login_required		
+def system_consultar_participante(request):
+	user_participante = get_participante_by_user(request.user)
+	participantes = Participante.objects.all()
+	return render_to_response('_base.html', 
+	                          {'template': 'system/consulta_participante.html', 
+	                           'titulo': 'Consultar Participante', 
+	                           'subtitulo': 'System',
+	                           'user_participante': user_participante,
+	                           'participantes': participantes
+	                           }, RequestContext(request))	
+		
+	
 @login_required	
 def system_cadastrar_participante(request, user_pk):
 	message = ''
 	status_transation = 'I'
-	user_participante = get_participante_by_user(request.user, False)
+	user_participante = get_participante_by_user(request.user)
 	form_user = UserNewForm()
 	form_participante = ParticipanteForm()	
 	return render_to_response('_base.html', 
-	                          {'template': 'cadastre_se.html', 
+	                          {'template': 'system/cadastrar_participante.html', 
 	                           'titulo': 'Cadastro System', 
 	                           'subtitulo': '',
 	                           'user_participante': user_participante,
@@ -638,6 +651,18 @@ def system_cadastrar_participante(request, user_pk):
 							   'status_transation': status_transation,
 							   'message': message
 	                           }, RequestContext(request))	
+							   
+def system_inscricoes_participante(request, participante_pk):
+	participante = Participante.objects.get(pk=participante_pk)
+	user_participante = get_participante_by_user(request.user)
+	minhas_inscricoes = Inscricao.objects.filter(participante=participante)
+	outras_inscricoes = Inscricao.objects.exclude(participante=participante)
+	return render_to_response('_base.html', 
+	                          {'template': 'system/inscricoes_participante.html', 
+	                           'titulo': u'Inscrições System', 
+	                           'subtitulo': participante.apelido,
+	                           'user_participante': user_participante
+	                           }, RequestContext(request))		
 	
 def __calcular_vencedor_jogo__(j):
 	if j.resultado_a > j.resultado_b:
@@ -769,11 +794,6 @@ def __calcula_rancking__(competicao):
 		qtde_as = i.quantidade_acerto_somente_resultado_um_time
 		
 # end system	<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-
-
-
-
 
 
 
@@ -955,7 +975,5 @@ def regras(request):
 							      'titulo': 'Regras ', 
 								  'subtitulo': 'Regras', 
 								  'user_participante': user_participante})	
-		
-		
 		
 		

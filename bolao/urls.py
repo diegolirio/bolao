@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     # Login / Logout
     url(r'^login/', "django.contrib.auth.views.login", {"template_name": "login.html"}), 
     url(r'^logout/', "django.contrib.auth.views.logout_then_login", {'login_url': '/login/'}),
+	
     # pagina Home
 	url(r'^home/$', 'core.views.home', name='home'),	
 	# ------------------------------------------------------------------------------------------------
@@ -49,8 +50,11 @@ urlpatterns = patterns('',
     url(r'^system/campeonato_calc_jogos/(?P<campeonato_pk>\d+)/$', 'core.views.system_campeonato_calc_jogos'),
     url(r'^system/calcular_campeonato/(?P<campeonato_pk>\d+)/$', 'core.views.system_calcular_campeonato'),
 	url(r'^system/jogo_edit/(?P<campeonato_pk>\d+)/(?P<jogo_pk>\d+)/$', 'core.views.system_jogo_edit'),	
-	url(r'^system/cadastrar_participante/(?P<user_pk>\d+)$', 'core.views.system_cadastrar_participante'),
-    
+	
+	url(r'^system/cadastrar_participante/(?P<user_pk>\d+)/$', 'core.views.system_cadastrar_participante'),
+	url(r'^system/consultar_participante/$', 'core.views.system_consultar_participante'),
+	url(r'^system/inscricoes_participante/(?P<participante_pk>\d+>)/$', 'core.views.system_inscricoes_participante'),
+           
     url(r'^cadastre_se/$', 'core.views.cadastre_se'),
 	url(r'^cadastre_se/alterar_senha/$', 'core.views.alterar_senha'),
 	#url(r'^confirm_email/[username]/(?P<codigo_confirm>\d+)/(?P<campeonato_pk>\d+)/$', 'core.views.confirm_email'),
