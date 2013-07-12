@@ -1,1 +1,1 @@
-web: gunicorn mybolao.wsgi
+web: gunicorn bolao.wsgi
