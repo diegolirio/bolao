@@ -4,7 +4,7 @@ from django.core.mail import send_mail
 from core.models import *
 
 def index(request):	
-	print("Usuario >>>>>> " + str(request.user))	
+	#print("Usuario >>>>>> " + str(request.user))	
 	if request.user.is_authenticated():		
 		# ToDo...: Utilizar a funcao...!
 		try:

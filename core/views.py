@@ -285,7 +285,7 @@ def cadastre_se(request):
 			if form_user.is_valid():
 				# Validar senhas compativeis.... no link http://www.aprendendodjango.com/funcoes-de-usuarios/
 				user = form_user.save()
-				print('save_user >>>>>>>> automatico participante e apos confirm_email ' + user.username)		
+				#print('save_user >>>>>>>> automatico participante e apos confirm_email ' + user.username)		
 				participante = __new_participante__(user)
 				send_mail('Conrfimacao de cadastro Ferraz Bolao', 'Usuario: '+ user.username +', clique no link para confirmar o cadastro  http://localhost:8000/confirm_email/'+participante.confirm_send_code+ '/?user='+str(user.pk), 'diegolirio.dl@gmail.com', [user.email])
 				status_transation = 'V'
@@ -359,11 +359,11 @@ def cadastre_se(request):
 			if 'save_user' in request.POST:
 				form_user = UserForm(request.POST, request.FILES, instance=request.user)				
 				form_participante = ParticipanteForm(instance=user_participante)				
-				print('save_user in request.POST: <<<<<<<<<<<<<<<<<<<<<<< ' + str(form_user['username'].value))
+				#print('save_user in request.POST: <<<<<<<<<<<<<<<<<<<<<<< ' + str(form_user['username'].value))
 				if form_user.is_valid():
-					print('form_user.is_valid() <<<<<<<<<<<<<<<<<<<<<<< ')
+					#print('form_user.is_valid() <<<<<<<<<<<<<<<<<<<<<<< ')
 					if form_user['password'].value == form_user['password_confirm'].value:
-						print('form_user.save() <<<<<<<<<<<<<<<<<<<<<<< ')
+						#print('form_user.save() <<<<<<<<<<<<<<<<<<<<<<< ')
 						form_user.save()
 					else:
 						return redirect('/home/')
@@ -603,7 +603,7 @@ def system_calcular_campeonato(request, campeonato_pk):
 	campeonato = Campeonato.objects.get(pk=campeonato_pk)
 	jogos = __get_jogos_not_edition_by_campeonato__(campeonato)
 	for j in jogos:
-		print(j.time_a + " X " + j.time_b)
+		#print(j.time_a + " X " + j.time_b)
 		__calcular_vencedor_jogo__(j)
 		# calcula apostas e colocacao hist...
 		__calcula_apostas__(j)
@@ -867,7 +867,7 @@ def calcula_aposta(jogo):
 		"""
 		i = i + 1	
 		if (i == apostas.count()) or (competicao != a.inscricao.competicao):
-			print('Calculando >>>>>> ' + competicao.nome + ' <> ' + str(i)+' de '+ str(apostas.count()))
+			#print('Calculando >>>>>> ' + competicao.nome + ' <> ' + str(i)+' de '+ str(apostas.count()))
 			calcula_rancking_historico(competicao, jogo, a)
 			competicao = a.inscricao.competicao
 		"""
