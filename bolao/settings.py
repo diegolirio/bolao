@@ -1,6 +1,6 @@
 # Django settings for bolao project.
 import os
-#import dj_database_url
+import dj_database_url
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -172,7 +172,7 @@ EMAIL_HOST_PASSWORD = 'dyegjava13'
 EMAIL_USE_TLS = True
 # -----------------------------------------------------
 
-#DATABASES['default'] =  dj_database_url.config()
+DATABASES['default'] =  dj_database_url.config()
  
-# Honor the 'X-Forwarded-Proto' header for request.is_secure()
-#SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
