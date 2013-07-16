@@ -1,5 +1,6 @@
-# Para todos as constantes considere ACERTOU a frente da palavra, menos o ERRO_TUDO
+# -*- encoding: utf-8 -*-
 
+# Para todos as constantes considere ACERTOU a frente da palavra, menos o ERRO_TUDO
 PONTOS_PLACAR = 7
 PONTOS_VENCEDOR_RESULTADO_GOLS_UM_TIME = 5
 PONTOS_VENCEDOR = 4
