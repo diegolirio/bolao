@@ -17,12 +17,12 @@ def index(request):
 				part_admin.apelido = 'Administrador'
 				part_admin.confirm_email = True
 				part_admin.confirm_send_url = '/confirm_email/' + part_admin.user.username + '/0123456789/'
-				#part_admin.foto.upload_to = '/images/users/admin.jpg')
+				#part_admin.foto.url = '/images/users/admin.jpg')
 				part_admin.save()
 				#request.user.user.email_user('Confirmacao bolao', 'Segue url para confirmacao >>>', None)
 				# ------------------------- Email -----------------------------------------------
 				#send_mail('Subject', 'Message.', 'from@example.com', [email@provedor.com', email_2@provedor.com'])        
-				send_mail('Conrfimacao de cadastro Ferraz Bolao', 'http://localhost:8000/confirm_email/'+part_admin.confirm_send_code+ '/?user='+str(request.user.pk), 'diegolirio.dl@gmail.com', [request.user.email])																   
+				#send_mail('Conrfimacao de cadastro Ferraz Bolao', 'http://localhost:8000/confirm_email/'+part_admin.confirm_send_code+ '/?user='+str(request.user.pk), 'diegolirio.dl@gmail.com', [request.user.email])																   
 				# ------------------------- fim Email -----------------------------------------------
 				return redirect('/system/') # cadastrese_1
 			else:
