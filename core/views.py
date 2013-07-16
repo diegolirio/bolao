@@ -7,11 +7,13 @@ from core.const import *
 from core.models import *
 from core.forms import *
 import random
+import os
 from django.core.mail import send_mail
 #import datetime
 from django.contrib.auth import authenticate, login
 
 envia_email = False
+ROOT_PROJECT = os.path.dirname(__file__)
 
 def user_login_is_valid(user_request, user_inscricao):
 	if user_request.pk == user_inscricao.pk:
@@ -287,7 +289,7 @@ def cadastre_se(request):
 				user = form_user.save()
 				#print('save_user >>>>>>>> automatico participante e apos confirm_email ' + user.username)		
 				participante = __new_participante__(user)
-				send_mail('Conrfimacao de cadastro Ferraz Bolao', 'Usuario: '+ user.username +', clique no link para confirmar o cadastro  http://localhost:8000/confirm_email/'+participante.confirm_send_code+ '/?user='+str(user.pk), 'diegolirio.dl@gmail.com', [user.email])
+				send_mail('Conrfimacao de cadastro Ferraz Bolao', 'Usuario: '+ user.username +', clique no link para confirmar o cadastro ' + ROOT_PROJECT + '/confirm_email/'+participante.confirm_send_code+ '/?user='+str(user.pk), 'diegolirio.dl@gmail.com', [user.email])
 				status_transation = 'V'
 				# ToDo...: Realizar Login... aki.....
 				#user = authenticate(username=user.username, password=user.password)
@@ -414,7 +416,7 @@ def cadastre_se(request):
 def reenvio_confirm_email(request):
 	user_participante = get_participante_by_user(request.user)
 	if not user_participante.confirm_email:
-		send_mail('Conrfimacao de cadastro Ferraz Bolao', 'clique no link para confirmar o cadastro  http://localhost:8000/confirm_email/'+user_participante.confirm_send_code+ '/?user='+str(user_participante.user.pk), 'diegolirio.dl@gmail.com', [user_participante.user.email])
+		send_mail('Conrfimacao de cadastro Ferraz Bolao', 'clique no link para confirmar o cadastro ' +ROOT_PROJECT+'/confirm_email/'+user_participante.confirm_send_code+ '/?user='+str(user_participante.user.pk), 'diegolirio.dl@gmail.com', [user_participante.user.email])
 	return redirect('/cadastre_se/')
 
 def confirm_email(request, codigo_confirm):
@@ -443,7 +445,7 @@ def solicita_inscricao(request, competicao_pk):
 						solicitacao.competicao = competicao
 						solicitacao.save()
 						msg = 'Solicitacao enviada com sucesso, aguarde.'
-						send_mail('Solicitacao', 'Solicitacao enviada: '+solicitacao.participante.apelido+' ... http://localhost:8000'+'/solicitacoes/'+str(competicao.pk), 'diegolirio.dl@gmail.com', ['diegolirio.dl@gmail.com'])
+						send_mail('Solicitacao', 'Solicitacao enviada: '+solicitacao.participante.apelido+' ... ' +ROOT_PROJECT+'/solicitacoes/'+str(competicao.pk), 'diegolirio.dl@gmail.com', ['diegolirio.dl@gmail.com'])
 					else:
 						msg = 'Solicitacao já enviada, aguarde...'
 				else:
