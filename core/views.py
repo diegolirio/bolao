@@ -427,10 +427,11 @@ def confirm_email(request, codigo_confirm):
     #user = User.objects.filter(username=username)[0:1].get()
 	user = User.objects.get(pk=request.GET['user'])
 	user_participante = get_participante_by_user(user)
-	if not user_participante.confirm_email:
-		user_participante.confirm_email = True
-		user_participante.save()		
-		return render_to_response('_base.html', {'template': 'confirmado.html', 'titulo': user_participante.apelido, 'subtitulo': 'Confirmado', 'user_participante': user_participante})
+	if user_participante.confirm_send_code == codigo_confirm:
+		if not user_participante.confirm_email:
+			user_participante.confirm_email = True
+			user_participante.save()		
+			return render_to_response('_base.html', {'template': 'confirmado.html', 'titulo': user_participante.apelido, 'subtitulo': 'Confirmado', 'user_participante': user_participante})
 	return redirect('/login/')
 
 @login_required
