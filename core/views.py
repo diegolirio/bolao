@@ -670,6 +670,28 @@ def system_inscricoes_participante(request, participante_pk):
 	                           'subtitulo': participante.apelido,
 	                           'user_participante': user_participante
 	                           }, RequestContext(request))		
+							   
+@login_required							   
+def system_send_mail_all(request, campeonato_pk):
+	user_participante = get_participante_by_user(request.user)
+	
+	campeonato = Campeonato.objects.get(pk=campeonato_pk)
+	print(campeonato.nome)
+	competicoes = Competicao.objects.filter(campeonato=campeonato)
+	for c in competicoes:
+		print(c.nome)
+		inscricoes = Inscricao.objects.filter(competicao=c)
+		url_email_rancking = SITE_ROOT + 'rancking/'+str(c.pk)+'/'
+		for i in inscricoes:
+			print('<><><><><><')
+			i.participante.user.email_user('Rancking Atualizado', 'Segue o rancking atualizado do Bolão >>>> ' + url_email_rancking, from_email=None)	
+	return render_to_response('_base.html',
+								{ 'template': 'system/email_enviado.html',
+								  'titulo': 'Email',
+								  'subtitulo': '',
+								  'mensagem': 'Email enviado com sucesso!',
+								  'user_participante': user_participante })
+								  
 	
 def __calcular_vencedor_jogo__(j):
 	if j.resultado_a > j.resultado_b:

@@ -53,7 +53,9 @@ urlpatterns = patterns('',
 	
 	url(r'^system/cadastrar_participante/(?P<user_pk>\d+)/$', 'core.views.system_cadastrar_participante'),
 	url(r'^system/consultar_participante/$', 'core.views.system_consultar_participante'),
-	url(r'^system/inscricoes_participante/(?P<participante_pk>\d+>)/$', 'core.views.system_inscricoes_participante'),
+	url(r'^system/inscricoes_participante/(?P<participante_pk>\d+)/$', 'core.views.system_inscricoes_participante'),
+	
+	url(r'^system/send_mail_all/(?P<campeonato_pk>\d+)/$', 'core.views.system_send_mail_all'),
            
     url(r'^cadastre_se/$', 'core.views.cadastre_se'),
 	url(r'^cadastre_se/alterar_senha/$', 'core.views.alterar_senha'),

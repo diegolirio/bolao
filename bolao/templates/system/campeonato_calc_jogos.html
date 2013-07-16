@@ -6,9 +6,10 @@
 		<a class="btn btn-primary btn-large" href="/admin/core/jogo/add/?_popup=1/" onclick="show__(this.href); return false;">Casdastrar Novo Jogo</a>
 		<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
 		<ul class="dropdown-menu">
-		  <li><a href="/system/calcular_campeonato/{{campeonato.pk}}/">Calcular definitivo</a></li>
-		  <li class="divider"></li>
+		  <li><a href="/system/calcular_campeonato/{{campeonato.pk}}/"><i class="icon-ok"></i> Calcular definitivo</a></li>
 		  <li><a href="#" onclick="alert('Em desenvolvimento...');">Forçar Calculo já definido</a></li>
+		  <li class="divider"></li>
+		  <li><a href="/system/send_mail_all/{{campeonato.pk}}/"><i class="icon-envelope"></i> Enviar Email do Rancking</a></li>
 		</ul>
 	  </div>	
  
