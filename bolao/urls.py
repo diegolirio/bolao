@@ -61,6 +61,7 @@ urlpatterns = patterns('',
 	url(r'^confirm_email/(?P<codigo_confirm>\d{10})/$', 'core.views.confirm_email'),
 	url(r'^reenvio_confirm_email/$', 'core.views.reenvio_confirm_email'),
 	#url(r'^confirmado/(?P<competicao_pk>\d+)/$', 'core.views.confirmado'),
+	#url(r'^lembrar_senha/$', 'core.views.lembrar_senha'),
 
 	url(r'^photo/$', 'core.views.photo'),
 	
@@ -76,6 +77,8 @@ urlpatterns = patterns('',
 	url(r'^patrocinadores/(?P<competicao_pk>\d+)/$', 'core.views.patrocinadores'),
 
 
+	
+	
 	url(r'^pre_cadastro/', 'core.pre_cadastro.pre_cadastro')
     
  )

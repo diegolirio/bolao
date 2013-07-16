@@ -13,6 +13,7 @@ class Participante(models.Model):
 	telefone = models.IntegerField(blank=True, null=True)
 	confirm_email = models.BooleanField(default=False)
 	confirm_send_code = models.CharField(max_length=100)
+	code_new_password = models.CharField(max_length=100, default="0") # Codigo para redefinir senha
 	def __unicode__(self):
 		return self.apelido
 		

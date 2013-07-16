@@ -976,4 +976,24 @@ def regras(request):
 								  'subtitulo': 'Regras', 
 								  'user_participante': user_participante})	
 		
-		
+"""		
+def lembrar_senha(request):
+	execute_transation = 'N'
+	mensagem = ''
+	if request.method == 'POST':
+		form = UserEmailForm(request.FILES, request.POST)	
+		if form.is_valid:
+			print(form['email'].value)
+			execute_transation = 'S'
+			mensagem = 'Email enviado com sucesso!'		
+		else:
+			execute_transation = 'S'
+			mensagem = 'Email inválido!'				
+	else:
+		form = UserEmailForm()
+	return render_to_response('_base_simple.html',
+	                            { 'template': 'lembrar_senha.html', 'execute_transation': execute_transation, 'mensagem': mensagem }, 
+							  context_instance=RequestContext(request))
+"""							  
+							  
+							  
