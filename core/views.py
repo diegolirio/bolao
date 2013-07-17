@@ -295,7 +295,8 @@ def cadastre_se(request):
 				user = form_user.save()
 				#print('save_user >>>>>>>> automatico participante e apos confirm_email ' + user.username)		
 				participante = __new_participante__(user)
-				send_mail('Conrfimacao de cadastro '+NOME_BOLAO, 'Usuario: '+ user.username +', clique no link para confirmar o cadastro ' + SITE_ROOT + 'confirm_email/'+participante.confirm_send_code+ '/?user='+str(user.pk), 'diegolirio.dl@gmail.com', [user.email])
+				emailss = [user.email,]
+				send_mail('Conrfimacao de cadastro '+NOME_BOLAO, 'Usuario: '+ user.username +', clique no link para confirmar o cadastro ' + SITE_ROOT + 'confirm_email/'+participante.confirm_send_code+ '/?user='+str(user.pk), 'diegolirio.dl@gmail.com', emailss)
 				status_transation = 'V'
 				# ToDo...: Realizar Login... aki.....
 				#user = authenticate(username=user.username, password=user.password)
