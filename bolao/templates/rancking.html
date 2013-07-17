@@ -1,7 +1,11 @@
 <div class="row">
 	
+	{% if valor_acumulado != 0 %}
+		<h5 class="pull-right">R$ {{ valor_acumulado }} <span class="">Acumulado</span></h5> 
+	{% endif %}
+	
 	<h3>Copa <a href="{{patrocinador.patrocinador.url_site}}" target="_blank">{{patrocinador.patrocinador.nome_visual}}</a> {{competicao.nome}}</h3>
-	<h4 class="pull-right">R$ {{ valor_acumulado }}</h4>
+
 	<br/>
 
 	<div class="span10">

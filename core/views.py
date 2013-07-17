@@ -70,7 +70,7 @@ def rancking(request, competicao_pk):
 	user_participante = get_participante_by_user(request.user)
 	user_inscricao = get_inscricao(competicao, user_participante)
 	inscricoes_competicao = get_rancking_by_competicao(competicao)
-	valor_acumulado = inscricoes_competicao.count() * 10
+	valor_acumulado = inscricoes_competicao.count() * competicao.valor_aposta
 	return render_to_response('_base.html', 
 							  {     'template': 'rancking.html', 
 							        'titulo': 'Rancking', 
@@ -428,7 +428,7 @@ def reenvio_confirm_email(request):
 def confirm_email(request, codigo_confirm):
     #user = User.objects.filter(username=username)[0:1].get()
 	user = User.objects.get(pk=request.GET['user'])
-	user_participante = get_participante_by_user(user)
+	user_participante = get_participante_by_user(request.user)
 	if user_participante.confirm_send_code == codigo_confirm:
 		if not user_participante.confirm_email:
 			user_participante.confirm_email = True
@@ -452,7 +452,7 @@ def solicita_inscricao(request, competicao_pk):
 						solicitacao.competicao = competicao
 						solicitacao.save()
 						msg = 'Solicitacao enviada com sucesso, aguarde.'
-						send_mail('Solicitacao', 'Solicitacao enviada: '+solicitacao.participante.apelido+' ... ' +SITE_ROOT+'solicitacoes/'+str(competicao.pk), 'diegolirio.dl@gmail.com', competicao.presidente.user.email)
+						send_mail('Solicitacao', 'Solicitacao enviada: '+solicitacao.participante.apelido+' ... ' +SITE_ROOT+'solicitacoes/'+str(competicao.pk), 'diegolirio.dl@gmail.com', [competicao.presidente.user.email])
 					else:
 						msg = 'Solicitacao já enviada, aguarde...'
 				else:
@@ -685,8 +685,8 @@ def system_send_mail_all(request, campeonato_pk):
 		inscricoes = Inscricao.objects.filter(competicao=c)
 		url_email_rancking = SITE_ROOT + 'rancking/'+str(c.pk)+'/'
 		for i in inscricoes:
-			print('<><><><><><')
-			i.participante.user.email_user('Rancking Atualizado', 'Segue o rancking atualizado do Bolão >>>> ' + url_email_rancking, from_email=None)	
+			print('Enviado email >>> ' + i.participante.apelido)
+			i.participante.user.email_user('Rancking Atualizado', u'Olá ' + i.participante.apelido + u', segue o rancking atualizado do Bolão >>>> ' + url_email_rancking, from_email=None)	
 	return render_to_response('_base.html',
 								{ 'template': 'system/email_enviado.html',
 								  'titulo': 'Email',

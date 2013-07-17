@@ -45,6 +45,7 @@ class Competicao(models.Model):
 	#patrocinador = models.ForeignKey(Patrocinador, blank=True, null=True)
 	patrocinadores = models.ManyToManyField(Patrocinador, through='Competicao_Patrocinadores') #, blank=True,null=True)
 	#patrocinadores = models.ManyToManyField(Patrocinador)
+	valor_aposta = models.FloatField(default=0)
 	def __unicode__(self):
 		return self.nome + " - " + self.campeonato.nome
 	class Meta:

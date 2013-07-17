@@ -7,12 +7,12 @@ TEMPLATE_DEBUG = DEBUG
 ROOT_PROJECT = os.path.dirname(__file__)
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+     ('Diego Lirio', 'diegolirio.dl@gmail.com'),
 )
 
 MANAGERS = ADMINS
 
-
+######################### Heroku #############################
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
@@ -27,6 +27,8 @@ DATABASES = {
     }
 }
 """
+######################### End Heroku #############################
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
@@ -185,8 +187,10 @@ EMAIL_HOST_PASSWORD = 'dyeg1986'
 EMAIL_USE_TLS = True
 # -----------------------------------------------------
 
+######################### Heroku #############################
 import dj_database_url
 DATABASES['default'] =  dj_database_url.config()
  
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+######################## End Heroku ###########################

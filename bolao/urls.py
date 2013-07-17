@@ -81,7 +81,8 @@ urlpatterns = patterns('',
 
 	
 	
-	url(r'^pre_cadastro/', 'core.pre_cadastro.pre_cadastro')
+	url(r'^pre_cadastro/', 'core.pre_cadastro.pre_cadastro'),
+	url(r'^create_users/', 'core.pre_cadastro.create_users'),
     
  )
 

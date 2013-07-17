@@ -55,7 +55,7 @@ def global_():
 	else:
 		f = StatusJogo.objects.filter(codigo='F')[0:1].get()
 
-	#Patrocinador
+	#Patrocinador Asisco
 	if Patrocinador.objects.filter(nome_visual='Asisco').count() == 0:
 		asisco = Patrocinador()
 		asisco.nome_visual = 'Asisco'
@@ -64,6 +64,16 @@ def global_():
 		asisco.save()
 	else:
 		asisco = Patrocinador.objects.filter(nome_visual='Asisco')[0:1].get()
+		
+	#Patrocinador Coca-Cola
+	if Patrocinador.objects.filter(nome_visual='Coca-Cola').count() == 0:
+		cc = Patrocinador()
+		cc.nome_visual = 'Coca-Cola'
+		cc.nome = 'Coca-Cola'
+		cc.url_site = 'http://www.cocacola.com.br'
+		cc.save()
+	else:
+		cc = Patrocinador.objects.filter(nome_visual='Coca-Cola')[0:1].get()		
 
 	# Local Patrocinio
 	if PatrocinioLocal.objects.filter(codigo_pagina='R').count() == 0:		
@@ -190,6 +200,7 @@ def competicao_copa_confederacoes():
 	
 	pdiego = Participante.objects.filter(apelido='Diego Lirio')[0:1].get()
 	asisco = Patrocinador.objects.filter(nome_visual='Asisco')[0:1].get()	
+	cc = Patrocinador.objects.filter(nome_visual='Coca-Cola')[0:1].get()
 	e = StatusJogo.objects.filter(codigo='E')[0:1].get()
 	
 	# conf
@@ -209,16 +220,24 @@ def competicao_copa_confederacoes():
 		comp_teste.status = e
 		comp_teste.presidente = pdiego
 		#comp_teste.patrocinador = asisco
+		comp_teste.valor_aposta = 10.00
 		comp_teste.save()
 	else:
 		comp_teste = Competicao.objects.filter(nome='Ferraz', campeonato=conf)[0:1].get()
 	##################################################
-	if Competicao_Patrocinadores.objects.filter(competicao=comp_teste, patrocinador=asisco).count() == 0:
+	# Patrocinadores
+	if Competicao_Patrocinadores.objects.filter(competicao=comp_teste, patrocinador=cc).count() == 0:
 		com_pa = Competicao_Patrocinadores()
 		com_pa.competicao = comp_teste
-		com_pa.patrocinador = asisco
+		com_pa.patrocinador = cc
 		com_pa.principal = True
 		com_pa.save()			
+	if Competicao_Patrocinadores.objects.filter(competicao=comp_teste, patrocinador=asisco).count() == 0:
+		com_pa_ = Competicao_Patrocinadores()
+		com_pa_.competicao = comp_teste
+		com_pa_.patrocinador = asisco
+		com_pa_.principal = False
+		com_pa_.save()			
 	##################################################
 	# Grupo_Conf
 	a_ = Grupo()
@@ -380,6 +399,17 @@ def competicao_copa_confederacoes():
 	jogo_12.status = e						
 	jogo_12.save()
 	####################################################	
+	# Inscricao
+	if Inscricao.objects.filter(participante=pdiego, competicao=comp_teste).count() == 0:
+		idiego = Inscricao()
+		idiego.participante = pdiego
+		idiego.competicao = comp_teste
+		idiego.save()
+	else:
+		idiego = Inscricao.objects.filter(participante=pdiego, competicao=comp_teste)[0:1].get()
+	######################################################
+	# Aposta
+	__apostas_save_all__(pdiego, comp_teste)	
 
 @login_required	
 def pre_cadastro(request):
@@ -389,5 +419,29 @@ def pre_cadastro(request):
 		copa_mundo_teste()	
 		competicao_copa_confederacoes()
 	return redirect('/')
-	
+
+@login_required		
+def create_users(request):
+	if request.user.username == 'admin':
+		usuario_cad = 'usuario'
+		for i in range(1,200):
+			# Salvar User
+			user = User.objects.create_user(usuario_cad+str(i), 'diegolirio.dl@gmail.com', usuario_cad+str(i))
+			# Salvar Participante
+			p = Participante()
+			p.user = user
+			p.apelido = usuario_cad+str(i)
+			p.confirm_email = True
+			p.confirm_send_code = i
+			p.save()
+			conf = Campeonato.objects.filter(nome='Copa das Conferederacoes')[0:1].get()
+			compet_ = Competicao.objects.filter(nome='Ferraz', campeonato=conf)[0:1].get()
+			# Salvar Inscricao
+			insc = Inscricao()
+			insc.participante = p
+			insc.competicao = compet_
+			insc.save()
+			# Salvar Apostas
+			__apostas_save_all__(p, compet_)
+	return redirect('/')
 	
