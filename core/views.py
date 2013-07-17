@@ -70,6 +70,7 @@ def rancking(request, competicao_pk):
 	user_participante = get_participante_by_user(request.user)
 	user_inscricao = get_inscricao(competicao, user_participante)
 	inscricoes_competicao = get_rancking_by_competicao(competicao)
+	valor_acumulado = inscricoes_competicao.count() * 10
 	return render_to_response('_base.html', 
 							  {     'template': 'rancking.html', 
 							        'titulo': 'Rancking', 
@@ -79,6 +80,7 @@ def rancking(request, competicao_pk):
 							        'competicao': competicao,
 									'patrocinador': patrocinador,
 							        #-----------------------------------
+							        'valor_acumulado': valor_acumulado,
 							        'inscricoes_competicao': inscricoes_competicao
 							        })
 	                                
