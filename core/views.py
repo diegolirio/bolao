@@ -450,7 +450,7 @@ def solicita_inscricao(request, competicao_pk):
 						solicitacao.competicao = competicao
 						solicitacao.save()
 						msg = 'Solicitacao enviada com sucesso, aguarde.'
-						send_mail('Solicitacao', 'Solicitacao enviada: '+solicitacao.participante.apelido+' ... ' +SITE_ROOT+'solicitacoes/'+str(competicao.pk), 'diegolirio.dl@gmail.com', ['diegolirio.dl@gmail.com'])
+						send_mail('Solicitacao', 'Solicitacao enviada: '+solicitacao.participante.apelido+' ... ' +SITE_ROOT+'solicitacoes/'+str(competicao.pk), 'diegolirio.dl@gmail.com', competicao.presidente.user.email)
 					else:
 						msg = 'Solicitacao já enviada, aguarde...'
 				else:
