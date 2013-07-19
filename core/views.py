@@ -254,15 +254,16 @@ def comparar_colocacao(request, competicao_pk, view_inscricao_pk):
 	view_inscricao = Inscricao.objects.get(pk=view_inscricao_pk)
 	view_apostas = list()
 	apts_aux = Aposta.objects.filter(inscricao=view_inscricao)
-	#jogo_ = apts_aux.count()
-	#if user_inscricao.pk != view_inscricao.pk:
 	jogo_ = 0
 	for a in apts_aux:
 		if (a.jogo.status.codigo == 'A') or (a.jogo.status.codigo == 'F'):
 			view_apostas.append(a)	
-			jogo_ = jogo_ + 1
-	#else:
-	#	view_apostas = apts_aux		
+			jogo_ = jogo_ + 1	
+	my_apostas = list()
+	my_apts_aux = Aposta.objects.filter(inscricao=user_inscricao)
+	for a in my_apts_aux:
+		if (a.jogo.status.codigo == 'A') or (a.jogo.status.codigo == 'F'):
+			my_apostas.append(a)	
 	return render_to_response('_base_simple.html', 
 						      {  
 								'template': 'comparar_colocacao.html',
@@ -273,6 +274,7 @@ def comparar_colocacao(request, competicao_pk, view_inscricao_pk):
 								'competicao': competicao, 	
 								'view_inscricao': view_inscricao,
 								'apostas': view_apostas, # apostas do participante, nao alterar chave por manter mesmo da apostas.html
+								'my_apostas': my_apostas,
 								'total_pontos': view_inscricao.pontos,
 								#'view_apostas_chart': view_apostas_chart,
 								'qtde_jogos': jogo_,

@@ -20,7 +20,7 @@
 		<thead>
 			<tr>
 				<td class="text-error" colspan="5"><center>Jogo</center></td>
-				<td class="text-error">Data e Hora</td>
+				<td class="text-error visible-desktop">Data e Hora</td>
 				<td class="text-error">Local</td>
 				<td class="text-error"></td>
 				<td class="text-error" title="Pontos ganhos">P</td>
@@ -31,7 +31,7 @@
 		<tfoot>
 			<tr>
 				<td></td>
-				<td></td>
+				<td class="visible-desktop"></td>
 				<td></td>
 				<td></td>
 				<td></td>
@@ -64,7 +64,7 @@
 					{% endif %}
 				</td>
 				<td class="muted">{{ a.jogo.time_b }}</td>
-				<td class="muted">{{ a.jogo.data_hora }}</td>
+				<td class="muted visible-desktop">{{ a.jogo.data_hora }}</td>
 				<td class="muted">{{ a.jogo.local }}</td>
 			</div>
 			<td>

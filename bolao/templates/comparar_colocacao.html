@@ -1,9 +1,61 @@
-	<div id="chart_div" style="width: 100%; height: 350px;">
-		<center>
-			<img src="/media/images/211.gif"/> <img src="/media/images/aguarde_g.gif"/>
-		</center>
+	<div class="container">
+		<div class="row">
+			<div class="span6">
+				<table class="table">
+					<thead class="text-warning">
+						<tr>
+							<td>Participante</td>
+							<td><center>Colocação</center></td>
+							<td><center>Pontos</center></td>
+						</tr>
+					</thead>
+					<tr>
+						<td>{{ user_participante.apelido }} </td>
+						<td><center>{{ user_inscricao.colocacao }}º</center></td>
+						<td><center>{{ user_inscricao.pontos }}</center></td>						
+					</tr>
+					<tr>
+						<td>{{ view_inscricao.participante.apelido }} </td>
+						<td><center>{{ view_inscricao.colocacao }}º</center></td>
+						<td><center>{{ view_inscricao.pontos }}</center></td>						
+					</tr>					
+				</table>
+			</div> 
+			<div class="span6">
+				{% include 'legenda_pontos.html' %}
+				<!--
+				<h4 class="text-warning">
+					{{ user_participante.apelido }} 
+					<span class="offset1">Colocação Atual:  {{ user_inscricao.colocacao }}º</span>
+					<span class="offset1">Pontos:  {{ user_inscricao.pontos }}</span>
+				</h4>
+				<h4 class="text-warning">
+					{{ view_inscricao.participante.apelido }} 
+					<span class="offset1">Colocação Atual:  {{ view_inscricao.colocacao }}º</span>
+					<span class="offset1">Pontos:  {{ view_inscricao.pontos }}</span>
+				</h4>					
+				-->
+			</div> 	
+		</div>
 	</div>
 
+	<br/>
+
+	<div class="container">
+	<div class="row">
+		<div class="span8">
+			<div id="chart_div" style="width: 100%; height: 350px;">
+				<center>
+					<img src="/media/images/211.gif"/> <img src="/media/images/aguarde_g.gif"/>
+				</center>
+			</div>
+		</div>
+		<div class="span3">
+			<div id="chart_div_col" style="width: 100%; height: 350px;"></div>
+		</div>
+	</div>
+	</div>
+	
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
 
@@ -13,16 +65,28 @@
       function drawChart() {	    
 	    var data = new google.visualization.DataTable();
 		data.addColumn('string', 'Jogos');
-		data.addColumn('number', 'Colocação');
-        //data.addColumn('number', 'Expenses');        
+        data.addColumn('number', 'Minha Colocação');        
+		data.addColumn('number', '{{ view_inscricao.participante.apelido }}');
         data.addRows({{qtde_jogos}});		
 		var i = 0;
+		
 		{% for a in apostas %}
 			data.setValue(i, 0, '{{ a.jogo.time_a}} X {{ a.jogo.time_b }}');
-			data.setValue(i, 1, {{a.colocacao}});
+			data.setValue(i, 2, {{a.colocacao}});
 			//data.setValue(0, 2, 400);
 			i++;
 		{% endfor %}
+		
+		
+		i = 0;
+		{% for a in my_apostas %}
+			//data.setValue(i, 0, '{{ a.jogo.time_a}} X {{ a.jogo.time_b }}');
+			data.setValue(i, 1, {{a.colocacao}});
+			//data.setValue(0, 2, 400);
+			i++;
+		{% endfor %}		
+			
+		
         var options = {
           title: 'Histórico de Colocação',
           vAxis: {maxValue: 10, direction: -1} // Inverte a Coluna em ordem crescente...
@@ -54,3 +118,32 @@
 	  */
 	  
     </script>
+	
+   
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+		
+          ['Pontuação', 'Eu', '{{ view_inscricao.participante.apelido }}'],
+		  
+          ['AP',  {{ user_inscricao.quantidade_acerto_placar }},                        {{ view_inscricao.quantidade_acerto_placar }}],
+          ['AR',  {{ user_inscricao.quantidade_acerto_vencedor_um_resultado_correto }}, {{ view_inscricao.quantidade_acerto_vencedor_um_resultado_correto }}],
+          ['AV',  {{ user_inscricao.quantidade_acerto_vencedor }},                      {{ view_inscricao.quantidade_acerto_vencedor }}],
+          ['AE',  {{ user_inscricao.quantidade_acerto_empate_erro_placar }},            {{ view_inscricao.quantidade_acerto_empate_erro_placar }}],
+		  ['AS',  {{ user_inscricao.quantidade_acerto_somente_resultado_um_time }},     {{ view_inscricao.quantidade_acerto_somente_resultado_um_time }}],
+		  ['AE',  {{ user_inscricao.quantidade_erro }},                                 {{ view_inscricao.quantidade_erro }}]
+        ]);
+
+        var options = {
+          title: 'Quantidade de acertos',
+		  width:400, height:350,
+          hAxis: {title: 'Histórico da Pontuação', titleTextStyle: {color: 'red'}}
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_col'));
+        chart.draw(data, options);
+      }
+    </script>
+

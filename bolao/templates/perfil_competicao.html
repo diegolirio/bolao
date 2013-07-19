@@ -2,17 +2,16 @@
 <h3>Copa <a href="{{patrocinador.patrocinador.url_site}}" target="_blank">{{patrocinador.patrocinador.nome_visual}}</a> {{competicao.nome}}</h3>
 
 <div class="row">
-	<div class="span4">
-		<div class="row offset1">
-			<div class="span2"><h4 class="text-warning">Colocação Atual:</h4></div> 
-			<div class="span2"><h4>{{ view_inscricao.colocacao }}º</h4></div>
-		</div>
-		<div class="row offset1">
-			<div class="span2"><h4 class="text-warning">Pontos:</h4></div>
-			<div class="span2"><h4>{{ view_inscricao.pontos }}</h4></div>
-		</div>
+	<div class="span7">	
+		<table class="table">
+			<tr>
+				<td>{{ view_inscricao.participante.apelido }} </td>
+				<td><center>{{ view_inscricao.colocacao }}º Colocado</center></td>
+				<td><center>{{ view_inscricao.pontos }} Pontos</center></td>						
+			</tr>					
+		</table>	
 	</div>
-	<div class="span8">
+	<div class="span5">
 		<div class="pull-right">
 			{% if view_inscricao.participante.id == user_participante.id %}
 				<a href="/cadastre_se/" class="btn btn-large">Alterar Perfil</a>
