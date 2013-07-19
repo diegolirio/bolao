@@ -1,0 +1,44 @@
+/* dCodes Framework:(c) TemplateAccess */
+.dc_clear{clear:both;font-size:0px;line-height:0px;margin:0;padding:0;width:100%}
+.dc_decor_img{float:left;height:130px;margin:30px;position:relative;width:180px}
+.dc_decor_img img{background:#fff;border:solid 1px #ccc;height:120px;padding:4px;width:170px}
+.dc_decor_img span{background:url(../images/video-style.gif) no-repeat;display:block;height:18px;left:12px;position:absolute;top:12px;width:20px}
+.dc_decor_img a{text-decoration:none}
+.dc_decor_img_360{float:left;height:260px;margin:30px;position:relative;width:360px} 
+.dc_decor_img_360 img{background:#fff;border:solid 1px #ccc;height:240px;padding:4px;width:340px}
+.dc_decor_img_360 a{text-decoration:none}
+.dc_dis_360_0 span{background:url(../images/video-style.gif) no-repeat;display:block;height:18px;left:12px;position:absolute;top:12px;width:20px}
+.dc_dis_1 span{background:url(../images/pin.png) no-repeat;display:block;height:21px;left:90px;position:absolute;top:-12px;width:28px}
+.dc_dis_360_1 span{background:url(../images/pin.png) no-repeat;display:block;height:21px;left:160px;position:absolute;top:-12px;width:56px}
+.dc_dis_2 span{background:url(../images/tape.png) no-repeat;display:block;height:27px;left:50px;position:absolute;top:-12px;width:77px}
+.dc_dis_360_2 span{background:url(../images/tape.png) no-repeat;display:block;height:27px;left:130px;position:absolute;top:-12px;width:154px}
+.dc_dis_3 span{background:url(../images/paper-clip.png) no-repeat;display:block;height:60px;left:-2px;position:absolute;top:-5px;width:30px}
+.dc_dis_360_3 span{background:url(../images/paper-clip.png) no-repeat;display:block;height:60px;left:10px;position:absolute;top:-5px;width:60px}
+.dc_dis_4 span{background:url(../images/tape2.png) no-repeat;display:block;height:32px;left:30px;position:absolute;top:-13px;width:115px}
+.dc_dis_360_4 span{background:url(../images/tape2.png) no-repeat;display:block;height:32px;left:110px;position:absolute;top:-13px;width:230px}
+.dc_dis_5 span{background:url(../images/gold-frame.png) no-repeat;display:block;height:166px;left:-18px;position:absolute;top:-17px;width:216px}
+.dc_dis_360_5 span{background:url(../images/gold-frame-360.png) no-repeat;display:block;height:332px;left:-41px;position:absolute;top:-39px;width:432px}
+.dc_dis_6 span{background:url(../images/cut-corner.png) no-repeat;display:block;height:137px;left:-5px;position:absolute;top:-5px;width:189px}
+.dc_dis_360_6 span{background:url(../images/cut-corner-360.png) no-repeat;display:block;height:274px;left:-10px;position:absolute;top:-17px;width:378px}
+.dc_dis_7 span{background:url(../images/round-corner.png) no-repeat;display:block;height:120px;left:0;position:absolute;top:0;width:170px}
+.dc_dis_7 img{border:none;padding:0}
+.dc_dis_360_7 span{background:url(../images/round-corner-360.png) no-repeat;display:block;height:240px;left:0px;position:absolute;top:0px;width:340px}
+.dc_dis_360_7 img{border:none;padding:0} 
+.dc_dis_8 span{background:url(../images/round-corner.png) no-repeat;display:block;height:120px;left:6px;position:absolute;top:5px;width:170px}
+.dc_dis_8 img{background:url(../images/round-bg.gif) no-repeat;border:none;padding:5px 6px 6px}
+.dc_dis_9 span{background:url(../images/stamp-pattern.png) no-repeat;display:block;height:120px;left:7px;position:absolute;top:6px;width:170px}
+.dc_dis_9 img{background:url(../images/stamp-bg.gif) no-repeat;border:none;padding:6px 7px 7px}
+.dc_dis_10 span{background:url(../images/brush-border.png) no-repeat;display:block;height:134px;left:-6px;position:absolute;top:-6px;width:181px}
+.dc_dis_10 img{border:none;padding:0}
+.dc_dis_11 span{background:url(../images/floral-corner.png) no-repeat;display:block;height:72px;left:-15px;position:absolute;top:-22px;width:122px}
+.dc_dis_12 span{background:url(../images/watercolor-top.png) no-repeat;display:block;height:137px;left:2px;position:absolute;top:2px;width:186px}
+.dc_dis_12 img{background:url(../images/watercolor-bg.png) no-repeat;border:none;padding:9px 12px 12px 11px}
+.dc_dis_13 span{background:url(../images/mask.png) no-repeat;display:block;height:120px;left:0;position:absolute;top:0;width:170px}
+.dc_dis_13 img{border:none;padding:0}
+.dc_dis_14 span{background:url(../images/glossy-gradient.png);display:block;height:84px;left:5px;position:absolute;top:5px;width:170px}
+#dc_variable_img_container{width:90%}
+#dc_variable_img{list-style:none}
+#dc_variable_img li{background:#e8e8e8;border:1px solid #d7d7d7;border-radius:4px;box-shadow:1px 1px 6px #ddd;display:inline-block;margin:6px;moz-border-radius:4px;moz-box-shadow:1px 1px 6px #ddd;padding:0;webkit-border-radius:4px;webkit-box-shadow:1px 1px 6px #ddd}
+#dc_variable_img li p{border:1px solid #ffffff;border-radius:4px;margin:0;moz-border-radius:4px;padding:7px;webkit-border-radius:4px}
+#dc_variable_img li a{color:#fff;display:inline-block;padding:0;text-decoration:none}
+#dc_variable_img img{border-radius:3px;margin-top:2px;moz-border-radius:3px;padding:0;webkit-border-radius:3px}

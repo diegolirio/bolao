@@ -4,8 +4,14 @@
 
 	<hr/>
 	
-	{% for p in patrocinadores %}
-		<h1>{{p.patrocinador.nome_visual}}</h1>
-	{% endfor %}
+	<link type="text/css" rel="stylesheet" href="/media/gallery/frame/asisco/variable_image_frames/css/asisco_image_frames.css"/>	
+		
+	<ul id="dc_variable_img" style="width:90%; margin:0 auto; padding:3px; position:relative;">
+		{% for p in patrocinadores %}
+			<!--<h1>{{p.patrocinador.nome_visual}}</h1>-->
+			<li><p><a href="#"><img src="http://cdn.dcodes.net/p/150x100/99CC66" width="150" height="100" /></a></p></li>
+		{% endfor %}
+		
+	</ul>
 	
 </div>

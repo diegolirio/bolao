@@ -35,8 +35,10 @@ class Patrocinador(models.Model):
 	nome = models.CharField(max_length=50)	
 	url_site = models.CharField(max_length=100)	
 	# ToDo..:
-	#image_aside = models.ImageField # padrao 200X200 analisar
+	image_aside = models.ImageField(upload_to="images/patrocinadores/", blank=True) # padrao >>>>     height_field='50', width_field='100'
 	#image_center = models.ImageField # padrao 200X400 analisar	
+	def __unicode__(self):
+		return self.nome
 		
 class Competicao(models.Model):
 	campeonato = models.ForeignKey(Campeonato)
@@ -55,6 +57,8 @@ class Competicao_Patrocinadores(models.Model):
 	patrocinador = models.ForeignKey(Patrocinador)
 	competicao = models.ForeignKey(Competicao)
 	principal = models.BooleanField(default=False) # Principal Cobrar dominio 30, mais hospedagem 20 = (50)
+	def __unicode__(self):
+		return self.competicao + ' - ' + self.patrocinador	
 	class Meta:
 		unique_together = ('patrocinador', 'competicao')	
 	
