@@ -58,7 +58,7 @@ class Competicao_Patrocinadores(models.Model):
 	competicao = models.ForeignKey(Competicao)
 	principal = models.BooleanField(default=False) # Principal Cobrar dominio 30, mais hospedagem 20 = (50)
 	def __unicode__(self):
-		return self.competicao + ' - ' + self.patrocinador	
+		return self.patrocinador.nome_visual + ' - Copa ' + self.competicao.nome + ' - ' + self.competicao.campeonato.nome
 	class Meta:
 		unique_together = ('patrocinador', 'competicao')	
 	

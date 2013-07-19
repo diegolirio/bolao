@@ -9,7 +9,7 @@
 	<ul id="dc_variable_img" style="width:90%; margin:0 auto; padding:3px; position:relative;">
 		{% for p in patrocinadores %}
 			<!--<h1>{{p.patrocinador.nome_visual}}</h1>-->
-			<li><p><a href="#"><img src="http://cdn.dcodes.net/p/150x100/99CC66" width="150" height="100" /></a></p></li>
+			<li><p><a href="{{ p.patrocinador.url_site }}" target="_blank"><img title="{{p.patrocinador.nome_visual}}" src="/media/{{ p.patrocinador.image_aside }}" width="150" height="100" /></a></p></li>
 		{% endfor %}
 		
 	</ul>

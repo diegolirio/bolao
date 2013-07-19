@@ -31,9 +31,11 @@
 			{% for ip in inscricoes_competicao %}
 			<tr>
 				<td class="text-info">{{ ip.colocacao}}º</td>
-				<td>
-					<img src="/media/{{ ip.participante.foto }}" height="20" width="25"/>
-					<a href="/perfil_competicao/{{competicao.id}}/{{ip.id}}/" {% if ip.participante.id == user_participante.id %} class="text-warning" {% endif %}>{{ ip.participante }}</a>
+				<td> <!-- nome participante -->
+					<a href="/perfil_competicao/{{competicao.id}}/{{ip.id}}/" {% if ip.participante.id == user_participante.id %} class="text-warning" {% endif %}>
+						<img src="/media/{{ ip.participante.foto }}" height="20" width="25"/>
+						{{ ip.participante }}
+					</a>
 				</td>
 				<td class="muted">{{ ip.id }}</td>
 				<td class="text-info"><center>{{ ip.pontos }}</center></td>
@@ -51,16 +53,27 @@
 	</div>
 	<div class="span2">
 		<span class="text-warning">publicidade</span><br/>
+		{% for p in patrocinadores %}
+			<div class="visible-desktop">
+				<a href="{{ p.patrocinador.url_site }}" target="_blank">
+					<img class="img-rounded" title="{{p.patrocinador.nome_visual}}" height="100" width="150" src="/media/{{ p.patrocinador.image_aside }}"/>
+				</a>
+				<br/><br/>
+			</div>			
+		{% endfor %}
+		
+		<!--
 		<div class="visible-desktop">
-			<a href="http://www.asisco.com.br" target="_blank"><img class="img-rounded" src="/media/images/patrocinadores/cocacola.png"/></a> <!-- src="/media/images/patrocinadores/logo.gif"/></a>-->
+			<a href="http://www.asisco.com.br" target="_blank"><img class="img-rounded" src="/media/images/patrocinadores/cocacola.png"/></a>
 			<br/><br/>
 		</div>
 		<div class="visible-desktop">
-			<a href="http://www.asisco.com.br" target="_blank"><img class="img-rounded" src="/media/images/patrocinadores/asisco.jpg"/></a> <!-- src="/media/images/patrocinadores/logo.gif"/></a>-->
+			<a href="http://www.asisco.com.br" target="_blank"><img class="img-rounded" src="/media/images/patrocinadores/asisco.jpg"/></a>
 			<br/><br/>
 		</div>
+		-->
 		<div class="patrocinador">
-			<img class="img-rounded" src="/media/images/patrocinadores/anuncie.gif"/>
+			<img class="img-rounded" height="100" width="150" src="/media/images/patrocinadores/anuncie.gif"/>
 		</div>
 	</div>
 </div>

@@ -71,6 +71,7 @@ def rancking(request, competicao_pk):
 	user_inscricao = get_inscricao(competicao, user_participante)
 	inscricoes_competicao = get_rancking_by_competicao(competicao)
 	valor_acumulado = inscricoes_competicao.count() * competicao.valor_aposta
+	patrocinadores = Competicao_Patrocinadores.objects.filter(competicao=competicao).order_by('-principal')
 	return render_to_response('_base.html', 
 							  {     'template': 'rancking.html', 
 							        'titulo': 'Rancking', 
@@ -81,7 +82,8 @@ def rancking(request, competicao_pk):
 									'patrocinador': patrocinador,
 							        #-----------------------------------
 							        'valor_acumulado': valor_acumulado,
-							        'inscricoes_competicao': inscricoes_competicao
+							        'inscricoes_competicao': inscricoes_competicao,
+									'patrocinadores': patrocinadores
 							        })
 	                                
 def get_jogos_of_the_campeonato(campeonato):
@@ -99,6 +101,7 @@ def tabela(request, competicao_pk):
 	user_participante = get_participante_by_user(request.user)
 	user_inscricao = get_inscricao(competicao, user_participante)
 	jgs = get_jogos_of_the_campeonato(competicao.campeonato)
+	patrocinadores = Competicao_Patrocinadores.objects.filter(competicao=competicao).order_by('-principal')
 	return render_to_response('_base.html', 
 							  {       'template': 'tabela.html', 
 								      'titulo': 'Tabela',
@@ -108,7 +111,8 @@ def tabela(request, competicao_pk):
 								      'competicao': competicao,
 									  'patrocinador': patrocinador,
 								      #----
-									  'jogos': jgs
+									  'jogos': jgs,
+									  'patrocinadores': patrocinadores
 							 })
 
 def get_palpites_all_participantes(jogo, competicao):
