@@ -34,6 +34,8 @@ urlpatterns = patterns('',
     url(r'^aposta_edit/(?P<user_aposta_pk>\d+)/$', 'core.views.aposta_edit'),
     url(r'^perfil_competicao/(?P<competicao_pk>\d+)/(?P<view_inscricao_pk>\d+)/$', 'core.views.perfil_competicao'),
     url(r'^perfil/$', 'core.views.cadastre_se'),
+    url(r'^comparar_colocacao/(?P<competicao_pk>\d+)/(?P<view_inscricao_pk>\d+)/$', 'core.views.comparar_colocacao'),
+    
     # Logado (privadas) >>> url fixado sempre a competicao como parametro
 
 #    url(r'^irancking/(?P<competicao_pk>\d+)/$', 'core.views.irancking', name='irancking'),    
@@ -50,6 +52,7 @@ urlpatterns = patterns('',
     url(r'^system/campeonato_calc_jogos/(?P<campeonato_pk>\d+)/$', 'core.views.system_campeonato_calc_jogos'),
     url(r'^system/calcular_campeonato/(?P<campeonato_pk>\d+)/$', 'core.views.system_calcular_campeonato'),
 	url(r'^system/jogo_edit/(?P<campeonato_pk>\d+)/(?P<jogo_pk>\d+)/$', 'core.views.system_jogo_edit'),	
+	url(r'^system/novo_jogo/$', 'core.views.system_novo_jogo'),	
 	
 	url(r'^system/cadastrar_participante/(?P<user_pk>\d+)/$', 'core.views.system_cadastrar_participante'),
 	url(r'^system/consultar_participante/$', 'core.views.system_consultar_participante'),

@@ -246,6 +246,39 @@ def perfil_competicao(request, competicao_pk, view_inscricao_pk):
 								'perfil': True,
 								'foto': view_inscricao.participante.foto,
 							   })
+							  
+def comparar_colocacao(request, competicao_pk, view_inscricao_pk):
+	competicao = Competicao.objects.get(pk=competicao_pk)	
+	user_participante = get_participante_by_user(request.user)
+	user_inscricao = get_inscricao(competicao, user_participante)
+	view_inscricao = Inscricao.objects.get(pk=view_inscricao_pk)
+	view_apostas = list()
+	apts_aux = Aposta.objects.filter(inscricao=view_inscricao)
+	#jogo_ = apts_aux.count()
+	#if user_inscricao.pk != view_inscricao.pk:
+	jogo_ = 0
+	for a in apts_aux:
+		if (a.jogo.status.codigo == 'A') or (a.jogo.status.codigo == 'F'):
+			view_apostas.append(a)	
+			jogo_ = jogo_ + 1
+	#else:
+	#	view_apostas = apts_aux		
+	return render_to_response('_base_simple.html', 
+						      {  
+								'template': 'comparar_colocacao.html',
+								'titulo': view_inscricao.participante.apelido,
+								'subtitulo': '', #view_inscricao.competicao.campeonato.nome + ' ' + view_inscricao.competicao.nome,
+								'user_participante': user_participante,
+								'user_inscricao': user_inscricao,
+								'competicao': competicao, 	
+								'view_inscricao': view_inscricao,
+								'apostas': view_apostas, # apostas do participante, nao alterar chave por manter mesmo da apostas.html
+								'total_pontos': view_inscricao.pontos,
+								#'view_apostas_chart': view_apostas_chart,
+								'qtde_jogos': jogo_,
+								'perfil': True,
+								'foto': view_inscricao.participante.foto,
+							   })	
 							   
 def __get_code_random__():
 	code = ''
@@ -577,6 +610,10 @@ def system_campeonato_calc_jogos(request, campeonato_pk):
 								  'user_participante': user_participante, 
 								  'campeonato': campeonato,
 								  'jogos' : jogos})
+								  
+def system_novo_jogo(request):
+	form = JogoForm()
+	return render_to_response('_base_simple.html', {'template': 'system/novo_jogo.html', 'form': form})						  
 								  
 def system_jogo_edit(request, campeonato_pk, jogo_pk):
 	campeonato = Campeonato.objects.get(pk=campeonato_pk)

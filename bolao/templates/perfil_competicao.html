@@ -3,16 +3,14 @@
 
 <div class="row">
 	<div class="span4">
-		<table class="offset1">
-			<tr>
-				<td><h4 class="text-warning">Colocação Atual:</h4></td>
-				<td><h4>{{ view_inscricao.colocacao }}º</h4></td>
-			</tr>
-			<tr>
-				<td><h4 class="text-warning">Pontos:</h4></td>
-				<td><h4>{{ view_inscricao.pontos }}</h4></td>
-			</tr>				
-		</table>
+		<div class="row offset1">
+			<div class="span2"><h4 class="text-warning">Colocação Atual:</h4></div> 
+			<div class="span2"><h4>{{ view_inscricao.colocacao }}º</h4></div>
+		</div>
+		<div class="row offset1">
+			<div class="span2"><h4 class="text-warning">Pontos:</h4></div>
+			<div class="span2"><h4>{{ view_inscricao.pontos }}</h4></div>
+		</div>
 	</div>
 	<div class="span8">
 		<div class="pull-right">
@@ -25,7 +23,7 @@
 
 {% include 'legenda_pontos.html' %}
 {% if view_inscricao.participante.id != user_participante.id and user_participante.user.is_authenticated %}
-	<a href="#" class="btn">Comparar colocação</a>
+	<a href="/comparar_colocacao/{{competicao.id}}/{{view_inscricao.id}}/" class="btn" onclick="show_ful__(this.href); return false;">Comparar colocação</a>
 {% endif %}
 
 <br/><br/>
