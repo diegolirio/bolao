@@ -688,12 +688,33 @@ def system_consultar_participante(request):
 		
 	
 @login_required	
-def system_cadastrar_participante(request, user_pk):
+def system_cadastrar_participante(request, participante_pk):
 	message = ''
 	status_transation = 'I'
 	user_participante = get_participante_by_user(request.user)
 	form_user = UserNewForm()
 	form_participante = ParticipanteForm()	
+	participante = Participante()
+	if request.method == 'POST':
+		if participante_pk == '0':
+			form_user = UserNewForm(request.POST, request.FILES)
+			if form_user.is_valid():
+				# Validar senhas compativeis.... no link http://www.aprendendodjango.com/funcoes-de-usuarios/
+				user = form_user.save()
+				#print('save_user >>>>>>>> automatico participante e apos confirm_email ' + user.username)		
+				participante = __new_participante__(user)
+				status_transation = 'V'
+				# ToDo...: Realizar Login... aki.....
+				#user = authenticate(username=user.username, password=user.password)
+				#login(request, user)
+				return redirect('/system/cadastrar_participante/'+str(user.pk))		
+	else:
+		if participante_pk != '0':
+			participante = Participante.objects.get(pk=participante_pk)
+			form_user = UserEditForm(instance=participante.user)
+			if user_participante != None:
+				form_participante = ParticipanteForm(instance=participante)	
+			status_transation = 'V'		
 	return render_to_response('_base.html', 
 	                          {'template': 'system/cadastrar_participante.html', 
 	                           'titulo': 'Cadastro System', 
@@ -701,6 +722,7 @@ def system_cadastrar_participante(request, user_pk):
 	                           'user_participante': user_participante,
 	                           'form_user': form_user,
 							   'form_participante': form_participante,
+							   'participante': participante,
 							   'status_transation': status_transation,
 							   'message': message
 	                           }, RequestContext(request))	
@@ -710,11 +732,11 @@ def system_inscricoes_participante(request, participante_pk):
 	user_participante = get_participante_by_user(request.user)
 	minhas_inscricoes = Inscricao.objects.filter(participante=participante)
 	outras_inscricoes = Inscricao.objects.exclude(participante=participante)
-	return render_to_response('_base.html', 
+	return render_to_response('_base_simple.html', 
 	                          {'template': 'system/inscricoes_participante.html', 
-	                           'titulo': u'Inscrições System', 
-	                           'subtitulo': participante.apelido,
-	                           'user_participante': user_participante
+	                           'user_participante': user_participante,
+							   'minhas_inscricoes': minhas_inscricoes,
+							   'outras_inscricoes': outras_inscricoes
 	                           }, RequestContext(request))		
 							   
 @login_required							   

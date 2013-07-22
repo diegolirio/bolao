@@ -1,3 +1,7 @@
+		<div class="pull-right">
+			<a href="/system/inscricoes_participante/{{participante.id}}" onclick="show__(this.href); return false;" class="btn">Inscricoes</a>
+		</div>
+
 <div class="row well">
 		<div class="span5">
 			<form action="" method="POST" class="form-horizontal"> {% csrf_token %}
@@ -28,7 +32,7 @@
 						{% endif %} 									
 					</div>	
 				</div>					
-				
+				{% if status_transation == 'I' %}
 					<div class="control-group">
 						<label class="control-label">{{ form_user.password.label }}</label>										
 						<div class="controls">
@@ -53,7 +57,34 @@
 							{% endif %} 									
 						</div>	
 					</div>	
-	
+				{% else %}
+					<div class="control-group">
+						<label class="control-label">{{ form_user.first_name.label }}</label>										
+						<div class="controls">
+							<span class="add-on"><i class="icon-user"></i></span>
+							{{ form_user.first_name }}
+							{% if form_user.first_name.errors %}
+								{% for error in form_user.first_name.errors %}
+									<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
+								{% endfor %}
+							{% endif %} 									
+						</div>	
+					</div>			
+					<div class="control-group">
+						<label class="control-label">{{ form_user.last_name.label }}</label>										
+						<div class="controls">
+							<span class="add-on"><i class="icon-user"></i></span>
+							{{ form_user.last_name }}
+								{% if form_user.last_name.errors %}
+								{% for error in form_user.last_name.errors %}
+									<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
+								{% endfor %}
+							{% endif %} 									
+						</div>	
+					</div>					
+					<!-- Fim Logado -->								
+					<a href="/cadastre_se/alterar_senha/" onclick="show__(this.href); return false;" class="pull-left">Alterar senha</a>				
+				{% endif %}
 				<div class="form-actions">		
 					<button type="submit" class="btn btn-primary" name="save_user"><i class="icon-ok" ></i> Salvar </button>
 				</div>
@@ -73,7 +104,7 @@
 							<label class="control-label">{{ form_participante.username.label }}</label>										
 							<div class="controls">
 								<span class="add-on"><i class="icon-user"></i></span>
-								<span class="label label-important">{{ user_participante.user.username }}</span>
+								<span class="label label-important">{{ form_participante.user.value }}</span>
 								<input type="hidden" value="{{form_participante.user.value}}" name="user">
 								{% if form_participante.username.errors %}
 									{% for error in form_participante.username.errors %}

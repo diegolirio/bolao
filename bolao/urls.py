@@ -54,7 +54,7 @@ urlpatterns = patterns('',
 	url(r'^system/jogo_edit/(?P<campeonato_pk>\d+)/(?P<jogo_pk>\d+)/$', 'core.views.system_jogo_edit'),	
 	url(r'^system/novo_jogo/$', 'core.views.system_novo_jogo'),	
 	
-	url(r'^system/cadastrar_participante/(?P<user_pk>\d+)/$', 'core.views.system_cadastrar_participante'),
+	url(r'^system/cadastrar_participante/(?P<participante_pk>\d+)/$', 'core.views.system_cadastrar_participante'),
 	url(r'^system/consultar_participante/$', 'core.views.system_consultar_participante'),
 	url(r'^system/inscricoes_participante/(?P<participante_pk>\d+)/$', 'core.views.system_inscricoes_participante'),
 	
