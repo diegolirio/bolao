@@ -736,7 +736,8 @@ def system_inscricoes_participante(request, participante_pk):
 	                          {'template': 'system/inscricoes_participante.html', 
 	                           'user_participante': user_participante,
 							   'minhas_inscricoes': minhas_inscricoes,
-							   'outras_inscricoes': outras_inscricoes
+							   'outras_inscricoes': outras_inscricoes,
+							   'participante': participante
 	                           }, RequestContext(request))		
 							   
 @login_required							   

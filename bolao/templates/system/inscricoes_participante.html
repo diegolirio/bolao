@@ -1,24 +1,40 @@
 {% load functions %}
 
+<div class="container">
 <div class="row">
-<h1>Minhas Competicoes</h1>
-{% for m in minhas_inscricoes %}
-	<div class="span4">
-		<div class="hero-unit">
-			<a href="/rancking/{{c.id}}/"><img src="/media/images/gold_cup_100X124.png" /></a>
-			<h2>Copa <a href="{{ m.competicao|get_patrocinador_principal_link }}" target="_blank">{{ m.competicao|get_patrocinador_principal_display }}</a> {{m.competicao.nome}}</h2>
-			<h4>{{m.competicao.campeonato.nome}}</h4> 
-			<br/>
-			<p>
-				<a href="/rancking/{{c.id}}/" class="btn btn-success btn-large">
-					Entre e veja a competicao
-					{% if m.competicao.status.codigo == 'E' %}
-						(inscricoes abertas)
-					{% endif %}
-				</a>
-			</p>	
-		</div>		
-	</div>
-{% endfor %}
-<h1>Outras Competicoes</h1>
+<p>{{ participante.apelido }}</p>	
+<h4>Minhas Competicoes</h4>
+<ul class="thumbnails">
+	{% for m in minhas_inscricoes %}
+		<li class="span6 clearfix">
+		  <div class="thumbnail clearfix">
+			<div class="caption" class="pull-left">
+			  <a href="http://bootsnipp.com/" class="btn btn-primary icon  pull-right">Desativar</a>
+			  <h4>      
+			  Copa <a href="{{ m.competicao|get_patrocinador_principal_link }}" target="_blank">{{ m.competicao|get_patrocinador_principal_display }}</a> {{m.competicao.nome}}
+			  </h4>
+			  <small>{{m.competicao.campeonato.nome}} - {{ m.competicao.campeonato.status.descricao }}</small>		  
+			</div>
+		  </div>
+		</li>	
+	{% endfor %}
+</ul>	
+<hr/>
+<h4>Outras Competicoes</h4>
+<ul class="thumbnails">
+	{% for o in outras_inscricoes %}
+		<li class="span6 clearfix">
+		  <div class="thumbnail clearfix">
+			<div class="caption" class="pull-left">
+			  <a href="http://bootsnipp.com/" class="btn btn-primary icon  pull-right">Desativar</a>
+			  <h4>      
+			  Copa <a href="{{ o.competicao|get_patrocinador_principal_link }}" target="_blank">{{ o.competicao|get_patrocinador_principal_display }}</a> {{o.competicao.nome}}
+			  </h4>
+			  <small>{{o.competicao.campeonato.nome}} - {{ o.competicao.campeonato.status.descricao }}</small>		  
+			</div>
+		  </div>
+		</li>	
+	{% endfor %}
+</ul>	
+</div>
 </div>
