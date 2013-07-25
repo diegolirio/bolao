@@ -83,23 +83,21 @@ class Jogo(models.Model):
 	#time_b = models.ForeignKey(Time)
 	time_a = models.CharField(max_length=50)
 	time_b = models.CharField(max_length=50)
-	resultado_a = models.IntegerField()
-	resultado_b = models.IntegerField()
+	resultado_a = models.IntegerField(default=0)
+	resultado_b = models.IntegerField(default=0)
 	grupo = models.ForeignKey(Grupo)
-	data_hora = models.DateTimeField()
+	data_hora = models.DateTimeField(default=datetime.now)
 	#hora = models.CharField(max_length=15)
-	vencedor = models.CharField(max_length=1, blank=True) # (A - B - E)
+	vencedor = models.CharField(max_length=1, blank=True, default='E') # (A - B - E)
 	local = models.ForeignKey(Local, blank=True, null=True)
-	status = models.ForeignKey(StatusJogo) 
+	status = models.ForeignKey(StatusJogo, default='E') 
 	def __unicode__(self):
 		r_a = ""
 		r_b = ""		
 		if self.status.codigo != "E":
 			r_a = str(self.resultado_a)
-			r_b = str(self.resultado_b)	
-		
+			r_b = str(self.resultado_b)			
 		return self.time_a + " " + r_a + " X " + r_b + " " + self.time_b + " / " + str(self.data_hora) + " - " + self.status.descricao + " / Local: " + self.local.descricao
-
 ###########################################################
 
 class Inscricao(models.Model):

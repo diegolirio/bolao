@@ -2,7 +2,7 @@
 		<div class="span7">
 			<form action="" method="POST" class="form-horizontal"> {% csrf_token %}
 			    <div id="legend">
-				   <legend><h3>Jogo</h3></legend>
+				   <legend><h4>Novo Jogo</h4></legend>
 			    </div>			
 				<div class="control-group">
 					<label class="control-label">{{ form.grupo.label }}</label>										
@@ -31,7 +31,7 @@
 						{{ form.data_hora.label }}
 					</label>
 					<div class="controls">
-						{{ form.data_hora }} <a href="/tipoconta_edit_simple/0/" onclick="show__(this.href); return false;"><i class="icon-plus"></i></a>
+						{{ form.data_hora }}
 						{% if form.data_hora.errors %} 
 							{% for error in form.data_hora.errors %}
 								<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
@@ -39,12 +39,13 @@
 						{% endif %} 										
 					</div>
 				</div>
+				<!--
 				<div class="control-group">
 					<label class="control-label">	
 						{{ form.status.label }}
 					</label>
 					<div class="controls">
-						{{ form.status }} <a href="/agencia_edit_simple/0/" onclick="show__(this.href); return false;"><i class="icon-plus"></i></a>
+						{{ form.status }} 
 						{% if form.status.errors %} 
 							{% for error in form.status.errors %}
 								<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
@@ -52,21 +53,27 @@
 						{% endif %} 										
 					</div>
 				</div>
-				
+				-->
 				<div class="control-group">			
 					{% if form.resultado_a.errors %}
 						{% for error in form.resultado_a.errors %}
 							<span class="help-inline"><span class="text-error"> Resultado {{ form.time_a.label }}: {{ error|escape }}</span></span>
 						{% endfor %}
-					{% endif %} 			
+					{% endif %} 		
+					<br/>					
+					{% if form.time_a.errors %}
+						{% for error in form.time_a.errors %}
+							<span class="help-inline"><span class="text-error"> {{ form.time_a.label }}: {{ error|escape }}</span></span>
+						{% endfor %}
+					{% endif %} 					
 					<div class="controls">					
-						<h3>
+						<h4>
 							{{ form.time_a.label }}<br/>
 							{{form.time_a}}
 							<!--<input type="text" value="{{ aposta.resultado_a }}" name="resultado_a">-->
 							<!--{ form.resultado_a }-->
-							<input type="number" id="id_resultado_a" style="width: 45px; padding: 1px" value="{{form.resultado_a.value}}" name="resultado_a"> 
-						</h3>
+							<input type="number" id="id_resultado_a" style="width: 45px; padding: 1px" value="" name="resultado_a"> 
+						</h4>
 					</div>
 				</div>	
 				<div class="control-group">			
@@ -74,15 +81,21 @@
 						{% for error in form.resultado_b.errors %}
 							<span class="help-inline"><span class="text-error"> Resultado {{ form.time_b.label }}: {{ error|escape }}</span></span>
 						{% endfor %}
-					{% endif %} 			
+					{% endif %} 	
+					<br/>
+					{% if form.time_b.errors %}
+						{% for error in form.time_b.errors %}
+							<span class="help-inline"><span class="text-error"> {{ form.time_b.label }}: {{ error|escape }}</span></span>
+						{% endfor %}
+					{% endif %} 	
 					<div class="controls">					
-						<h3>
+						<h4>
 							{{ form.time_b.label }}<br/>
 							{{form.time_b}}
 							<!--<input type="text" value="{{ aposta.resultado_a }}" name="resultado_a">-->
 							<!--{ form.resultado_a }-->
-							<input type="number" id="id_resultado_b" style="width: 45px; padding: 1px" value="{{form.resultado_b.value}}" name="resultado_b"> 
-						</h3>
+							<input type="number" id="id_resultado_b" style="width: 45px; padding: 1px" value="" name="resultado_b"> 
+						</h4>
 					</div>
 				</div>
 

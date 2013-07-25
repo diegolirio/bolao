@@ -619,7 +619,15 @@ def system_campeonato_calc_jogos(request, campeonato_pk):
 								  
 def system_novo_jogo(request):
 	form = JogoForm()
-	return render_to_response('_base_simple.html', {'template': 'system/novo_jogo.html', 'form': form})						  
+	execute_transation = 'N'
+	mensagem = ''
+	if request.method == 'POST':
+		form = JogoForm(request.FILES, request.POST)
+		if form.is_valid():
+			form.save()
+			execute_transation = 'S'
+			mensagem = 'gravado com sucesso'
+	return render_to_response('_base_simple.html', {'template': 'system/novo_jogo.html', 'form': form, 'execute_transation': execute_transation, 'mensagem': mensagem}, context_instance=RequestContext(request))						  
 								  
 def system_jogo_edit(request, campeonato_pk, jogo_pk):
 	campeonato = Campeonato.objects.get(pk=campeonato_pk)
