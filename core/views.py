@@ -248,7 +248,7 @@ def perfil_competicao(request, competicao_pk, view_inscricao_pk):
 								#'view_apostas_chart': view_apostas_chart,
 								'qtde_jogos': jogo_,
 								'perfil': True,
-								'foto': view_inscricao.participante.foto,
+								'foto': view_inscricao.participante.foto
 							   })
 							  
 def comparar_colocacao(request, competicao_pk, view_inscricao_pk):
