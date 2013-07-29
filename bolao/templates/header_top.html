@@ -61,7 +61,7 @@
 				  <div class="row">
 					<div class="span6">
 								{% if perfil %}
-									<img class="pull-left" src="/media/{{foto}}" height="90" width="80"/> 
+									<img class="pull-left img-rounded" src="/media/{{foto}}" height="90" width="80" /> 
 								{% else %}
 									<img class="pull-left" src="/media/images/trofeu_bolao_72.png"/>
 								{% endif %}
@@ -81,14 +81,16 @@
 									-->
 								</div>							
 							{% else %}
+								
 								<a href="/cadastre_se/" class="btn pull-right">Cadastre-se</a>						  
 							{% endif %}		
 							<div class="pull-right">
-								<audio controls="controls" autoplay="autoplay">
-									<source src="/media/sound/garoto_chocolates.mp3" type="audio/mp3" />
+								<audio controls="controls">
 									<source src="/media/sound/love_soon.mp3" type="audio/mp3" />
-									<source src="/media/sound/globo.mp3" type="audio/mp3" />
-									
+									<!--
+									<source src="/media/sound/garoto_chocolates.mp3" type="audio/mp3" />
+									<source src="/media/sound/globo.mp3" type="audio/mp3" />	
+									-->
 								</audio>								
 							</div>
 					  </div>
