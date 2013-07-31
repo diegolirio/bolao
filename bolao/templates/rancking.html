@@ -53,10 +53,17 @@
 	</div>
 	<div class="span2">
 		<span class="text-warning">publicidade</span><br/>
+		<div class="visible-desktop">
+			<a href="{{ patrocinador.patrocinador.url_site }}" target="_blank">
+				<img class="img-rounded" title="{{patrocinador.patrocinador.nome_visual}}" height="100" width="150" src="/media/{{ patrocinador.patrocinador.image_aside }}"/>
+			</a>
+			<br/><br/>
+		</div>	
+		
 		{% for p in patrocinadores %}
 			<div class="visible-desktop">
-				<a href="{{ p.patrocinador.url_site }}" target="_blank">
-					<img class="img-rounded" title="{{p.patrocinador.nome_visual}}" height="100" width="150" src="/media/{{ p.patrocinador.image_aside }}"/>
+				<a href="{{ p.competicacao_patrocinador.patrocinador.url_site }}" target="_blank">
+					<img class="img-rounded" title="{{p.competicacao_patrocinador.patrocinador.nome_visual}}" height="100" width="150" src="/media/{{ p.competicacao_patrocinador.patrocinador.image_aside }}"/>
 				</a>
 				<br/><br/>
 			</div>			

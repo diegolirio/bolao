@@ -147,7 +147,7 @@ class Solicitacao(models.Model):
 		return 'Solicitacao: ' + self.status + ' - ' + self.participante.apelido + ' - ' + self.competicao.nome
 
 #23 
-class PatrocinioLocal(models.Model):
+class Pagina(models.Model):
 	# H = Home
 	# T = Tabela ( 5 lateral ) R$ 6 (principal ganha 1)
  	# R = Rancking ( 5 lateral ) R$ 8 (principal ganha 1)
@@ -159,18 +159,13 @@ class PatrocinioLocal(models.Model):
 	# C = Confirmado ( 1 lateral ) R$ 1
 	nome_pagina = models.CharField(max_length=50) # Home | Tabela | Rancking ou popup_float
 	codigo_pagina = models.CharField(max_length=1) # H | T | R | F
-	qtde_total = models.IntegerField()
+	qtde_total_patrocinio = models.IntegerField()
 	valor = models.FloatField()
-	competicacao_patrocinador = models.ForeignKey(Competicao_Patrocinadores)	
 	def __unicode__(self):
-		return 'Patrocinador: ' + self.competicacao_patrocinador.patrocinador.nome + ' - ' + self.competicacao_patrocinador.competicao.nome
+		return self.nome_pagina
 	
-"""	
-class PatrocinadorCompeticaoLocal(models.Model):
-	patrocinador = models.ForeignKey(Patrocinador)
-	competicao = models.ForeignKey(Competicao)
-	local = models.ForeignKey(PatrocinioLocal)
-"""	
-
-
-
+class PaginaPatrocinio(models.Model):
+	pagina = models.ForeignKey(Pagina)
+	competicacao_patrocinador = models.ForeignKey(Competicao_Patrocinadores)
+	def __unicode__(self):
+		return self.competicacao_patrocinador.patrocinador.nome	

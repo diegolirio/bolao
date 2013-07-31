@@ -86,36 +86,41 @@ def global_():
 		cc = Patrocinador.objects.filter(nome_visual='Coca-Cola')[0:1].get()		
 
 	# Local Patrocinio
-	if PatrocinioLocal.objects.filter(codigo_pagina='R').count() == 0:		
-		rancking = PatrocinioLocal()
+	if Pagina.objects.filter(codigo_pagina='R').count() == 0:		
+		rancking = Pagina()
 		rancking.nome_pagina = 'Rancking'
 		rancking.codigo_pagina = 'R'
-		rancking.qtde_total = 5
-		rancking.valor = 8		
-	if PatrocinioLocal.objects.filter(codigo_pagina='T').count() == 0:		
-		rancking = PatrocinioLocal()
-		rancking.nome_pagina = 'Tabela'
-		rancking.codigo_pagina = 'T'
-		rancking.qtde_total = 5
-		rancking.valor = 6		
-	if PatrocinioLocal.objects.filter(codigo_pagina='A').count() == 0:		
-		rancking = PatrocinioLocal()
-		rancking.nome_pagina = 'Aposta do Jogo'
-		rancking.codigo_pagina = 'A'
-		rancking.qtde_total = 5
-		rancking.valor = 5		
-	if PatrocinioLocal.objects.filter(codigo_pagina='O').count() == 0:		
-		rancking = PatrocinioLocal()
-		rancking.nome_pagina = 'Logout'
-		rancking.codigo_pagina = 'O'
-		rancking.qtde_total = 1
-		rancking.valor = 3		
-	if PatrocinioLocal.objects.filter(codigo_pagina='S').count() == 0:		
-		rancking = PatrocinioLocal()
-		rancking.nome_pagina = 'Solicitacao da inscricao'
-		rancking.codigo_pagina = 'S'
-		rancking.qtde_total = 2
-		rancking.valor = 1	
+		rancking.qtde_total_patrocinio = 5
+		rancking.valor = 8.0
+		rancking.save()
+	if Pagina.objects.filter(codigo_pagina='T').count() == 0:		
+		tb = Pagina()
+		tb.nome_pagina = 'Tabela'
+		tb.codigo_pagina = 'T'
+		tb.qtde_total_patrocinio = 5
+		tb.valor = 6		
+		tb.save()
+	if Pagina.objects.filter(codigo_pagina='A').count() == 0:		
+		aj = Pagina()
+		aj.nome_pagina = 'Aposta do Jogo'
+		aj.codigo_pagina = 'A'
+		aj.qtde_total_patrocinio = 5
+		aj.valor = 5		
+		aj.save()
+	if Pagina.objects.filter(codigo_pagina='O').count() == 0:		
+		lout = Pagina()
+		lout.nome_pagina = 'Logout'
+		lout.codigo_pagina = 'O'
+		lout.qtde_total_patrocinio = 1
+		lout.valor = 3		
+		lout.save()
+	if Pagina.objects.filter(codigo_pagina='S').count() == 0:		
+		sol = Pagina()
+		sol.nome_pagina = 'Solicitacao da inscricao'
+		sol.codigo_pagina = 'S'
+		sol.qtde_total_patrocinio = 2
+		sol.valor = 1	
+		sol.save()
 
 def copa_mundo_teste():
 	# Campeonato

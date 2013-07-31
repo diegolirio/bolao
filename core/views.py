@@ -63,6 +63,16 @@ def get_inscricao(competicao, participante):
 	except:
 		user_inscricao = Inscricao()	
 	return user_inscricao
+	
+def get_patrocinador_pagina(codigo_pagina, competicao):
+	pagina = Pagina.objects.filter(codigo_pagina=codigo_pagina)[0:1].get()
+	pag_patr = PaginaPatrocinio.objects.filter(pagina=pagina)
+	patrocinadores_pagina = []
+	for pp in pag_patr:
+		if pp.competicacao_patrocinador.competicao == competicao:
+			patrocinadores_pagina.append(pp)
+	return patrocinadores_pagina
+	
 
 def rancking(request, competicao_pk):
 	competicao = Competicao.objects.get(pk=competicao_pk)	
@@ -71,8 +81,9 @@ def rancking(request, competicao_pk):
 	user_inscricao = get_inscricao(competicao, user_participante)
 	inscricoes_competicao = get_rancking_by_competicao(competicao)
 	valor_acumulado = inscricoes_competicao.count() * competicao.valor_aposta
-	patrocinadores = Competicao_Patrocinadores.objects.filter(competicao=competicao).order_by('-principal')
+	#patrocinadores = Competicao_Patrocinadores.objects.filter(competicao=competicao).order_by('-principal')
 	#ToDo...: >>>>> PatrocinioLocal.objects.filter(
+	patrocinadores = get_patrocinador_pagina('R', competicao)
 	return render_to_response('_base.html', 
 							  {     'template': 'rancking.html', 
 							        'titulo': 'Rancking', 
@@ -102,7 +113,8 @@ def tabela(request, competicao_pk):
 	user_participante = get_participante_by_user(request.user)
 	user_inscricao = get_inscricao(competicao, user_participante)
 	jgs = get_jogos_of_the_campeonato(competicao.campeonato)
-	patrocinadores = Competicao_Patrocinadores.objects.filter(competicao=competicao).order_by('-principal')
+	#patrocinadores = Competicao_Patrocinadores.objects.filter(competicao=competicao).order_by('-principal')
+	patrocinadores = get_patrocinador_pagina('T', competicao)
 	return render_to_response('_base.html', 
 							  {       'template': 'tabela.html', 
 								      'titulo': 'Tabela',
@@ -136,6 +148,7 @@ def apostas_jogo(request, competicao_pk, jogo_pk):
 	if (jogo.status.codigo == 'E'):
 		return redirect('/tabela/'+str(competicao.pk)+'/')		
 	apostas_jogos_competicao = get_palpites_all_participantes(jogo, competicao)
+	patrocinadores = get_patrocinador_pagina('A', competicao)
 	return render_to_response('_base.html', 
 	                          {   'template': 'apostas_jogo.html', 
 								  'titulo': 'Palpites de Todos',
@@ -145,7 +158,8 @@ def apostas_jogo(request, competicao_pk, jogo_pk):
 								  'competicao': competicao,	
 								  'patrocinador': patrocinador,								  
 	                              'jogo': jogo, 
-	                              'apostas': apostas_jogos_competicao
+	                              'apostas': apostas_jogos_competicao,
+								  'patrocinadores': patrocinadores
 	                           })	
 	                           
 @login_required
@@ -1103,4 +1117,9 @@ def lembrar_senha(request):
 							  context_instance=RequestContext(request))
 """							  
 							  
-							  
+def logout(request):
+	form = UserPasswordForm()
+	return render_to_response('_base_login.html', 
+							  {     'template': 'login.html',
+									'form': form,
+							        }, RequestContext(request))	

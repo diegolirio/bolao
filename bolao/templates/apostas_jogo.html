@@ -1,5 +1,5 @@
 <div class="row">	
-	<h3>Copa <a href="{{competicao.patrocinador.url_site}}" target="_blank">{{competicao.patrocinador.nome_visual}}</a> {{competicao.nome}}</h3>
+	<h3>Copa <a href="{{patrocinador.patrocinador.url_site}}" target="_blank">{{patrocinador.patrocinador.nome_visual}}</a> {{competicao.nome}}</h3>
 
 	<div class="span10">
 		<a href="{{ url_tabela }}" class="btn btn-small active"><i class="icon-arrow-left"></i>Voltar</a>
@@ -47,10 +47,21 @@
 	</div>
 	<div class="span2">
 		<span class="text-warning">publicidade</span><br/>
-		<div class="patrocinador">
-			<a href="http://www.asisco.com.br" target="_blank"><img class="img-rounded" src="http://www.asisco.com.br/images/simple_img_1.jpg"/></a> <!-- src="/media/images/patrocinadores/logo.gif"/></a>-->
+		<div class="visible-desktop">
+			<a href="{{ patrocinador.patrocinador.url_site }}" target="_blank">
+				<img class="img-rounded" title="{{patrocinador.patrocinador.nome_visual}}" height="100" width="150" src="/media/{{ patrocinador.patrocinador.image_aside }}"/>
+			</a>
 			<br/><br/>
-		</div>
+		</div>	
+		
+		{% for p in patrocinadores %}
+			<div class="visible-desktop">
+				<a href="{{ p.competicacao_patrocinador.patrocinador.url_site }}" target="_blank">
+					<img class="img-rounded" title="{{p.competicacao_patrocinador.patrocinador.nome_visual}}" height="100" width="150" src="/media/{{ p.competicacao_patrocinador.patrocinador.image_aside }}"/>
+				</a>
+				<br/><br/>
+			</div>			
+		{% endfor %}
 		<div class="patrocinador">
 			<img class="img-rounded" src="/media/images/patrocinadores/anuncie.gif"/>
 		</div>	
