@@ -18,7 +18,7 @@ urlpatterns = patterns('',
     url(r'index/^$', 'bolao.views.index', name='index'),
     # Login / Logout
     url(r'^login/', "django.contrib.auth.views.login", {"template_name": "login.html"}), 
-    url(r'^logout/', "django.contrib.auth.views.logout_then_login", {'login_url': '/login/'}),
+    url(r'^logout/', "django.contrib.auth.views.logout_then_login", {'login_url': '/login/?bolao=asisco&patrocinador=OK'}),
 	
     # pagina Home
 	url(r'^home/$', 'core.views.home', name='home'),	
