@@ -161,6 +161,9 @@ class PatrocinioLocal(models.Model):
 	codigo_pagina = models.CharField(max_length=1) # H | T | R | F
 	qtde_total = models.IntegerField()
 	valor = models.FloatField()
+	competicacao_patrocinador = models.ForeignKey(Competicao_Patrocinadores)	
+	def __unicode__(self):
+		return 'Patrocinador: ' + self.competicacao_patrocinador.patrocinador.nome + ' - ' + self.competicacao_patrocinador.competicao.nome
 	
 """	
 class PatrocinadorCompeticaoLocal(models.Model):

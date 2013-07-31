@@ -72,6 +72,7 @@ def rancking(request, competicao_pk):
 	inscricoes_competicao = get_rancking_by_competicao(competicao)
 	valor_acumulado = inscricoes_competicao.count() * competicao.valor_aposta
 	patrocinadores = Competicao_Patrocinadores.objects.filter(competicao=competicao).order_by('-principal')
+	#ToDo...: >>>>> PatrocinioLocal.objects.filter(
 	return render_to_response('_base.html', 
 							  {     'template': 'rancking.html', 
 							        'titulo': 'Rancking', 
