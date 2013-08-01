@@ -84,6 +84,17 @@ def global_():
 		cc.save()
 	else:
 		cc = Patrocinador.objects.filter(nome_visual='Coca-Cola')[0:1].get()		
+		
+	#Patrocinador Python
+	if Patrocinador.objects.filter(nome_visual='Python').count() == 0:
+		py = Patrocinador()
+		py.nome_visual = 'Python'
+		py.nome = 'Python'
+		py.url_site = 'http://python.org'
+		py.image_aside = 'images/patrocinadores/python.jpg'
+		py.save()
+	else:
+		py = Patrocinador.objects.filter(nome_visual='Python')[0:1].get()			
 
 	# Local Patrocinio
 	if Pagina.objects.filter(codigo_pagina='R').count() == 0:		
@@ -152,6 +163,7 @@ def copa_mundo_teste():
 		com_p.principal = True
 		com_p.save()		
 		
+		
 	# Grupo
 	if Grupo.objects.filter(descricao='Grupo A').count() == 0:
 		a = Grupo()
@@ -216,6 +228,7 @@ def competicao_copa_confederacoes():
 	pdiego = Participante.objects.filter(apelido='Diego Lirio')[0:1].get()
 	asisco = Patrocinador.objects.filter(nome_visual='Asisco')[0:1].get()	
 	cc = Patrocinador.objects.filter(nome_visual='Coca-Cola')[0:1].get()
+	py = Patrocinador.objects.filter(nome_visual='Python')[0:1].get()
 	e = StatusJogo.objects.filter(codigo='E')[0:1].get()
 	
 	# conf
@@ -253,6 +266,15 @@ def competicao_copa_confederacoes():
 		com_pa_.patrocinador = asisco
 		com_pa_.principal = False
 		com_pa_.save()			
+	if Competicao_Patrocinadores.objects.filter(competicao=comp_teste, patrocinador=py).count() == 0:
+		com_pa_ = Competicao_Patrocinadores()
+		com_pa_.competicao = comp_teste
+		com_pa_.patrocinador = py
+		com_pa_.principal = False
+		com_pa_.save()			
+		
+		
+		
 	##################################################
 	# Grupo_Conf
 	a_ = Grupo()
