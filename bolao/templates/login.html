@@ -46,14 +46,21 @@
 			</form> 
 		</div>
 		<div class="span5">
-			<h1> {{ publicidade }} </h1>
-			<h4>Voce saiu do sistema !!!</h4>
-			<div class="kkk">
-				<img src=""/>
-				
-			</div>
+			{% if log == 'out' %}
+			<center>
+				<h4>Voce saiu do sistema !!!</h4>
+				<br/>
+				<div class="kkk">
+					{% if patrocinador_out.id > 0 %}
+						<p class="text-warning">publicidade</p>
+						<a href="{{patrocinador_out.url_site }}" target="_blank" title="{{patrocinador_out.nome }}">
+							<img class="img-rounded" src="/media/{{patrocinador_out.image_aside }}"/>				
+						</a>
+					{% endif %}
+				</div>
+			</center>
+			{% endif %}
 		</div>
-		-->
 	</div>	  
 </div>
 {% endblock %}

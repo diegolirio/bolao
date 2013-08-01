@@ -65,12 +65,15 @@ def get_inscricao(competicao, participante):
 	return user_inscricao
 	
 def get_patrocinador_pagina(codigo_pagina, competicao):
-	pagina = Pagina.objects.filter(codigo_pagina=codigo_pagina)[0:1].get()
-	pag_patr = PaginaPatrocinio.objects.filter(pagina=pagina)
 	patrocinadores_pagina = []
-	for pp in pag_patr:
-		if pp.competicacao_patrocinador.competicao == competicao:
-			patrocinadores_pagina.append(pp)
+	try:
+		pagina = Pagina.objects.filter(codigo_pagina=codigo_pagina)[0:1].get()
+		pag_patr = PaginaPatrocinio.objects.filter(pagina=pagina)	
+		for pp in pag_patr:
+			if pp.competicacao_patrocinador.competicao == competicao:
+				patrocinadores_pagina.append(pp)
+	except:
+		patrocinadores_pagina = []
 	return patrocinadores_pagina
 	
 
@@ -1119,7 +1122,15 @@ def lembrar_senha(request):
 							  
 def logout(request):
 	form = UserPasswordForm()
-	return render_to_response('_base_login.html', 
-							  {     'template': 'login.html',
+	try:
+		pagina = Pagina.objects.filter(codigo_pagina='O')[0:1].get()
+		pag_patr = PaginaPatrocinio.objects.get(pagina=pagina)
+		patrocinador_out = pag_patr.competicacao_patrocinador.patrocinador
+	except:
+		patrocinador_out = Patrocinador()
+	return render_to_response('login.html', 
+							  {     #'template': 'login.html',
 									'form': form,
+									'log': 'out',
+									'patrocinador_out': patrocinador_out
 							        }, RequestContext(request))	
