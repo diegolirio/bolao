@@ -7,7 +7,7 @@
 		<div class="text-center">
 			<span class="label label-important">{{jogo.status.descricao}}</span>
 			<h2>
-				{{ jogo.time_a }} <span class="text-warning">{{ jogo.resultado_a }}</span> X <span class="text-warning">{{ jogo.resultado_b }}</span> {{ jogo.time_b }}
+				{{ jogo.time_a }} <span class="text-warning offset1"><b>{{ jogo.resultado_a }}</b></span> <span style="font-size: 30px;">X</span> <span class="text-warning"><b>{{ jogo.resultado_b }}</b></span> <span class="offset1">{{ jogo.time_b }}</span>
 				<br/>
 				{% if jogo.status.codigo == 'A' %}
 					<img src="/media/images/bola_72.png"/>
