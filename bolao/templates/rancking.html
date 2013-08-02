@@ -8,6 +8,19 @@
 
 	<br/>
 
+	<div id="modal_part" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+			<h1 id="my_h1"> <img src="/media/images/users/diego.jpeg" height="50" width="55" class="img-rounded"/> Diego Lirio</h1>
+	  </div>
+	  <div class="modal-body">
+			<h1>Historico AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</h1>
+	  </div>
+	  <div class="modal-footer">
+			Fechar
+	  </div>
+	</div>	
+	
 	<div class="span10">
 	
 		<p class="pull-left"><a href="#"> <!--"/imprimir_rancking/{{competicao.id}}/"-->Imprimir</a></p>
@@ -32,10 +45,16 @@
 			<tr>
 				<td class="text-info">{{ ip.colocacao}}º</td>
 				<td> <!-- nome participante -->
+					<a href="#modal_part" role="button" data-toggle="modal">
+						<img src="/media/{{ ip.participante.foto }}" height="20" width="25" class="img-rounded"/>
+						{{ ip.participante }}
+					</a>
+					<!--
 					<a href="/perfil_competicao/{{competicao.id}}/{{ip.id}}/" {% if ip.participante.id == user_participante.id %} class="text-warning" {% endif %}>
 						<img src="/media/{{ ip.participante.foto }}" height="20" width="25" class="img-rounded"/>
 						{{ ip.participante }}
 					</a>
+					-->
 				</td>
 				<td class="muted">{{ ip.id }}</td>
 				<td class="text-info"><center><b>{{ ip.pontos }}</b></center></td>
