@@ -1,7 +1,7 @@
 
 <div class="row">
 	<div class="span8">
-		<center>
+		<center>		
 			<form action="" method="POST"> {% csrf_token %}
 				<div id="legend">
 				   <legend>
@@ -11,8 +11,6 @@
 					   </h3>
 				   </legend>
 				</div>						
-				
-				<br/><br/>
 				
 				<div class="control-big ">	
 					<input type="hidden" value="{{aposta.inscricao.id}}" name="inscricao" class="span1">
@@ -55,6 +53,14 @@
 				</div>
 				
 			</form>
+			
+			<br/><br/>
+			
+			<p>publicidade</p>
+			<img src="{{publicidade}}"/>
+			
+			<br/>
+			
 		</center>
 	</div>
 </div>

@@ -1,8 +1,10 @@
 # -*- encoding: utf-8 -*-
 from django.shortcuts import render_to_response
 from django.shortcuts import redirect
+from django.http import HttpResponse
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from django.utils import simplejson
 from core.const import *
 from core.models import *
 from core.forms import *
@@ -101,6 +103,14 @@ def rancking(request, competicao_pk):
 									'patrocinadores': patrocinadores
 							        })
 	                                
+def imprimir_rancking(request, competicao_pk):
+	competicao = Competicao.objects.get(pk=competicao_pk)
+	inscricoes_competicao = get_rancking_by_competicao(competicao)
+	return render_to_response('_base_simple.html', 
+							  {     'template': 'rancking_table.html', 
+							        'inscricoes_competicao': inscricoes_competicao
+							        })			
+									
 def get_jogos_of_the_campeonato(campeonato):
 	grupos = Grupo.objects.all().filter(campeonato=campeonato)
 	jgs = []
@@ -192,6 +202,7 @@ def aposta_edit(request, user_aposta_pk):
 	model = Aposta.objects.get(pk=user_aposta_pk)
 	mensagem = ''	
 	form = ApostaForm()
+	publicidade = '/media/images/patrocinadores/anuncie.gif'
 	# ToDo...: if model.jogo.data_hora > DateTime.now-4horas: ToDo..:
 	if model.jogo.status.codigo == 'E':		
 		if request.method == 'POST':
@@ -220,6 +231,7 @@ def aposta_edit(request, user_aposta_pk):
 	                               'execute_transation': execute_transation,
 	                               'aposta': model, 
 	                               'form': form, 
+								   'publicidade': publicidade,
 	                               'mensagem': mensagem}, 
 	                          context_instance=RequestContext(request))	      
 
@@ -231,7 +243,27 @@ def __get_jogos_not_edition_by_campeonato__(campeonato):
 		jgs = Jogo.objects.filter(grupo=g).exclude(status=status).order_by('data_hora')
 		for j in jgs:
 			jogos_.append(j)
-	return jogos_							  
+	return jogos_			
+
+def perfil_competicao_modal(request, view_inscricao_pk):   
+	view_inscricao = Inscricao.objects.get(pk=view_inscricao_pk)
+	to_json = list()
+	view_inscricao_json = {
+                             'inscricao_id': view_inscricao.id,
+							 'participante_id': view_inscricao.participante.id,
+							 'participante_apelido': view_inscricao.participante.apelido,
+							 'participante_foto': view_inscricao.participante.foto.url,
+							 'inscricao_colocacao': view_inscricao.colocacao,
+							 'inscricao_pontos': view_inscricao.pontos, 
+							 'inscricao_quantidade_acerto_placar': view_inscricao.quantidade_acerto_placar, 
+							 'inscricao_quantidade_acerto_vencedor_um_resultado_correto': view_inscricao.quantidade_acerto_vencedor_um_resultado_correto, 
+							 'inscricao_quantidade_acerto_vencedor': view_inscricao.quantidade_acerto_vencedor, 
+							 'inscricao_quantidade_acerto_empate_erro_placar': view_inscricao.quantidade_acerto_empate_erro_placar,
+							 'inscricao_quantidade_erro': view_inscricao.quantidade_erro
+						  }    
+	dictFields = { 'fields': view_inscricao_json }
+	to_json.append(dictFields)
+	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")  	
 
 
 def perfil_competicao(request, competicao_pk, view_inscricao_pk):

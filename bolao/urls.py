@@ -34,8 +34,11 @@ urlpatterns = patterns('',
     url(r'^apostas_jogo/(?P<competicao_pk>\d+)/(?P<jogo_pk>\d+)/$', 'core.views.apostas_jogo'),
     url(r'^aposta_edit/(?P<user_aposta_pk>\d+)/$', 'core.views.aposta_edit'),
     url(r'^perfil_competicao/(?P<competicao_pk>\d+)/(?P<view_inscricao_pk>\d+)/$', 'core.views.perfil_competicao'),
+	url(r'^perfil_competicao_modal/(?P<view_inscricao_pk>\d+)/$', 'core.views.perfil_competicao_modal'),
     url(r'^perfil/$', 'core.views.cadastre_se'),
     url(r'^comparar_colocacao/(?P<competicao_pk>\d+)/(?P<view_inscricao_pk>\d+)/$', 'core.views.comparar_colocacao'),
+	
+	url(r'^imprimir_rancking/(?P<competicao_pk>\d+)/$', 'core.views.imprimir_rancking'),
     
     # Logado (privadas) >>> url fixado sempre a competicao como parametro
 
@@ -81,9 +84,6 @@ urlpatterns = patterns('',
 	url(r'^regras/$', 'core.views.regras'),
 	
 	url(r'^patrocinadores/(?P<competicao_pk>\d+)/$', 'core.views.patrocinadores'),
-
-
-	
 	
 	url(r'^pre_cadastro/', 'core.pre_cadastro.pre_cadastro'),
 	url(r'^create_users/', 'core.pre_cadastro.create_users'),
