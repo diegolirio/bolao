@@ -3,7 +3,7 @@
 -->	
 	  <div class="btn-group pull-right">
 		<!--<a class="btn btn-success btn-large" href="/system/jogo_edit/{{campeonato.id}}/0/" onclick="show__(this.href); return false;">Casdastrar Novo Jogo</a>-->
-		<a class="btn btn-primary btn-large" href="/system/novo_jogo/" onclick="show__(this.href); return false;">Casdastrar Novo Jogo</a>
+		<a class="btn btn-primary btn-large" href="/system/novo_jogo/{{campeonato.pk}}/" onclick="show__(this.href); return false;">Casdastrar Novo Jogo</a>
 		<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
 		<ul class="dropdown-menu">
 		  <li><a href="/system/calcular_campeonato/{{campeonato.pk}}/"><i class="icon-ok"></i> Calcular definitivo</a></li>

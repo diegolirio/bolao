@@ -2,12 +2,18 @@
 		<div class="span7">
 			<form action="" method="POST" class="form-horizontal"> {% csrf_token %}
 			    <div id="legend">
-				   <legend><h4>Novo Jogo</h4></legend>
+				   <legend>Novo Jogo ({{campeonato.nome}})</legend>
 			    </div>			
 				<div class="control-group">
 					<label class="control-label">{{ form.grupo.label }}</label>										
 					<div class="controls">
-						{{ form.grupo }}
+						<!--{ form.grupo }-->
+						<select id="id_grupo" name="grupo">
+							<option value="" selected="selected">---------</option>
+							{% for g in grupos %}							
+								<option value="{{g.id}}">{{ g.descricao }}</option>							
+							{% endfor %}
+						</select>
 						{% if form.grupo.errors %}
 							{% for error in form.grupo.errors %}
 								<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
