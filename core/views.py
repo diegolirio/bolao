@@ -824,6 +824,22 @@ def system_paginas_publicidade(request, competicao_pk):
 							   'competicao': competicao,
 							   'paginas': paginas
 	                           }, RequestContext(request))	
+							   
+def system_publicidade_pagina(request, competicao_pk, pagina_pk):
+	user_participante = get_participante_by_user(request.user)
+	pagina = Pagina.objects.get(pk=pagina_pk)
+	competicao = Competicao.objects.get(pk=competicao_pk)
+	patrocinadores_competicao = Competicao_Patrocinadores.objects.filter(competicao=competicao)
+	#pagina_patrocinadores = PaginaPatrocinio.objects.filter(pagina=pagina, )
+	return render_to_response('_base.html', 
+	                          {'template': 'system/publicidade_pagina.html', 
+	                           'titulo': 'Paginas de Publicidade', 
+	                           'subtitulo': 'Copa ' + patrocinador.patrocinador.nome_visual + ' ' + competicao.nome,
+	                           'user_participante': user_participante,
+							   'competicao': competicao,
+							   'pagina': pagina,
+							   
+	                           }, RequestContext(request))		
 
 @login_required							   
 def system_send_mail_all(request, campeonato_pk):
