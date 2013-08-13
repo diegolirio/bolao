@@ -800,6 +800,31 @@ def system_inscricoes_participante(request, participante_pk):
 							   'participante': participante
 	                           }, RequestContext(request))		
 							   
+def system_patrocinadores_por_competicao(request):
+	user_participante = get_participante_by_user(request.user)
+	competicoes = Competicao.objects.all()	
+	return render_to_response('_base.html', 
+	                          {'template': 'system/patrocinadores_por_competicao.html', 
+	                           'titulo': 'Gerenciar Patrocinios ', 
+	                           'subtitulo': u'Competicoes',
+	                           'user_participante': user_participante,
+							   'competicoes': competicoes
+	                           }, RequestContext(request))	
+
+def system_paginas_publicidade(request, competicao_pk):
+	user_participante = get_participante_by_user(request.user)
+	competicao = Competicao.objects.get(pk=competicao_pk)
+	paginas = Pagina.objects.all()
+	patrocinador = __get_patrocinador_principal__(competicao)
+	return render_to_response('_base.html', 
+	                          {'template': 'system/paginas.html', 
+	                           'titulo': 'Paginas de Publicidade', 
+	                           'subtitulo': 'Copa ' + patrocinador.patrocinador.nome_visual + ' ' + competicao.nome,
+	                           'user_participante': user_participante,
+							   'competicao': competicao,
+							   'paginas': paginas
+	                           }, RequestContext(request))	
+
 @login_required							   
 def system_send_mail_all(request, campeonato_pk):
 	user_participante = get_participante_by_user(request.user)

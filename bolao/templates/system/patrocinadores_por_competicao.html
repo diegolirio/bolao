@@ -1,0 +1,22 @@
+{% load functions %}
+
+<div class="row">
+{% for c in competicoes %}
+	<div class="span6">
+		<div class="hero-unit">
+			<a href="/system/paginas_publicidade/{{c.id}}/"><img src="/media/images/gold_cup_100X124.png" /></a>
+			<h2>Copa <a href="{{ c|get_patrocinador_principal_link }}" target="_blank">{{ c|get_patrocinador_principal_display }}</a> {{c.nome}}</h2>
+			<h4>{{c.campeonato.nome}}</h4> 
+			<br/>
+			<p>
+				<a href="/system/paginas_publicidade/{{c.id}}/" class="btn btn-success btn-large">
+					Gerenciar Paineis de patrocinios  
+					{% if c.status.codigo == 'E' %}
+						(inscricoes abertas)
+					{% endif %}
+				</a>
+			</p>	
+		</div>		
+	</div>
+{% endfor %}
+</div>

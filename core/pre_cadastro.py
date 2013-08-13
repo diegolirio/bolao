@@ -113,11 +113,18 @@ def global_():
 		tb.save()
 	if Pagina.objects.filter(codigo_pagina='A').count() == 0:		
 		aj = Pagina()
-		aj.nome_pagina = 'Aposta do Jogo'
+		aj.nome_pagina = 'Apostas do Jogo'
 		aj.codigo_pagina = 'A'
 		aj.qtde_total_patrocinio = 5
 		aj.valor = 5		
 		aj.save()
+	if Pagina.objects.filter(codigo_pagina='E').count() == 0:		
+		ae = Pagina()
+		ae.nome_pagina = 'Alteracao resultado'
+		ae.codigo_pagina = 'E'
+		ae.qtde_total_patrocinio = 1
+		ae.valor = 5		
+		ae.save()		
 	if Pagina.objects.filter(codigo_pagina='O').count() == 0:		
 		lout = Pagina()
 		lout.nome_pagina = 'Logout'
