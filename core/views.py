@@ -830,8 +830,13 @@ def system_publicidade_pagina(request, competicao_pk, pagina_pk):
 	pagina = Pagina.objects.get(pk=pagina_pk)
 	competicao = Competicao.objects.get(pk=competicao_pk)
 	patrocinador = __get_patrocinador_principal__(competicao)
+	
+	# ToDo...: Pega somente da pagina e competicao
+	patrocinadores_pagina = PaginaPatrocinio.objects.filter(pagina=pagina)	
+	
+	# ToDo...: Excluiu o principal, se for rancking e tabela
 	patrocinadores_competicao = Competicao_Patrocinadores.objects.filter(competicao=competicao)
-	patrocinadores_pagina = PaginaPatrocinio.objects.filter(pagina=pagina)
+	
 	return render_to_response('_base.html', 
 	                          {'template': 'system/publicidade_pagina.html', 
 	                           'titulo': 'Pagina ' + pagina.nome_pagina,

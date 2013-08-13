@@ -9,12 +9,18 @@
 			<h4>{{c.campeonato.nome}}</h4> 
 			<br/>
 			<p>
-				<a href="/system/paginas_publicidade/{{c.id}}/" class="btn btn-success btn-large">
-					Gerenciar Paineis de patrocinios  
+				<a href="/system/paginas_publicidade/{{c.id}}/" class="btn btn-success">
+					Gerenciar Paginas de patrocinios  
 					{% if c.status.codigo == 'E' %}
 						(inscricoes abertas)
 					{% endif %}
 				</a>
+				<a href="/system/competicao_publicidade/{{c.id}}/" class="btn btn-success">
+					Patrocinadores
+					{% if c.status.codigo == 'E' %}
+						(inscricoes abertas)
+					{% endif %}
+				</a>				
 			</p>	
 		</div>		
 	</div>
