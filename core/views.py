@@ -829,16 +829,18 @@ def system_publicidade_pagina(request, competicao_pk, pagina_pk):
 	user_participante = get_participante_by_user(request.user)
 	pagina = Pagina.objects.get(pk=pagina_pk)
 	competicao = Competicao.objects.get(pk=competicao_pk)
+	patrocinador = __get_patrocinador_principal__(competicao)
 	patrocinadores_competicao = Competicao_Patrocinadores.objects.filter(competicao=competicao)
-	#pagina_patrocinadores = PaginaPatrocinio.objects.filter(pagina=pagina, )
+	patrocinadores_pagina = PaginaPatrocinio.objects.filter(pagina=pagina)
 	return render_to_response('_base.html', 
 	                          {'template': 'system/publicidade_pagina.html', 
-	                           'titulo': 'Paginas de Publicidade', 
+	                           'titulo': 'Pagina ' + pagina.nome_pagina,
 	                           'subtitulo': 'Copa ' + patrocinador.patrocinador.nome_visual + ' ' + competicao.nome,
 	                           'user_participante': user_participante,
 							   'competicao': competicao,
 							   'pagina': pagina,
-							   
+							   'patrocinadores_competicao': patrocinadores_competicao,
+							   'patrocinadores_pagina': patrocinadores_pagina
 	                           }, RequestContext(request))		
 
 @login_required							   

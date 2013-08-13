@@ -1,0 +1,12 @@
+<div class="span5">
+	<h4>Pagina {{ pagina.nome_pagina }}</h4>
+	{% for p in patrocinadores_pagina %}
+		<p>{{ p.competicacao_patrocinador.patrocinador.nome_visual }}</p>
+	{% endfor %}
+</div>
+<div class="span6">
+	<h4>Patrocinadores da Competicao</h4>
+	{% for p in patrocinadores_competicao %}
+		<p>{{ p.patrocinador.nome_visual }}</p>
+	{% endfor %}
+</div>
