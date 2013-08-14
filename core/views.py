@@ -883,6 +883,19 @@ def system_novo_patrocinador_competicao(request, competicao_pk):
 							   'competicao': competicao
 	                           }, RequestContext(request))	
 							   
+def system_retirar_patrocinador_competicao(request, competicao_pk, patrocinador_pk):
+	competicao = Competicao.objects.get(pk=competicao_pk)
+	patrocinador = Patrocinador.objects.get(pk=patrocinador_pk)
+	user_participante = get_participante_by_user(request.user)
+	return render_to_response('_base.html', 
+	                          {'template': 'system/retirar_patrocinador_competicao.html', 
+	                           'titulo': 'Patrocinadores ',
+	                           'subtitulo': '',
+	                           'user_participante': user_participante,
+							   'competicao': competicao,
+							   'patrocinador': patrocinador
+	                           }, RequestContext(request))	
+							   
 @login_required							   
 def system_send_mail_all(request, campeonato_pk):
 	user_participante = get_participante_by_user(request.user)
