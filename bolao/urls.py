@@ -71,6 +71,8 @@ urlpatterns = patterns('',
 	url(r'^system/competicao_publicidade/(?P<competicao_pk>\d+)/$', 'core.views.system_competicao_publicidade'),
 	
 	url(r'^system/send_mail_all/(?P<campeonato_pk>\d+)/$', 'core.views.system_send_mail_all'),
+	
+	url(r'^system/novo_patrocinador_competicao/(?P<competicao_pk>\d+)/$', 'core.views.system_novo_patrocinador_competicao'),
            
     url(r'^cadastre_se/$', 'core.views.cadastre_se'),
 	url(r'^cadastre_se/alterar_senha/$', 'core.views.alterar_senha'),

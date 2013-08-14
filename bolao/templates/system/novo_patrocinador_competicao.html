@@ -1,0 +1,8 @@
+
+<h3>Patrocinadores Nao vinculados</h3>
+{% for p in patrocinadores %}
+	<h4>{{ p.nome_visual }}</h4>
+{% empty %}
+	<p class="muted">Nao ha patrocinadores que nao esteje vinculado a essa competicao</p>
+	<p>Para cadastrar um novo patrocinador <a href="#">clique aqui</a>
+{% endfor %}

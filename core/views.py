@@ -861,6 +861,27 @@ def system_competicao_publicidade(request, competicao_pk):
 							   'competicao': competicao,
 							   'patrocinadores': patrocinadores
 	                           }, RequestContext(request))
+
+def system_novo_patrocinador_competicao(request, competicao_pk):
+	competicao = Competicao.objects.get(pk=competicao_pk)
+	patrocinadores_c = Competicao_Patrocinadores.objects.filter(competicao=competicao).order_by('-principal')
+	patrocinadores_all = Patrocinador.objects.all()
+	patrocinadores = list()
+	patrocina = False
+	for p_all in patrocinadores_all:
+		for p_c in patrocinadores_c:
+			if p_all == p_c.patrocinador:
+				patrocina = True
+				break
+		if not patrocina:
+			patrocinadores.append(p_all)
+	user_participante = get_participante_by_user(request.user)
+	return render_to_response('_base_simple.html', 
+	                          {'template': 'system/novo_patrocinador_competicao.html', 
+	                           'user_participante': user_participante,
+							   'patrocinadores': patrocinadores,
+							   'competicao': competicao
+	                           }, RequestContext(request))	
 							   
 @login_required							   
 def system_send_mail_all(request, campeonato_pk):
