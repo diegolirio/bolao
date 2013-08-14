@@ -30,3 +30,11 @@ def get_patrocinador_principal_link(competicao):
 		return ''
 	return patrocinador.patrocinador.url_site	
 	
+@register.filter('get_patrocinador_principal_img')	
+def get_patrocinador_principal_link(competicao):
+	try:
+		patrocinador = Competicao_Patrocinadores.objects.filter(competicao=competicao, principal=True)[0:1].get()
+	except:
+		return ''
+	return patrocinador.patrocinador.image_aside		
+	

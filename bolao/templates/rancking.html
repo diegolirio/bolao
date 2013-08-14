@@ -3,11 +3,11 @@
 
 	// Load the Visualization API and the piechart package.
     google.load('visualization', '1.0', {'packages':['corechart']});
-    // Set a callback to run when the Google Visualization API is loaded.
-    google.setOnLoadCallback(drawChart);
-    // Callback that creates and populates a data table,
-    // instantiates the pie chart, passes in the data and
-    // draws it.
+	// Set a callback to run when the Google Visualization API is loaded.
+	google.setOnLoadCallback(drawChart);
+	// Callback that creates and populates a data table,
+	// instantiates the pie chart, passes in the data and
+	// draws it.		
     function drawChart() {
 			// Create the data table.
 			var data = new google.visualization.DataTable();
@@ -32,7 +32,7 @@
 			chart.draw(data, options);
     }
 	
-
+	/*
       google.setOnLoadCallback(drawChart_line);
       function drawChart_line() {
 	    var data = new google.visualization.DataTable();
@@ -148,18 +148,6 @@
         data.setValue(35, 0, '36º Jogo');
         data.setValue(35, 1, 8);				
 
-		/*
-        var data = google.visualization.arrayToDataTable([
-          ['Jogo', 'Colocação'],
-		  ['1º jogo', 75],
-          ['2º jogo', 15],
-          ['3º jogo',  2],
-          ['4º jogo',  1],
-          ['5º jogo',  5],
-		  ['6º jogo',  12],
-		  ['7º jogo',  9]
-        ]);
-		*/
         var options = {
           title: 'Histótico de Colocação',
 		  vAxis: {maxValue: 10, direction: -1} // Inverte a Coluna em ordem crescente...
@@ -168,6 +156,7 @@
         var chart = new google.visualization.LineChart(document.getElementById('chart_line'));		
         chart.draw(data, options);
       }	
+	 */
 
 	function get_detail_participante(inscricao_pk) {
 	
@@ -180,12 +169,9 @@
 					html_ += '</h2>';
 					$('#title_modal').html(html_);
 					
-					$('#col_pt').html('<div><br/><br/><h4> '+retorno[0].fields.inscricao_colocacao+'º Colocado </h4><br/><h4> '+retorno[0].fields.inscricao_pontos+' pontos </h4></div>');				  
+					$('#col_pt').html('<div><br/><br/><h4> '+retorno[0].fields.inscricao_colocacao+'º Colocado </h4><br/><h4> '+retorno[0].fields.inscricao_pontos+' pontos </h4></div>');				  				
 				  }           
-		);  		
-	
-
-				
+		);  	
 	}
 </script>
 

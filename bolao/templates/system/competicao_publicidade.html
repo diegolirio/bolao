@@ -1,0 +1,26 @@
+
+<a href="/system/novo_patrocinador_competicao/{{competicao.id}}/" onclick="show_ful__(this.href); return false;" class="btn pull-right">Cadastrar Novo Patrocinador para Competicao</a>
+<h3> {{ subtitulo }} </h3>
+<hr/>
+{% for p in patrocinadores %}
+	<!--<p>{{ p.competicacao_patrocinador.patrocinador.nome_visual }}</p>-->
+	<div class="span2">
+		<form class="form-horizontal well">			 
+			<fieldset>							
+				<a href="{{ p.patrocinador.url_site }}" target="_blank"><p>{{ p.patrocinador.nome_visual }}</p></a>
+				<a href="{{ p.patrocinador.url_site }}" target="_blank">					
+					<img style="width:100%" class="img-rounded" height="100" width="50" src="/media/{{ p.patrocinador.image_aside }}"/>				
+				</a>						
+				<br/><br/>
+				<p>
+				{% if p.principal %}
+					<a href="#" class="btn btn-warning pull-right" disabled> >>> </a></p>
+				{% else %}
+					<a href="/system/retirar_patrocinador_competicao/{{p.patrocinador.id}}/" class="btn btn-warning pull-right"> >>> </a></p>
+				{% endif %}
+				
+				
+			</fieldset>		  
+		</form>		
+	</div>			
+{% endfor %}

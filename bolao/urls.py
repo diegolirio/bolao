@@ -21,6 +21,9 @@ urlpatterns = patterns('',
 	url(r'^logout_out/', 'core.views.logout'),
     url(r'^logout/', "django.contrib.auth.views.logout_then_login", {'login_url': '/logout_out/'}),
 	
+	url(r'^lembrar_senha/$', 'core.views.lembrar_senha', name='lembrar_senha'),
+	url(r'^redefinir_senha/(?P<user_pk>\d+)/(?P<code_new_password>\d+)/$', 'core.views.redefinir_senha', name='redefinir_senha'),
+	
     # pagina Home
 	url(r'^home/$', 'core.views.home', name='home'),	
 	# ------------------------------------------------------------------------------------------------
@@ -65,6 +68,7 @@ urlpatterns = patterns('',
 	url(r'^system/patrocinadores_por_competicao/$', 'core.views.system_patrocinadores_por_competicao'),
 	url(r'^system/paginas_publicidade/(?P<competicao_pk>\d+)/$', 'core.views.system_paginas_publicidade'),
 	url(r'^system/publicidade_pagina/(?P<competicao_pk>\d+)/(?P<pagina_pk>\d+)/$', 'core.views.system_publicidade_pagina'),
+	url(r'^system/competicao_publicidade/(?P<competicao_pk>\d+)/$', 'core.views.system_competicao_publicidade'),
 	
 	url(r'^system/send_mail_all/(?P<campeonato_pk>\d+)/$', 'core.views.system_send_mail_all'),
            

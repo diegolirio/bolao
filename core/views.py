@@ -848,6 +848,20 @@ def system_publicidade_pagina(request, competicao_pk, pagina_pk):
 							   'patrocinadores_pagina': patrocinadores_pagina
 	                           }, RequestContext(request))		
 
+def system_competicao_publicidade(request, competicao_pk):
+	competicao = Competicao.objects.get(pk=competicao_pk)
+	patrocinador = __get_patrocinador_principal__(competicao)
+	user_participante = get_participante_by_user(request.user)
+	patrocinadores = Competicao_Patrocinadores.objects.filter(competicao=competicao).order_by('-principal')
+	return render_to_response('_base.html', 
+	                          {'template': 'system/competicao_publicidade.html', 
+	                           'titulo': 'Patrocinadores ',
+	                           'subtitulo': 'Copa ' + patrocinador.patrocinador.nome_visual + ' ' + competicao.nome,
+	                           'user_participante': user_participante,
+							   'competicao': competicao,
+							   'patrocinadores': patrocinadores
+	                           }, RequestContext(request))
+							   
 @login_required							   
 def system_send_mail_all(request, campeonato_pk):
 	user_participante = get_participante_by_user(request.user)
@@ -1201,6 +1215,56 @@ def lembrar_senha(request):
 	                            { 'template': 'lembrar_senha.html', 'execute_transation': execute_transation, 'mensagem': mensagem }, 
 							  context_instance=RequestContext(request))
 """							  
+
+def lembrar_senha(request):
+	execute_transation = 'N'
+	mensagem = ''
+	user = User()
+	if request.method == 'POST':
+		form = UserPasswordForm(request.POST, request.FILES)
+		user_name = form['username'].value
+		user = User.objects.get(username=user_name)
+		participante = Participante.objects.filter(user=user)[0:1].get()
+		#if participante.code_new_password != '0':
+		participante.code_new_password = __get_code_random__()
+		participante.save()
+		url_email_ = SITE_ROOT + 'redefinir_senha/'+str(user.pk)+'/'+participante.code_new_password+'/?Redefinindo_senha_______=2014'
+		user.email_user('Redefinir de Senha', u'Olá ' + user.username + u', para redefinir sua senha clique no link a seguir ' + url_email_, from_email=None)	
+		execute_transation = 'S'
+		mensagem = U'Sua senha será redefina após acessar um link enviado ao seu email !!!'
+	return render_to_response('_base_simple.html', 
+							  { 'template': 'lembrar_senha.html',
+                                'execute_transation': execute_transation,
+	                            'user': user, 
+	                            'mensagem': mensagem},
+							  context_instance=RequestContext(request))	
+							  
+def redefinir_senha(request, user_pk, code_new_password):
+	user = User.objects.get(pk=user_pk)
+	participante = Participante.objects.filter(user=user)[0:1].get()
+	titulo__ = u'Redefinição de senha'
+	form = UserNewForm()
+	redefinindo = 'N'
+	if participante.code_new_password == code_new_password:
+		participante.code_new_password = '0'
+		participante.save()
+		if request.method == 'POST':
+			form = UserNewForm(request.POST, request.FILES, instance=user)
+			if form.is_valid():
+				form.save()			
+		else:
+			form = UserNewForm(request.POST, request.FILES)
+			redefinindo = 'S'
+	else:
+		titulo__ = u'Não foi possivel localizar usuario'
+	return render_to_response('_base.html', 
+	                          {    'template':'redefinir_senha.html', 
+								   'titulo': titulo__,
+	                               'subtitulo': '',
+								   'form': form,
+								   'user': user,
+								   'redefinindo': redefinindo
+	                          })	
 							  
 def logout(request):
 	form = UserPasswordForm()

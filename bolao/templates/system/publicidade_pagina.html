@@ -1,12 +1,62 @@
-<div class="span5">
-	<h4>Pagina {{ pagina.nome_pagina }}</h4>
-	{% for p in patrocinadores_pagina %}
-		<p>{{ p.competicacao_patrocinador.patrocinador.nome_visual }}</p>
-	{% endfor %}
+{% load functions %}
+
+<div class="row">
+	<a href="/system/competicao_publicidade/{{competicao.id}}/" class="btn pull-right">Patrocinadores/Competicao</a>
 </div>
-<div class="span6">
-	<h4>Patrocinadores da Competicao</h4>
-	{% for p in patrocinadores_competicao %}
-		<p>{{ p.patrocinador.nome_visual }}</p>
-	{% endfor %}
+<div class="row">
+	<div class="span5">
+		<h4>Pagina {{ pagina.nome_pagina }}</h4>	
+		
+		{% if pagina.codigo == 'R' or pagina.codigo == 'T' %}
+		<div class="span2">
+			<form class="form-horizontal well">			 
+				<fieldset>							
+					<a href="{{ competicao|get_patrocinador_principal_link }}" target="_blank"><p>{{ competicao|get_patrocinador_principal_display }}</p></a>
+					<a href="{{ competicao|get_patrocinador_principal_link }}" target="_blank">					
+						<img style="width:100%" class="img-rounded" height="100" width="50" src="/media/{{ competicao|get_patrocinador_principal_img }}"/>				
+					</a>						
+					<br/><br/>
+					<p><a href="#" class="btn btn-warning pull-right" disabled> Principal </a></p>
+				</fieldset>		  
+			</form>		
+		</div>		
+		{% endif %}
+		
+		{% for p in patrocinadores_pagina %}
+			<!--<p>{{ p.competicacao_patrocinador.patrocinador.nome_visual }}</p>-->
+			<div class="span2">
+				<form class="form-horizontal well">			 
+					<fieldset>							
+						<a href="{{ p.competicacao_patrocinador.patrocinador.url_site }}" target="_blank"><p>{{ p.competicacao_patrocinador.patrocinador.nome_visual }}</p></a>
+						<a href="{{ p.competicacao_patrocinador.patrocinador.url_site }}" target="_blank">					
+							<img style="width:100%" class="img-rounded" height="100" width="50" src="/media/{{ p.competicacao_patrocinador.patrocinador.image_aside }}"/>				
+						</a>						
+						<br/><br/>
+						<p><a href="#" class="btn btn-warning pull-right"> >>> </a></p>
+					</fieldset>		  
+				</form>		
+			</div>			
+		{% endfor %}
+	</div>
+	<div class="span6">
+		<h4>Patrocinadores da Competicao</h4>
+		{% for p in patrocinadores_competicao %}
+			<!--<p>{{ p.patrocinador.nome_visual }}</p>-->
+			<div class="span2">
+				<form class="form-horizontal well">			 
+					<fieldset>							
+						<a href="{{ p.patrocinador.url_site }}" target="_blank"><p>{{ p.patrocinador.nome_visual }}</p></a>
+						<a href="{{ p.patrocinador.url_site }}" target="_blank">					
+							<img style="width:100%" class="img-rounded" height="100" width="50" src="/media/{{ p.patrocinador.image_aside }}"/>				
+						</a>						
+						<br/><br/>
+						<p><a href="#" class="btn btn-warning"> <<< </a></p>
+					</fieldset>		  
+				</form>		
+			</div>			
+		{% endfor %}
+	</div>
 </div>
+
+<br/>
+<hr/>
