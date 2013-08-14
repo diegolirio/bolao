@@ -1243,28 +1243,31 @@ def redefinir_senha(request, user_pk, code_new_password):
 	user = User.objects.get(pk=user_pk)
 	participante = Participante.objects.filter(user=user)[0:1].get()
 	titulo__ = u'Redefinição de senha'
-	form = UserNewForm()
-	redefinindo = 'N'
-	if participante.code_new_password == code_new_password:
-		participante.code_new_password = '0'
-		participante.save()
-		if request.method == 'POST':
-			form = UserNewForm(request.POST, request.FILES, instance=user)
-			if form.is_valid():
-				form.save()			
+	form_user = UserRedefineForm()
+	redefinindo = 'N'	
+	if request.method == 'POST':		
+		form_user = UserRedefineForm(request.POST, request.FILES, instance=user)
+		if form_user.is_valid():
+			form_user.save()	
+			titulo__ = 'Senha redefinida com sucesso'
 		else:
-			form = UserNewForm(request.POST, request.FILES)
 			redefinindo = 'S'
 	else:
-		titulo__ = u'Não foi possivel localizar usuario'
+		if participante.code_new_password == code_new_password:
+			participante.code_new_password = '0'
+			participante.save()
+			form_user = UserRedefineForm()
+			redefinindo = 'S'
+		else:
+			titulo__ = u'Não foi possivel localizar usuario'
 	return render_to_response('_base.html', 
 	                          {    'template':'redefinir_senha.html', 
 								   'titulo': titulo__,
 	                               'subtitulo': '',
-								   'form': form,
+								   'form_user': form_user,
 								   'user': user,
 								   'redefinindo': redefinindo
-	                          })	
+	                          }, RequestContext(request))		
 							  
 def logout(request):
 	form = UserPasswordForm()

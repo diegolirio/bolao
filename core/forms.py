@@ -68,6 +68,37 @@ class UserNewForm(forms.ModelForm):
 			usuario.save()
 		return usuario
 		
+		
+class UserRedefineForm(forms.ModelForm):	
+	class Meta:
+		model = User		
+		fields = ('username','email','password')
+		
+	confirme_a_senha = forms.CharField(max_length=30, widget=forms.PasswordInput)
+  
+	def __init__(self, *args, **kwargs):
+		self.base_fields['password'].help_text = 'Informe uma senha segura'
+		self.base_fields['password'].widget = forms.PasswordInput()
+		super(UserRedefineForm, self).__init__(*args, **kwargs)		
+		
+	def clean_confirme_a_senha(self):
+		if self.cleaned_data['confirme_a_senha'] != self.data['password']:
+			raise forms.ValidationError('Confirmacao de senha nao confere!')
+		return self.cleaned_data['confirme_a_senha']
+		
+	def clean_email(self):
+		if self.cleaned_data['email'] == '':
+			raise forms.ValidationError('Digite um email valido!')
+		return self.cleaned_data['email']		
+		
+	def save(self, commit=True):
+		usuario = super(UserRedefineForm, self).save(commit=False)
+		usuario.set_password(self.cleaned_data['password'])
+		if commit:
+			usuario.save()
+		return usuario		
+		
+		
 class UserEditForm(forms.ModelForm):
 	class Meta:
 		model = User		
