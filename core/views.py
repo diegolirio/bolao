@@ -202,7 +202,8 @@ def aposta_edit(request, user_aposta_pk):
 	model = Aposta.objects.get(pk=user_aposta_pk)
 	mensagem = ''	
 	form = ApostaForm()
-	publicidade = '/media/images/patrocinadores/anuncie.gif'
+	pagina_patro = get_patrocinador_pagina('E', model.inscricao.competicao)
+	publicidade = pagina_patro[0].competicacao_patrocinador.patrocinador.image_aside
 	# ToDo...: if model.jogo.data_hora > DateTime.now-4horas: ToDo..:
 	if model.jogo.status.codigo == 'E':		
 		if request.method == 'POST':
@@ -831,17 +832,29 @@ def system_publicidade_pagina(request, competicao_pk, pagina_pk):
 	competicao = Competicao.objects.get(pk=competicao_pk)
 	patrocinador = __get_patrocinador_principal__(competicao)
 	
-	# ToDo...: Pega somente da pagina e competicao
-	patrocinadores_pagina = PaginaPatrocinio.objects.filter(pagina=pagina)	
+	patrocinadores_pagina = list()
+	patrocinadores_pagina_aux = PaginaPatrocinio.objects.filter(pagina=pagina)	
+	for pp in patrocinadores_pagina_aux:
+		if pp.competicacao_patrocinador.competicao == competicao:
+			patrocinadores_pagina.append(pp)
 	
-	# ToDo...: Excluiu o principal, se for rancking e tabela
 	if pagina.codigo_pagina == 'R' or pagina.codigo_pagina == 'T':
 		patrocinadores_competicao_aux = Competicao_Patrocinadores.objects.filter(competicao=competicao).exclude(principal=True)
 	else:
 		patrocinadores_competicao_aux = Competicao_Patrocinadores.objects.filter(competicao=competicao)
-	
-	patrocinadores_competicao = patrocinadores_competicao_aux
-
+		
+	patrocinadores_competicao = list()		
+	include = True
+	for pc in patrocinadores_competicao_aux:
+		print('PC: ' + pc.patrocinador.nome_visual)
+		for pp in patrocinadores_pagina:
+			print('PP: ' + pp.competicacao_patrocinador.patrocinador.nome_visual)
+			if pp.competicacao_patrocinador.patrocinador.pk == pc.patrocinador.pk:
+				include = False
+				break
+		if include:
+			patrocinadores_competicao.append(pc)
+		include = True
 	return render_to_response('_base.html', 
 	                          {'template': 'system/publicidade_pagina.html', 
 	                           'titulo': 'Pagina ' + pagina.nome_pagina,
@@ -852,6 +865,20 @@ def system_publicidade_pagina(request, competicao_pk, pagina_pk):
 							   'patrocinadores_competicao': patrocinadores_competicao,
 							   'patrocinadores_pagina': patrocinadores_pagina
 	                           }, RequestContext(request))		
+							   
+def system_retirar_patrocinio_pagina(request, patrocinador_pagina_pk):
+	pag_patro = PaginaPatrocinio.objects.get(pk=patrocinador_pagina_pk)
+	pag_patro.delete()
+	return redirect('/system/publicidade_pagina/'+str(pag_patro.competicacao_patrocinador.competicao.pk)+'/'+str(pag_patro.pagina.pk)+'/')
+	
+def system_incluir_patrocinio_pagina(request, pagina_pk, patrocinador_competicao_pk):
+	pagina = Pagina.objects.get(pk=pagina_pk)
+	competicao_patrocinador = Competicao_Patrocinadores.objects.get(pk=patrocinador_competicao_pk)
+	pag_patro = PaginaPatrocinio()
+	pag_patro.pagina = pagina
+	pag_patro.competicacao_patrocinador = competicao_patrocinador
+	pag_patro.save()
+	return redirect('/system/publicidade_pagina/'+str(pag_patro.competicacao_patrocinador.competicao.pk)+'/'+str(pag_patro.pagina.pk)+'/')
 
 def system_competicao_publicidade(request, competicao_pk):
 	competicao = Competicao.objects.get(pk=competicao_pk)

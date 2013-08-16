@@ -71,6 +71,10 @@ urlpatterns = patterns('',
 	url(r'^system/competicao_publicidade/(?P<competicao_pk>\d+)/$', 'core.views.system_competicao_publicidade'),
 	url(r'^system/retirar_patrocinador_competicao/(?P<competicao_pk>\d+)/(?P<patrocinador_pk>\d+)/$', 'core.views.system_retirar_patrocinador_competicao'),
 	
+	url(r'^system/retirar_patrocinio_pagina/(?P<patrocinador_pagina_pk>\d+)/$', 'core.views.system_retirar_patrocinio_pagina'),
+	url(r'^system/incluir_patrocinio_pagina/(?P<pagina_pk>\d+)/(?P<patrocinador_competicao_pk>\d+)/$', 'core.views.system_incluir_patrocinio_pagina'),
+	
+	
 	url(r'^system/send_mail_all/(?P<campeonato_pk>\d+)/$', 'core.views.system_send_mail_all'),
 	
 	url(r'^system/novo_patrocinador_competicao/(?P<competicao_pk>\d+)/$', 'core.views.system_novo_patrocinador_competicao'),
