@@ -114,6 +114,7 @@ class Inscricao(models.Model):
 	quantidade_acerto_somente_resultado_um_time = models.IntegerField(default=0)
 	quantidade_erro = models.IntegerField(default=0)
 	# end Pontucao
+	pagamento = models.BooleanField(default=False)
 	
 	def __unicode__(self):
 		return str(self.pk) + " : Participante: " + self.participante.apelido + " / "+ self.competicao.nome 

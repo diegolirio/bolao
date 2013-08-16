@@ -1,8 +1,19 @@
 
-<h3>Patrocinadores Nao vinculados</h3>
-{% for p in patrocinadores %}
-	<h4>{{ p.nome_visual }}</h4>
-{% empty %}
-	<p class="muted">Nao ha patrocinadores que nao esteje vinculado a essa competicao</p>
-	<p>Para cadastrar um novo patrocinador <a href="#">clique aqui</a>
-{% endfor %}
+<div class="container">
+	<h3>Patrocinadores Nao vinculados</h3>
+	<hr/>
+	<p>Para cadastrar um novo patrocinador <a href="/admin/core/patrocinador/add/">clique aqui</a>
+	
+	{% for p in patrocinadores %}	 		
+		<div class="span2 well">
+			<a href="{{ p.url_site }}" target="_blank"><p>{{ p.nome_visual }}</p></a>
+			<a href="{{ p.url_site }}" target="_blank">					
+				<img class="img-rounded" src="/media/{{ p.image_aside }}"/>				
+			</a>						
+			<br/><br/>
+			<p><a href="/system/incluir_patrocinador_competicao/{{competicao.id}}/{{p.id}}/" class="btn btn-info pull-right"> Incluir </a></p>
+		</div>
+	{% empty %}
+		<h3 class="muted">Todos os patrocinadores cadastrados estao vinculado a essa competicao</h3>
+	{% endfor %}
+</div>

@@ -1,5 +1,31 @@
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+		<h4 id="myModalLabel">Retirar Patrocinador da competicao</h4>
+  </div>
+		<center>
+			<h2 class="text-warning">Deseja retirar <br/>patrocinador <span class="text-info" id="patro_nome"></span> <br/> da Competicao ?</h2>
+		</center>
+  <div class="modal-footer">
+		<span id="url_ret"><a href="#" class="btn btn-success">Sim</a></span>
+		<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Fechar</button>
+  </div>
+</div>
 
-<a href="/system/novo_patrocinador_competicao/{{competicao.id}}/" onclick="show_ful__(this.href); return false;" class="btn pull-right">Cadastrar Novo Patrocinador para Competicao</a>
+<script type="text/javascript">
+	function set_ret_patrocinador(pk, nome) {
+		$('#url_ret a').attr('href', '/system/retirar_patrocinador_competicao/'+pk+'/');
+		//$("#url_ret").html('<a href="/system/retirar_patrocinador_competicao/{{competicao.id}}/'+pk+'/" class="btn btn-success">Sim</a>');
+		
+		$("#patro_nome").html(nome);
+	}
+</script>
+
+
+<div class="pull-right">
+	<a class="btn" href="/system/novo_patrocinador_competicao/{{competicao.id}}/" onclick="show_ful__(this.href); return false;">Novo Patrocinador para Competicao</a>
+	<a class="btn" href="/system/paginas_publicidade/{{competicao.id}}/" >Por Paginas</a>
+</div>
 <h3> {{ subtitulo }} </h3>
 <hr/>
 {% for p in patrocinadores %}
@@ -16,10 +42,9 @@
 				{% if p.principal %}
 					<a href="#" class="btn btn-warning pull-right" disabled> >>> </a></p>
 				{% else %}
-					<a href="/system/retirar_patrocinador_competicao/{{competicao.id}}/{{p.patrocinador.id}}/" class="btn btn-warning pull-right"> >>> </a></p>
+					<!--<a href="/system/retirar_patrocinador_competicao/{{competicao.id}}/{{p.patrocinador.id}}/" class="btn btn-warning pull-right"> >>> </a></p>-->
+					<a href="#myModal" onclick="set_ret_patrocinador( {{p.id}}, '{{p.patrocinador.nome_visual}}' );" role="button" data-toggle="modal" class="btn btn-warning pull-right"> >>> </a></p>
 				{% endif %}
-				
-				
 			</fieldset>		  
 		</form>		
 	</div>			

@@ -1,3 +1,4 @@
+<!--
 <div class="row">
 	<div class="span6">
 		<img class="img-rounded" src="/media/images/patrocinadores/patrocinio.jpg"/>
@@ -6,7 +7,11 @@
 		<img class="img-rounded" src="/media/images/patrocinadores/patrocinio.jpg"/>
 	</div>	
 </div>
+
+-->
+
 <br/>
+
 <div class="row">
 	<p><a href="#">Voltar</a></p>
 	<br/>
@@ -15,6 +20,11 @@
 		<h1 class="text-warning">{{ message }}</h1>		
 	</div>
 	<div class="span3">		
-		<img class="img-rounded" src="/media/images/patrocinadores/anuncie.gif"/>
+		<p class="text-info">publicidade</p>
+		{% for p in publicidade %}
+		<a href="{{ p.competicacao_patrocinador.patrocinador.url_site }}" target="_blank">
+			<img class="img-rounded" title="{{p.competicacao_patrocinador.patrocinador.nome_visual}}" height="100" width="150" src="/media/{{ p.competicacao_patrocinador.patrocinador.image_aside }}"/>
+		</a>		
+		{% endfor %}
 	</div>
 </div>	

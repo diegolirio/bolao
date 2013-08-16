@@ -136,7 +136,7 @@ def global_():
 		sol = Pagina()
 		sol.nome_pagina = 'Solicitacao da inscricao'
 		sol.codigo_pagina = 'S'
-		sol.qtde_total_patrocinio = 2
+		sol.qtde_total_patrocinio = 1
 		sol.valor = 1	
 		sol.save()
 
