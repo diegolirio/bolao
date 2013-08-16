@@ -169,3 +169,6 @@ class PaginaPatrocinio(models.Model):
 	competicacao_patrocinador = models.ForeignKey(Competicao_Patrocinadores)
 	def __unicode__(self):
 		return self.pagina.nome_pagina + ' - ' + self.competicacao_patrocinador.patrocinador.nome
+		
+		
+		

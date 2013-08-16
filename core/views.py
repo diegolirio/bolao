@@ -835,8 +835,13 @@ def system_publicidade_pagina(request, competicao_pk, pagina_pk):
 	patrocinadores_pagina = PaginaPatrocinio.objects.filter(pagina=pagina)	
 	
 	# ToDo...: Excluiu o principal, se for rancking e tabela
-	patrocinadores_competicao = Competicao_Patrocinadores.objects.filter(competicao=competicao)
+	if pagina.codigo_pagina == 'R' or pagina.codigo_pagina == 'T':
+		patrocinadores_competicao_aux = Competicao_Patrocinadores.objects.filter(competicao=competicao).exclude(principal=True)
+	else:
+		patrocinadores_competicao_aux = Competicao_Patrocinadores.objects.filter(competicao=competicao)
 	
+	patrocinadores_competicao = patrocinadores_competicao_aux
+
 	return render_to_response('_base.html', 
 	                          {'template': 'system/publicidade_pagina.html', 
 	                           'titulo': 'Pagina ' + pagina.nome_pagina,
