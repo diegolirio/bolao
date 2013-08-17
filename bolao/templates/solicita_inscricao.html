@@ -16,15 +16,29 @@
 	<p><a href="#">Voltar</a></p>
 	<br/>
 	<div class="span9">
-		<h4>Copa <a href="{{patrocinador.patrocinador.url_site}}" target="_blank">{{patrocinador.patrocinador.nome_visual}}</a> {{competicao.nome}}</h4>
+		<h4>Copa <a href="{{patrocinador.patrocinador.url_site}}" target="_blank">{{patrocinador.patrocinador.nome_visual}}</a> {{competicao.nome}}</h4><br/>
 		<h1 class="text-warning">{{ message }}</h1>		
 	</div>
 	<div class="span3">		
-		<p class="text-info">publicidade</p>
-		{% for p in publicidade %}
-		<a href="{{ p.competicacao_patrocinador.patrocinador.url_site }}" target="_blank">
-			<img class="img-rounded" title="{{p.competicacao_patrocinador.patrocinador.nome_visual}}" height="100" width="150" src="/media/{{ p.competicacao_patrocinador.patrocinador.image_aside }}"/>
+		<p class="text-info">oferecimento</p>
+		<a href="{{ patrocinador.patrocinador.url_site }}" target="_blank">
+			<img class="img-rounded" title="{{patrocinador.patrocinador.nome_visual}}" height="100" width="150" src="/media/{{ patrocinador.patrocinador.image_aside }}"/>
 		</a>		
-		{% endfor %}
 	</div>
 </div>	
+<br/>
+<br/>
+<br/>
+<div class="row">
+		<div class="alert alert-block">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			<p>publicidade</p>
+			<p>
+				{% for p in publicidade %}
+					<a href="{{ p.competicacao_patrocinador.patrocinador.url_site }}" target="_blank">
+						<img class="img-rounded" title="{{p.competicacao_patrocinador.patrocinador.nome_visual}}" height="100" width="150" src="/media/{{ p.competicacao_patrocinador.patrocinador.image_aside }}"/>
+					</a>		
+				{% endfor %}				
+			</p>
+		</div>	
+</div>

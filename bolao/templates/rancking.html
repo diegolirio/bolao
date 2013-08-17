@@ -173,6 +173,7 @@
 				  }           
 		);  	
 	}
+	
 </script>
 
 <div class="row">
@@ -198,7 +199,7 @@
 				<div class="control-group">
 					<label class="control-label">Nome</label>										
 					<div class="controls">
-						<input type="text" name="nome">
+						<input type="text" name="nome" value="{{user_inscricao.participante.apelido}}">
 						<!--
 						{ if form.dono.errors } 
 							{ for error in form.dono.errors }
@@ -211,7 +212,7 @@
 				<div class="control-group">
 					<label class="control-label">Email</label>										
 					<div class="controls">
-						<input type="text" name="email">
+						<input type="text" name="email" value="{{user_inscricao.participante.user.email}}">
 						<!--
 						{ if form.dono.errors } 
 							{ for error in form.dono.errors }
@@ -224,7 +225,7 @@
 				<div class="control-group">
 					<label class="control-label">Telefone</label>										
 					<div class="controls">
-						<input type="text" name="telefone">
+						<input type="text" name="telefone" value="{{user_inscricao.participante.dd}} {{user_inscricao.participante.telefone}}">
 						<!--
 						{ if form.dono.errors } 
 							{ for error in form.dono.errors }
@@ -234,6 +235,19 @@
 						-->
 					</div>	
 				</div>					
+				<div class="control-group">
+					<label class="control-label">Mensagem</label>										
+					<div class="controls">
+						<textarea id="message" name="message" class="span4" placeholder="Sua Mensagem" rows="5"></textarea>				
+						<!--
+						{ if form.dono.errors } 
+							{ for error in form.dono.errors }
+								<span class="help-inline"><span class="text-error">{ error|escape }</span></span>
+							{ endfor }
+						{ endif } 																
+						-->
+					</div>	
+				</div>									
 			</form>
 		</div>
 		<div class="modal-footer">
@@ -243,14 +257,14 @@
 	</div>		
 	<!-- Fim  Modal Contato -->
 	
-	{% if not user_inscricao.pagamento %} <!-- competicao.valor_aposta > 0 -->
+	{% if not user_inscricao.pagamento and competicao.valor_aposta > 0 and user_inscricao.id > 0 %}
 		<div class="alert alert-block">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
-			<h4>Aviso!</h4>
-			<p>
+			<h2>Aviso!</h2>
+			<h4>
 				Realize seu pagamento para oficializar sua participação no SuperBolão.com 		
-				<a href="#modal_contato" role="button" data-toggle="modal" class="alert-link"> Clique aqui</a> para entrar em contato.
-			</p>
+				<a href="#modal_contato" role="button" onclick="" data-toggle="modal" class="alert-link"> Clique aqui</a> para entrar em contato.
+			</h4>
 		</div>	
 	{% endif %}
 
