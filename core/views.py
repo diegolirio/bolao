@@ -60,9 +60,7 @@ def get_rancking_by_competicao(competicao):
 	if competicao.campeonato.status.codigo == 'E' or competicao.valor_aposta == 0:
 		inscr = Inscricao.objects.filter(competicao=competicao).order_by('colocacao')
 	else:
-		inscr = Inscricao.objects.filter(competicao=competicao).exclude(pagamento=False).order_by('colocacao')
-		# ToDo
-		#inscr = Inscricao.objects.filter(competicao=competicao).exclude(ativo=False).order_by('colocacao')
+		inscr = Inscricao.objects.filter(competicao=competicao).exclude(ativo=False).order_by('colocacao')
 	return inscr
 	
 def get_inscricao(competicao, participante):

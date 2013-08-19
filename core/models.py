@@ -14,8 +14,7 @@ class Participante(models.Model):
 	confirm_email = models.BooleanField(default=False)
 	confirm_send_code = models.CharField(max_length=100)
 	code_new_password = models.CharField(max_length=100, default="0") # Codigo para redefinir senha
-	# ToDo
-	#descricao_identificacao = models.CharField(max_length=100, blank=True)
+	descricao_identificacao = models.CharField(max_length=100, blank=True)
 	def __unicode__(self):
 		return self.apelido
 		
@@ -117,8 +116,7 @@ class Inscricao(models.Model):
 	quantidade_erro = models.IntegerField(default=0)
 	# end Pontucao
 	pagamento = models.BooleanField(default=False)
-	# ToDo
-	#ativo = models.BooleanField(default=True)
+	ativo = models.BooleanField(default=True)
 	
 	def __unicode__(self):
 		return str(self.pk) + " : Participante: " + self.participante.apelido + " / "+ self.competicao.nome 
