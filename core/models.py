@@ -49,10 +49,19 @@ class Competicao(models.Model):
 	patrocinadores = models.ManyToManyField(Patrocinador, through='Competicao_Patrocinadores') #, blank=True,null=True)
 	#patrocinadores = models.ManyToManyField(Patrocinador)
 	valor_aposta = models.FloatField(default=0)
+	slug = models.SlugField(max_length=100, blank=True)
 	def __unicode__(self):
 		return self.nome + " - " + self.campeonato.nome
 	class Meta:
 		unique_together = ('campeonato', 'nome')
+		
+from django.db.models import signals
+from django.template.defaultfilters import slugify
+
+def competicao_pre_save(signal, instance, sender, **kwargs):
+    instance.slug = slugify(instance.nome)
+
+signals.pre_save.connect(competicao_pre_save, sender=Competicao)		
 		
 class Competicao_Patrocinadores(models.Model):
 	patrocinador = models.ForeignKey(Patrocinador)
