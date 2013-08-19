@@ -1,9 +1,13 @@
 	<div class="row well">
 		<div class="span7">
+		
 			<form action="" method="POST" class="form-horizontal"> {% csrf_token %}
 			    <div id="legend">
 				   <legend>Novo Jogo ({{campeonato.nome}})</legend>
 			    </div>			
+				
+				<input type="hidden" id="id_status" name="status" value="1">
+				
 				<div class="control-group">
 					<label class="control-label">{{ form.grupo.label }}</label>										
 					<div class="controls">
@@ -11,7 +15,7 @@
 						<select id="id_grupo" name="grupo">
 							<option value="" selected="selected">---------</option>
 							{% for g in grupos %}							
-								<option value="{{g.id}}">{{ g.descricao }}</option>							
+								<option value="{{g.id}}">{{ g.descricao }}</option>								
 							{% endfor %}
 						</select>
 						{% if form.grupo.errors %}

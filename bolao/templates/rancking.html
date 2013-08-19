@@ -316,13 +316,14 @@
 				<td class="text-error" title="Acerto de Somente da quantidade de gols de um Time">AS</td>
 				<td class="text-error" title="Acerto de Somente da quantidade de gols de um Time">ER</td>
 			</tr>
+			
 			{% for ip in inscricoes_competicao %}
 			<tr>
 				<td class="text-info">{{ ip.colocacao}}º</td>
 				<td> <!-- nome participante -->
 					<a href="#modal_part" role="button" data-toggle="modal" onclick="get_detail_participante( {{ ip.id }} );">
 						<img src="/media/{{ ip.participante.foto }}" height="20" width="25" class="img-rounded"/>
-						{{ ip.participante }}
+						{{ ip.participante }} {{ presidente }}
 					</a>
 					<!--
 					<a href="/perfil_competicao/{{competicao.id}}/{{ip.id}}/" {% if ip.participante.id == user_participante.id %} class="text-warning" {% endif %}>

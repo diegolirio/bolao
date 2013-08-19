@@ -20,3 +20,37 @@
      -moz-background-clip: padding-box;
           background-clip: padding-box;
 }
+
+.alert_p {
+  padding:8px 35px 8px 14px;
+  margin-bottom:20px;
+  text-shadow:0 1px 0 rgba(255,255,255,0.5);
+  background-color:#fcefd4;
+  border:1px solid #fae1c6;
+  -webkit-border-radius:4px;
+  -moz-border-radius:4px;
+  border-radius:4px
+}
+
+.alert_p,.alert_p h4 {
+ color:#eca918
+}
+
+.alert_p h4{
+  margin:0
+}
+
+.alert_p .close{
+  position:relative;
+  top:-2px;
+  right:-21px;
+  line-height:20px
+}
+
+.alert-publicidade {
+  padding-right:35px
+}
+
+.alert-publicidade .close{
+  position:relative;top:-2px;right:-21px;color:inherit
+}

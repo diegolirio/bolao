@@ -684,11 +684,21 @@ def system_novo_jogo(request, campeonato_pk):
 	execute_transation = 'N'
 	mensagem = ''
 	if request.method == 'POST':
-		form = JogoForm(request.FILES, request.POST)
+		form = JogoForm(request.POST, request.FILES)		
 		if form.is_valid():
-			form.save()
+			jogo = form.save()
+			competicoes = Competicao.objects.filter(campeonato=jogo.grupo.campeonato)
+			for c in competicoes:
+				inscricoes = Inscricao.objects.filter(competicao=c)
+				for i in inscricoes:
+					a = Aposta()
+					a.inscricao = i
+					a.jogo = jogo
+					a.save()					
 			execute_transation = 'S'
 			mensagem = 'gravado com sucesso'
+		else:
+			print('form invalido')
 	return render_to_response('_base_simple.html', {'template': 'system/novo_jogo.html', 'form': form, 'execute_transation': execute_transation, 'mensagem': mensagem, 'campeonato': campeonato, 'grupos': grupos}, context_instance=RequestContext(request))						  
 								  
 def system_jogo_edit(request, campeonato_pk, jogo_pk):
@@ -700,7 +710,7 @@ def system_jogo_edit(request, campeonato_pk, jogo_pk):
 	if request.method == 'POST':
 		if jogo_pk != '0':
 			jogo = Jogo.objects.get(pk=jogo_pk)
-			form = JogoForm(request.FILES, request.POST, instance=jogo)		
+			form = JogoForm(request.POST, request.FILES, instance=jogo)		
 		else:
 			form = JogoForm(request.FILES, request.POST)		
 		if form.is_valid():

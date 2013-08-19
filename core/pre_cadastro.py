@@ -139,13 +139,43 @@ def global_():
 		sol.qtde_total_patrocinio = 2
 		sol.valor = 1	
 		sol.save()
+		
+	if TipoRegra.objects.filter(codigo='M').count() == 0:
+		tipo_m = TipoRegra()
+		tipo_m.codigo = 'M'
+		tipo_m.nome = 'Mata-a-mata'
+		tipo_m.save()
+	else:
+		tipo_m = TipoRegra.objects.filter(codigo='M')[0:1].get()
+		
+	if TipoRegra.objects.filter(codigo='G').count() == 0:
+		tipo_g = TipoRegra()
+		tipo_g.codigo = 'G'
+		tipo_g.nome = 'Grupo'
+		tipo_g.save()
+	else:
+		tipo_g = TipoRegra.objects.filter(codigo='G')[0:1].get()
+
+	if TipoRegra.objects.filter(codigo='P').count() == 0:
+		tipo_p = TipoRegra()
+		tipo_p.codigo = 'P'
+		tipo_p.nome = 'Pontos corridos'
+		tipo_p.save()
+	else:
+		tipo_p = TipoRegra.objects.filter(codigo='P')[0:1].get()			
 
 def copa_mundo_teste():
+	
+	tipo_m = TipoRegra.objects.filter(codigo='M')[0:1].get()
+	tipo_g = TipoRegra.objects.filter(codigo='G')[0:1].get()
+	tipo_p = TipoRegra.objects.filter(codigo='P')[0:1].get()		
+
 	# Campeonato
 	if Campeonato.objects.filter(nome='Copa do Mundo 2014').count() == 0:
 		campeonato = Campeonato()
 		campeonato.nome = 'Copa do Mundo 2014'
 		campeonato.status = StatusJogo.objects.filter(codigo='E')[0:1].get()
+		campeonato.tipo_regra = tipo_g
 		campeonato.save()
 	else:
 		campeonato = Campeonato.objects.filter(nome='Copa do Mundo 2014')[0:1].get()
@@ -243,6 +273,7 @@ def competicao_copa_confederacoes():
 		conf = Campeonato()
 		conf.nome = 'Copa das Conferederacoes'
 		conf.status = StatusJogo.objects.filter(codigo='E')[0:1].get()
+		conf.tipo_regra = TipoRegra.objects.filter(codigo='G')[0:1].get()
 		conf.save()
 	else:
 		conf = Campeonato.objects.filter(nome='Copa das Conferederacoes')[0:1].get()
@@ -470,7 +501,8 @@ def create_users(request):
 		usuario_cad = 'usuario'
 		for i in range(1,200):
 			# Salvar User
-			user = User.objects.create_user(usuario_cad+str(i), 'diegolirio.dl@gmail.com', usuario_cad+str(i))
+			username = usuario_cad+str(i)
+			user = User.objects.create_user(username, 'diegolirio.dl@gmail.com', usuario_cad+str(i))
 			# Salvar Participante
 			p = Participante()
 			p.user = user

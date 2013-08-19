@@ -22,11 +22,18 @@ class StatusJogo(models.Model):
 	codigo = models.CharField(max_length=1)# { F, A, E }
 	descricao = models.CharField(max_length=30, unique=True)	# {F:(finalizado), A: (em andamento, atualizando processo), E: (Edicao)}
 	def __unicode__(self):
-		return "["+self.codigo+"] " + self.descricao			
+		return "["+self.codigo+"] " + self.descricao
+
+class TipoRegra(models.Model):
+	codigo = models.CharField(max_length=1)
+	nome = models.CharField(max_length=50, unique=True)	
+	def __unicode__(self):
+		return self.nome
 	
 class Campeonato(models.Model):
 	nome = models.CharField(max_length=50, unique=True)	
 	status = models.ForeignKey(StatusJogo,default='E')
+	tipo_regra = models.ForeignKey(TipoRegra)
 	def __unicode__(self):
 		return self.nome + ' ' + self.status.descricao
 		
