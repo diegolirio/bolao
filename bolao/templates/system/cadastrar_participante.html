@@ -1,8 +1,6 @@
 		<div class="pull-right">
-			<a href="/system/inscricoes_participante/{{participante.id}}" onclick="show__(this.href); return false;" class="btn">Inscricoes</a>
+			<a href="/system/inscricoes_participante/{{participante.id}}" onclick="show_ful__(this.href); return false;" class="btn">Inscricoes</a>
 		</div>
-		
-		Cadastrar usuario/participante >>> Possivel Inscricao, criara todas as aposta de todos os jogos daquela competicao como Empate e 0 X 0
 
 <div class="row well">
 		<div class="span5">
@@ -95,8 +93,6 @@
 		</div> <!-- .span8 -->
 		<div class="span6">
 			{% if status_transation != 'I' %}
-				{% if user_participante.confirm_email %}	
-					
 					<form action="" method="POST" enctype="multipart/form-data"> {% csrf_token %}
 						<div id="legend">
 						   <legend><h3>Participante</h3></legend>
@@ -164,11 +160,6 @@
 						</div>	
 					</form>
 					
-		
-				{% else %}		
-					<h3 class="text-warning">Confirme seu cadastro em seu email</h3>
-					<a href="/reenvio_confirm_email/">Reenviar email</a>
-				{% endif %}
 			{% endif %}
 		</div>		
 	</div>

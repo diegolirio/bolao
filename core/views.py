@@ -207,6 +207,7 @@ def aposta_edit(request, user_aposta_pk):
 	mensagem = ''	
 	form = ApostaForm()
 	pagina_patro = get_patrocinador_pagina('E', model.inscricao.competicao)
+		
 	if len(pagina_patro) > 0:
 		publicidade = pagina_patro[0].competicacao_patrocinador.patrocinador.image_aside
 	else:
@@ -231,6 +232,9 @@ def aposta_edit(request, user_aposta_pk):
 				mensagem = 'Aposta alterada com sucesso'
 		else:
 			form = ApostaForm(instance=model)
+			if not model.inscricao.participante.confirm_email:
+				mensagem = u'Confirme seu cadastro em seu email para realizar a alteração dos palpites do jogo!'
+				execute_transation = 'S'				
 	else:
 		mensagem = 'Nao sera mais possivel alterar aposta. Jogo encontra-se em ' + model.jogo.status.descricao
 		execute_transation = 'S'
@@ -743,12 +747,12 @@ def system_calcular_campeonato(request, campeonato_pk):
 	# calcula somatorio definitivo
 	competicoes = Competicao.objects.filter(campeonato=campeonato)
 	for c in competicoes:
-		inscricoes = Inscricao.objects.filter(competicao=c)
+		inscricoes = Inscricao.objects.filter(competicao=c, ativo=True)
 		for i in inscricoes:
 			# somatorio na inscricao,
 			__soma_pontuacao__(i)		
 		#Calcula Rancking/colocacao
-		__calcula_rancking__(c)	
+		__calcula_rancking__(c)
 		# ToDo..: envia email
 		#if envia_email:
 		#	para todos os participante dessa competicao.
@@ -772,6 +776,7 @@ def system_cadastrar_participante(request, participante_pk):
 	message = ''
 	status_transation = 'I'
 	user_participante = get_participante_by_user(request.user)
+	participante = Participante()
 	form_user = UserNewForm()
 	form_participante = ParticipanteForm()	
 	participante = Participante()
@@ -779,15 +784,27 @@ def system_cadastrar_participante(request, participante_pk):
 		if participante_pk == '0':
 			form_user = UserNewForm(request.POST, request.FILES)
 			if form_user.is_valid():
-				# Validar senhas compativeis.... no link http://www.aprendendodjango.com/funcoes-de-usuarios/
 				user = form_user.save()
-				#print('save_user >>>>>>>> automatico participante e apos confirm_email ' + user.username)		
 				participante = __new_participante__(user)
-				status_transation = 'V'
-				# ToDo...: Realizar Login... aki.....
-				#user = authenticate(username=user.username, password=user.password)
-				#login(request, user)
-				return redirect('/system/cadastrar_participante/'+str(user.pk))		
+				emailss = [user.email,]
+				send_mail('Conrfimacao de cadastro '+NOME_BOLAO, 'Usuario: '+ user.username +', clique no link para confirmar o cadastro ' + SITE_ROOT + 'confirm_email/'+participante.confirm_send_code+ '/?user='+str(user.pk), 'diegolirio.dl@gmail.com', emailss)
+				return redirect('/system/cadastrar_participante/'+str(user.pk))	
+		else:
+			participante = Participante.objects.get(pk=participante_pk)
+			if 'save_user' in request.POST:
+				form_user = UserEditForm(request.POST, request.FILES, instance=participante.user)
+				form_participante = ParticipanteForm(instance=participante)	
+				if form_user.is_valid():
+					form_user.save()
+					message = u'Informações de usuário gravado com sucesso!'
+					#return redirect('/cadastre_se/')
+			elif 'save_participante' in request.POST:
+				form_participante = ParticipanteForm(request.POST, request.FILES, instance=participante)
+				form_user = UserEditForm(instance=participante.user)
+				if form_participante.is_valid():	
+					form_participante.save()
+					message = u'Informações de participante gravado com sucesso!'
+			status_transation = 'V'		
 	else:
 		if participante_pk != '0':
 			participante = Participante.objects.get(pk=participante_pk)
@@ -811,14 +828,56 @@ def system_inscricoes_participante(request, participante_pk):
 	participante = Participante.objects.get(pk=participante_pk)
 	user_participante = get_participante_by_user(request.user)
 	minhas_inscricoes = Inscricao.objects.filter(participante=participante)
-	outras_inscricoes = Inscricao.objects.exclude(participante=participante)
+	competicoes_all = Competicao.objects.all()
+	outras_competicoes = list()
+	include = True
+	for c in competicoes_all:
+		for mi in minhas_inscricoes:
+			if c == mi.competicao:
+				include = False
+				break
+		if include:
+			outras_competicoes.append(c)
+		include = True
 	return render_to_response('_base_simple.html', 
 	                          {'template': 'system/inscricoes_participante.html', 
 	                           'user_participante': user_participante,
 							   'minhas_inscricoes': minhas_inscricoes,
-							   'outras_inscricoes': outras_inscricoes,
+							   'outras_competicoes': outras_competicoes,
 							   'participante': participante
 	                           }, RequestContext(request))		
+	                           
+def system_inscrever_participante_competicao(request, participante_pk, competicao_pk):
+	user_participante = get_participante_by_user(request.user)
+	participante = Participante.objects.get(pk=participante_pk)
+	competicao = Competicao.objects.get(pk=competicao_pk)
+	execute_transation = 'N'
+	mensagem = ''
+	if Inscricao.objects.filter(competicao=competicao, participante=participante).count() == 0:
+		inscricao = Inscricao()
+		inscricao.competicao = competicao
+		inscricao.participante = participante
+		inscricao.save()
+		
+		grupos = Grupo.objects.filter(campeonato=competicao.campeonato)
+		for g in grupos:
+			jogos = Jogo.objects.filter(grupo=g)
+			for j in jogos:
+				a = Aposta()
+				a.jogo = j
+				a.inscricao = inscricao
+				a.save()
+		execute_transation = 'S'
+		mensagem = 'Inscricao realizada com sucesso'
+	else:
+		return redirect('system/inscricoes_participante/'+str(participante.pk))		
+	return render_to_response('_base_simple.html', 
+	                          {'template': 'system/inscricoes_participante.html', 
+	                           'user_participante': user_participante,
+							   'participante': participante,
+							   'execute_transation': execute_transation,
+							   'mensagem': mensagem
+	                           }, RequestContext(request))			
 							   
 def system_patrocinadores_por_competicao(request):
 	user_participante = get_participante_by_user(request.user)
@@ -1089,7 +1148,7 @@ def __limpa_pontuacao__(inscricao):
 
 #Calcula Rancking/colocacao
 def __calcula_rancking__(competicao):
-	inscricoes = Inscricao.objects.filter(competicao=competicao).order_by('-pontos','-quantidade_acerto_placar', '-quantidade_acerto_vencedor_um_resultado_correto', '-quantidade_acerto_vencedor','-quantidade_acerto_empate_erro_placar', '-quantidade_acerto_somente_resultado_um_time')
+	inscricoes = Inscricao.objects.filter(competicao=competicao, ativo=True).order_by('-pontos','-quantidade_acerto_placar', '-quantidade_acerto_vencedor_um_resultado_correto', '-quantidade_acerto_vencedor','-quantidade_acerto_empate_erro_placar', '-quantidade_acerto_somente_resultado_um_time')
 	col_inc_ = 0
 	col_real = 0
 	pt_anterior = 0

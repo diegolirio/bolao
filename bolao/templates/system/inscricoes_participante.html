@@ -2,14 +2,25 @@
 
 <div class="container">
 <div class="row">
-<p>{{ participante.apelido }}</p>	
+
+<center>
+	<h1>
+		<img src="/media/{{participante.foto}}" height="50" width="55" class="img-rounded"/>
+		{{ participante.apelido }}
+	</h1>	
+</center>
+
 <h4>Minhas Competicoes</h4>
 <ul class="thumbnails">
 	{% for m in minhas_inscricoes %}
 		<li class="span6 clearfix">
 		  <div class="thumbnail clearfix">
 			<div class="caption" class="pull-left">
-			  <a href="http://bootsnipp.com/" class="btn btn-primary icon  pull-right">Desativar</a>
+			  {% if m.ativo %}
+				<a href="#" class="btn btn-primary icon  pull-right">Desativar</a>
+			  {% else %}
+				<a href="#" class="btn btn-primary icon  pull-right">Ativar</a>
+			  {% endif %}
 			  <h4>      
 			  Copa <a href="{{ m.competicao|get_patrocinador_principal_link }}" target="_blank">{{ m.competicao|get_patrocinador_principal_display }}</a> {{m.competicao.nome}}
 			  </h4>
@@ -22,15 +33,15 @@
 <hr/>
 <h4>Outras Competicoes</h4>
 <ul class="thumbnails">
-	{% for o in outras_inscricoes %}
+	{% for o in outras_competicoes %}
 		<li class="span6 clearfix">
 		  <div class="thumbnail clearfix">
 			<div class="caption" class="pull-left">
-			  <a href="http://bootsnipp.com/" class="btn btn-primary icon  pull-right">Desativar</a>
+			  <a href="/system/inscrever_participante_competicao/{{participante.id}}/{{o.id}}/" class="btn btn-primary icon  pull-right">Inscrever</a>
 			  <h4>      
-			  Copa <a href="{{ o.competicao|get_patrocinador_principal_link }}" target="_blank">{{ o.competicao|get_patrocinador_principal_display }}</a> {{o.competicao.nome}}
+			  Copa <a href="{{ o.competicao|get_patrocinador_principal_link }}" target="_blank">{{ o|get_patrocinador_principal_display }}</a> {{o.nome}}
 			  </h4>
-			  <small>{{o.competicao.campeonato.nome}} - {{ o.competicao.campeonato.status.descricao }}</small>		  
+			  <small>{{o.campeonato.nome}} - {{ o.campeonato.status.descricao }}</small>		  
 			</div>
 		  </div>
 		</li>	
