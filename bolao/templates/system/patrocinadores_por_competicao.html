@@ -8,6 +8,7 @@
 			<h2>Copa <a href="{{ c|get_patrocinador_principal_link }}" target="_blank">{{ c|get_patrocinador_principal_display }}</a> {{c.nome}}</h2>
 			<h4>{{c.campeonato.nome}}</h4> 
 			<br/>
+			<p><a href="/alterar/{{c.id}}/" class="btn btn-success">Alterar</a></p>
 			<p>
 				<a href="/system/paginas_publicidade/{{c.id}}/" class="btn btn-success">
 					Gerenciar Paginas de patrocinios  
@@ -15,8 +16,10 @@
 						(inscricoes abertas)
 					{% endif %}
 				</a>
+			</p>
+			<p>
 				<a href="/system/competicao_publicidade/{{c.id}}/" class="btn btn-success">
-					Patrocinadores
+					Patrocinadores da Competicao
 					{% if c.status.codigo == 'E' %}
 						(inscricoes abertas)
 					{% endif %}
