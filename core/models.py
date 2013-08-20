@@ -56,6 +56,7 @@ class Competicao(models.Model):
 	patrocinadores = models.ManyToManyField(Patrocinador, through='Competicao_Patrocinadores') #, blank=True,null=True)
 	#patrocinadores = models.ManyToManyField(Patrocinador)
 	valor_aposta = models.FloatField(default=0)
+	visivel_participantes_pendente_pagamento = models.BooleanField(default=True)
 	slug = models.SlugField(max_length=100, blank=True)
 	def __unicode__(self):
 		return self.nome + " - " + self.campeonato.nome

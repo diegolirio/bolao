@@ -34,6 +34,10 @@ class ParticipanteFotoForm(ModelForm):
 		model = Participante
 		fields = ('user', 'foto')		
 		
+class ParticipanteAdminForm(ModelForm):
+	class Meta:
+		model = Participante
+		
 class UserNewForm(forms.ModelForm):	
 	class Meta:
 		model = User		

@@ -1,9 +1,7 @@
-		<div class="pull-right">
-			<a href="/system/inscricoes_participante/{{participante.id}}" onclick="show_ful__(this.href); return false;" class="btn">Inscricoes</a>
-		</div>
 
-<div class="row well">
-		<div class="span5">
+<div class="row">
+		<div class="span5 well">
+		
 			<form action="" method="POST" class="form-horizontal"> {% csrf_token %}
 			    <div id="legend">
 				   <legend><h3>Usuario</h3></legend>
@@ -91,13 +89,17 @@
 
 			</form>
 		</div> <!-- .span8 -->
-		<div class="span6">
+		<div class="span6 well">
 			{% if status_transation != 'I' %}
+			
+					<div class="pull-right">
+						<a href="/system/inscricoes_participante/{{participante.id}}" onclick="show_ful__(this.href); return false;" class="btn">Inscricoes</a>
+					</div>
+			
 					<form action="" method="POST" enctype="multipart/form-data"> {% csrf_token %}
 						<div id="legend">
 						   <legend><h3>Participante</h3></legend>
-						</div>			
-
+						</div>									
 						<div class="control-group">
 							<label class="control-label">{{ form_participante.username.label }}</label>										
 							<div class="controls">
@@ -152,7 +154,55 @@
 									{% endfor %}
 								{% endif %} 						
 							</div>	
+						</div>			
+						<div class="control-group">
+							<div class="controls">
+								<span class="add-on"><i class="icon-user"></i></span>
+								{{ form_participante.confirm_email.label }}:  {{ form_participante.confirm_email }}
+								{% if form_participante.confirm_email.errors %}
+									{% for error in form_participante.confirm_email.errors %}
+										<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
+									{% endfor %}
+								{% endif %} 									
+							</div>	
+						</div>	
+						<div class="control-group">
+							<label class="control-label">{{ form_participante.confirm_send_code.label }}</label>										
+							<div class="controls">
+								<span class="add-on"><i class="icon-user"></i></span>
+								{{ form_participante.confirm_send_code }}
+								{% if form_participante.confirm_send_code.errors %}
+									{% for error in form_participante.confirm_send_code.errors %}
+										<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
+									{% endfor %}
+								{% endif %} 									
+							</div>	
 						</div>							
+						<div class="control-group">
+							<label class="control-label">{{ form_participante.code_new_password.label }}</label>										
+							<div class="controls">
+								<span class="add-on"><i class="icon-user"></i></span>
+								{{ form_participante.code_new_password }}
+								{% if form_participante.code_new_password.errors %}
+									{% for error in form_participante.code_new_password.errors %}
+										<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
+									{% endfor %}
+								{% endif %} 									
+							</div>	
+						</div>								
+						<div class="control-group">
+							<label class="control-label">{{ form_participante.descricao_identificacao.label }}</label>										
+							<div class="controls">
+								<span class="add-on"><i class="icon-user"></i></span>
+								{{ form_participante.descricao_identificacao }}
+								{% if form_participante.descricao_identificacao.errors %}
+									{% for error in form_participante.descricao_identificacao.errors %}
+										<span class="help-inline"><span class="text-error">{{ error|escape }}</span></span>
+									{% endfor %}
+								{% endif %} 									
+							</div>	
+						</div>							
+						<label for="id_descricao_identificacao">Descricao identificacao:</label></th><td><input id="id_descricao_identificacao" maxlength="100" name="" type="text" />						
 						<div class="control-group">
 						  <div class="controls">
 							<input type="submit" value="Salvar" class="btn btn-primary" name="save_participante">

@@ -15,16 +15,41 @@
 	{% for m in minhas_inscricoes %}
 		<li class="span6 clearfix">
 		  <div class="thumbnail clearfix">
-			<div class="caption" class="pull-left">
-			  {% if m.ativo %}
-				<a href="#" class="btn btn-primary icon  pull-right">Desativar</a>
-			  {% else %}
-				<a href="#" class="btn btn-primary icon  pull-right">Ativar</a>
-			  {% endif %}
-			  <h4>      
-			  Copa <a href="{{ m.competicao|get_patrocinador_principal_link }}" target="_blank">{{ m.competicao|get_patrocinador_principal_display }}</a> {{m.competicao.nome}}
-			  </h4>
-			  <small>{{m.competicao.campeonato.nome}} - {{ m.competicao.campeonato.status.descricao }}</small>		  
+			<div class="caption" class="pull-left">		  
+				
+				<h4>      
+				Copa <a href="{{ m.competicao|get_patrocinador_principal_link }}" target="_blank">{{ m.competicao|get_patrocinador_principal_display }}</a> {{m.competicao.nome}}
+				</h4>
+				<small>{{m.competicao.campeonato.nome}} - {{ m.competicao.campeonato.status.descricao }}</small>		  
+
+				<hr/>
+				
+				  {% if m.ativo %}
+					<p class="text-success"><i class="icon-ok"></i> Inscrito</p>
+				  {% else %}
+					<p class="text-warning"><i class="icon-remove"></i> Desativado</p>
+				  {% endif %}
+				  
+				  {% if m.pagamento %}
+					<p class="text-success"><i class="icon-ok"></i> Pagamento realizado</p>
+				  {% else %}
+					<p class="text-warning"><i class="icon-remove"></i> Pagamento Pendente</p>
+				  {% endif %}					  
+				  
+				  <hr/>
+				  
+				  {% if m.ativo %}
+					<a href="/system/desativar_participante_competicao/{{m.id}}/" class="btn btn-danger icon  pull-right">Desativar Inscricao</a>
+				  {% else %}
+					<a href="/system/ativar_participante_competicao/{{m.id}}/" class="btn btn-success icon  pull-right">Ativar Inscricao</a>
+				  {% endif %}				  
+				  
+				  {% if m.pagamento %}
+					<a href="/system/retirar_pagto_competicao/{{m.id}}/" class="btn btn-warning"><span class="text-success">R$</span> Retirar Pagamento</a>
+				  {% else %}
+					<a href="/system/pagar_pagto_competicao/{{m.id}}/" class="btn btn-info"><span class="text-success">R$</span>Realizar Pagar</a>
+				  {% endif %}				
+				
 			</div>
 		  </div>
 		</li>	

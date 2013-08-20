@@ -58,9 +58,12 @@ def home(request):
 											
 def get_rancking_by_competicao(competicao):
 	if competicao.campeonato.status.codigo == 'E' or competicao.valor_aposta == 0:
-		inscr = Inscricao.objects.filter(competicao=competicao).order_by('colocacao')
+		inscr = Inscricao.objects.filter(competicao=competicao, ativo=True).order_by('colocacao')
 	else:
-		inscr = Inscricao.objects.filter(competicao=competicao).exclude(ativo=False).order_by('colocacao')
+		if competicao.visivel_participantes_pendente_pagamento:
+			inscr = Inscricao.objects.filter(competicao=competicao).exclude(ativo=False).order_by('colocacao')
+		else:
+			inscr = Inscricao.objects.filter(competicao=competicao, pagamento=True).exclude(ativo=False).order_by('colocacao')
 	return inscr
 	
 def get_inscricao(competicao, participante):
@@ -778,7 +781,7 @@ def system_cadastrar_participante(request, participante_pk):
 	user_participante = get_participante_by_user(request.user)
 	participante = Participante()
 	form_user = UserNewForm()
-	form_participante = ParticipanteForm()	
+	form_participante = ParticipanteAdminForm()	
 	participante = Participante()
 	if request.method == 'POST':
 		if participante_pk == '0':
@@ -793,13 +796,13 @@ def system_cadastrar_participante(request, participante_pk):
 			participante = Participante.objects.get(pk=participante_pk)
 			if 'save_user' in request.POST:
 				form_user = UserEditForm(request.POST, request.FILES, instance=participante.user)
-				form_participante = ParticipanteForm(instance=participante)	
+				form_participante = ParticipanteAdminForm(instance=participante)	
 				if form_user.is_valid():
 					form_user.save()
 					message = u'Informações de usuário gravado com sucesso!'
 					#return redirect('/cadastre_se/')
 			elif 'save_participante' in request.POST:
-				form_participante = ParticipanteForm(request.POST, request.FILES, instance=participante)
+				form_participante = ParticipanteAdminForm(request.POST, request.FILES, instance=participante)
 				form_user = UserEditForm(instance=participante.user)
 				if form_participante.is_valid():	
 					form_participante.save()
@@ -810,7 +813,7 @@ def system_cadastrar_participante(request, participante_pk):
 			participante = Participante.objects.get(pk=participante_pk)
 			form_user = UserEditForm(instance=participante.user)
 			if user_participante != None:
-				form_participante = ParticipanteForm(instance=participante)	
+				form_participante = ParticipanteAdminForm(instance=participante)	
 			status_transation = 'V'		
 	return render_to_response('_base.html', 
 	                          {'template': 'system/cadastrar_participante.html', 
@@ -867,17 +870,23 @@ def system_inscrever_participante_competicao(request, participante_pk, competica
 				a.jogo = j
 				a.inscricao = inscricao
 				a.save()
-		execute_transation = 'S'
-		mensagem = 'Inscricao realizada com sucesso'
-	else:
-		return redirect('system/inscricoes_participante/'+str(participante.pk))		
-	return render_to_response('_base_simple.html', 
-	                          {'template': 'system/inscricoes_participante.html', 
-	                           'user_participante': user_participante,
-							   'participante': participante,
-							   'execute_transation': execute_transation,
-							   'mensagem': mensagem
-	                           }, RequestContext(request))			
+	return redirect('/system/inscricoes_participante/'+str(participante.pk))		
+	
+def set_ativo_participante_competicao(ativo, inscricao):
+	inscricao.ativo = ativo
+	inscricao.save()
+							   
+def system_desativar_participante_competicao(request, inscricao_pk):
+	user_participante = get_participante_by_user(request.user)
+	inscricao = Inscricao.objects.get(pk=inscricao_pk)
+	set_ativo_participante_competicao(False, inscricao)
+	return redirect('/system/inscricoes_participante/'+str(inscricao.participante.pk))	
+							   
+def system_ativar_participante_competicao(request, inscricao_pk):
+	user_participante = get_participante_by_user(request.user)
+	inscricao = Inscricao.objects.get(pk=inscricao_pk)
+	set_ativo_participante_competicao(True, inscricao)
+	return redirect('/system/inscricoes_participante/'+str(inscricao.participante.pk))							   
 							   
 def system_patrocinadores_por_competicao(request):
 	user_participante = get_participante_by_user(request.user)
