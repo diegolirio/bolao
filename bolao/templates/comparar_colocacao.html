@@ -12,12 +12,12 @@
 						</tr>
 					</thead>
 					<tr>
-						<td>{{ user_participante.apelido }} </td>
+						<td><img src="/media/{{ user_participante.foto }}" height="20" width="25" class="img-rounded"/> {{ user_participante.apelido }}</td>
 						<td><center>{{ user_inscricao.colocacao }}º</center></td>
 						<td><center>{{ user_inscricao.pontos }}</center></td>						
 					</tr>
 					<tr>
-						<td>{{ view_inscricao.participante.apelido }} </td>
+						<td><img src="/media/{{ view_inscricao.participante.foto }}" height="20" width="25" class="img-rounded"/> {{ view_inscricao.participante.apelido }}</td>
 						<td><center>{{ view_inscricao.colocacao }}º</center></td>
 						<td><center>{{ view_inscricao.pontos }}</center></td>						
 					</tr>					
@@ -25,6 +25,8 @@
 			</div> 
 			<div class="span6">
 				<br/><br/>
+				<a href="#" class="btn btn-warning">Incluir participante</a>
+				
 				{% include 'legenda_pontos.html' %}
 				<!--
 				<h4 class="text-warning">

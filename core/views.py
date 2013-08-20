@@ -263,6 +263,15 @@ def __get_jogos_not_edition_by_campeonato__(campeonato):
 def perfil_competicao_modal(request, view_inscricao_pk):   
 	view_inscricao = Inscricao.objects.get(pk=view_inscricao_pk)
 	to_json = list()
+	
+	view_apostas = list()
+	apts_aux = Aposta.objects.filter(inscricao=view_inscricao)
+	jogo_ = 0
+	for a in apts_aux:
+		if (a.jogo.status.codigo == 'A') or (a.jogo.status.codigo == 'F'):
+			view_apostas.append(a)	
+			jogo_ = jogo_ + 1	
+	
 	view_inscricao_json = {
                              'inscricao_id': view_inscricao.id,
 							 'participante_id': view_inscricao.participante.id,
@@ -274,7 +283,9 @@ def perfil_competicao_modal(request, view_inscricao_pk):
 							 'inscricao_quantidade_acerto_vencedor_um_resultado_correto': view_inscricao.quantidade_acerto_vencedor_um_resultado_correto, 
 							 'inscricao_quantidade_acerto_vencedor': view_inscricao.quantidade_acerto_vencedor, 
 							 'inscricao_quantidade_acerto_empate_erro_placar': view_inscricao.quantidade_acerto_empate_erro_placar,
-							 'inscricao_quantidade_erro': view_inscricao.quantidade_erro
+							 'inscricao_quantidade_acerto_somente_resultado_um_time': view_inscricao.quantidade_acerto_somente_resultado_um_time,
+							 'inscricao_quantidade_erro': view_inscricao.quantidade_erro,
+							 'quantidade_jogos': jogo_
 						  }    
 	dictFields = { 'fields': view_inscricao_json }
 	to_json.append(dictFields)
