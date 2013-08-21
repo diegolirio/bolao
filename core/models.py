@@ -57,6 +57,7 @@ class Competicao(models.Model):
 	#patrocinadores = models.ManyToManyField(Patrocinador)
 	valor_aposta = models.FloatField(default=0)
 	visivel_participantes_pendente_pagamento = models.BooleanField(default=True)
+	mensagem_para_pagamento_pendente = models.CharField(max_length=200, default=u'Realize seu pagamento para oficializar sua participacao no SuperBolao.com')	
 	slug = models.SlugField(max_length=100, blank=True)
 	def __unicode__(self):
 		return self.nome + " - " + self.campeonato.nome

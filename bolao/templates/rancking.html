@@ -80,13 +80,21 @@
 
 <div class="row">
 
-	{% if valor_acumulado != 0 %}
-		<h5 class="pull-right">R$ {{ valor_acumulado }} <span class="">Acumulado</span></h5> 
-	{% endif %}
+	<div class="visible-desktop pull-right">
+		<span class="text-warning">publicidade</span><br/>
+		<a href="{{ patrocinador.patrocinador.url_site }}" target="_blank">
+			<img class="img-rounded" title="{{patrocinador.patrocinador.nome_visual}}" height="100" width="150" src="/media/{{ patrocinador.patrocinador.image_aside }}"/>
+		</a>
+		<br/><br/>
+	</div>	
 	
 	<p>{{competicao.campeonato.nome}}</p>
 	<h3>Copa <a href="{{patrocinador.patrocinador.url_site}}" target="_blank">{{patrocinador.patrocinador.nome_visual}}</a> {{competicao.nome}}</h3>
-
+	{% if valor_acumulado != 0 %}
+		<h5><span class="text-success">R$ </span> <span style="font-size: 20px;"> <b>{{ valor_acumulado }}</b> </span> <span class="">Acumulado</span></h3> 
+	{% endif %}
+	
+	
 	<br/>
 	<!-- Modal Contato -->
 	<div id="modal_contato" class="modal-ui hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -165,7 +173,7 @@
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
 			<h2>Aviso!</h2>
 			<h4>
-				Realize seu pagamento para oficializar sua participação no SuperBolão.com 		
+				{{ competicao.mensagem_para_pagamento_pendente }}
 				<a href="#modal_contato" role="button" onclick="" data-toggle="modal" class="alert-link"> Clique aqui</a> para entrar em contato.
 			</h4>
 		</div>	
@@ -223,7 +231,7 @@
 			{% for ip in inscricoes_competicao %}
 			<tr>
 				<td>
-					{% if ip.participante != user_participante %}
+					{% if ip.participante != user_participante and user_participante.id > 0 %}
 						<a href="/comparar_colocacao/{{competicao.id}}/{{ip.id}}/" class="text-info" target="_blank" title="Comparar colocação">
 					{% else %}
 						<a href="javascrip:undefined" class="text-info" title="Minha colocação">
@@ -258,6 +266,12 @@
 		</table>
 	</div>	
 	<div class="span2">
+	
+		<h4> Alguma ideia revolucionaria aqui</h4>
+		
+		<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+		<br/><br/><br/><br/><br/>
+	
 		<span class="text-warning">publicidade</span><br/>
 		<div class="visible-desktop">
 			<a href="{{ patrocinador.patrocinador.url_site }}" target="_blank">
