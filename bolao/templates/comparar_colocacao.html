@@ -1,6 +1,51 @@
 	<br/>
+	
+	<script type="text/javascript">
+		
+		list_add = [];
+		list_remove = [];
+		
+		
+		
+	</script>
+	
+	<div id="id_modal_include_part" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+			<h3 id="myModalLabel">Incluir Participante</h3>
+	  </div>
+	  <div class="modal-body">
+	  
+		<center>
+			<p>Participantes não adicionados</p>
+			<p><input type="text" id="id_pesq_part" value=""></p>
+			<select size="6" id="id_part_include">
+				<option value="1volvo">Volvo</option>
+				<option value="2saab">Saab</option>
+				<option value="3mercedes">Mercedes</option>
+				<option value="4audi">Audi</option>
+			</select>	  
 
-	<div class="container">
+			<br/>
+			
+			<a href="#" class="btn btn-success">Adicionar</a>
+			<a href="#" class="btn btn-danger">Retirar</a>
+			
+			<br/><br/>
+			
+			<p>Participantes no gráfico</p>
+			<select size="5" id="id_part_not_include">
+				<option value="{{ user_inscricao.id }}">{{ user_inscricao.participante.apelido }}</option>
+				<option value="{{ view_inscricao.id }}">{{ view_inscricao.participante.apelido }}</option>
+			</select>		
+		</center>
+	  </div>
+	  <div class="modal-footer">
+			<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Fechar</button>
+	  </div>
+	</div>		
+	
+	<div class="container">	
 		<div class="row">
 			<div class="span6">
 				<table class="table">
@@ -25,7 +70,7 @@
 			</div> 
 			<div class="span6">
 				<br/><br/>
-				<a href="#" class="btn btn-warning">Incluir participante</a>
+				<a href="#id_modal_include_part" role="button" data-toggle="modal" class="btn btn-warning">Incluir participante</a>
 				
 				{% include 'legenda_pontos.html' %}
 				<!--
@@ -44,7 +89,7 @@
 		</div>
 	</div>
 
-	<br/>
+	<br/>	
 
 	<div class="row">
 		<div class="span9">
