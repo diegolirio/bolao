@@ -4,6 +4,79 @@ from django.contrib.auth.decorators import login_required
 from core.models import *
 import datetime
 
+def insert_auto_paginas():
+	# Local Patrocinio
+	if Pagina.objects.filter(codigo_pagina='R').count() == 0:		
+		rancking = Pagina()
+		rancking.nome_pagina = 'Rancking'
+		rancking.codigo_pagina = 'R'
+		rancking.qtde_total_patrocinio = 5
+		rancking.valor = 7.0
+		rancking.save()
+	if Pagina.objects.filter(codigo_pagina='T').count() == 0:		
+		tb = Pagina()
+		tb.nome_pagina = 'Tabela'
+		tb.codigo_pagina = 'T'
+		tb.qtde_total_patrocinio = 5
+		tb.valor = 6		
+		tb.save()
+	if Pagina.objects.filter(codigo_pagina='A').count() == 0:		
+		aj = Pagina()
+		aj.nome_pagina = 'Apostas do Jogo'
+		aj.codigo_pagina = 'A'
+		aj.qtde_total_patrocinio = 5
+		aj.valor = 5		
+		aj.save()
+	if Pagina.objects.filter(codigo_pagina='E').count() == 0:		
+		ae = Pagina()
+		ae.nome_pagina = 'Alteracao resultado'
+		ae.codigo_pagina = 'E'
+		ae.qtde_total_patrocinio = 1
+		ae.valor = 5		
+		ae.save()		
+	if Pagina.objects.filter(codigo_pagina='O').count() == 0:		
+		lout = Pagina()
+		lout.nome_pagina = 'Logout'
+		lout.codigo_pagina = 'O'
+		lout.qtde_total_patrocinio = 1
+		lout.valor = 5		
+		lout.save()
+	if Pagina.objects.filter(codigo_pagina='S').count() == 0:		
+		sol = Pagina()
+		sol.nome_pagina = 'Solicitacao da inscricao'
+		sol.codigo_pagina = 'S'
+		sol.qtde_total_patrocinio = 2
+		sol.valor = 2	
+		sol.save()
+	if Pagina.objects.filter(codigo_pagina='K').count() == 0:		
+		rt = Pagina()
+		rt.nome_pagina = 'Rancking Topo'
+		rt.codigo_pagina = 'K'
+		rt.qtde_total_patrocinio = 1
+		rt.valor = 11	
+		rt.save()	
+	if Pagina.objects.filter(codigo_pagina='B').count() == 0:		
+		tt = Pagina()
+		tt.nome_pagina = 'Tabela Topo'
+		tt.codigo_pagina = 'B'
+		tt.qtde_total_patrocinio = 1
+		tt.valor = 10	
+		tt.save()	
+	if Pagina.objects.filter(codigo_pagina='M').count() == 0:		
+		tt = Pagina()
+		tt.nome_pagina = 'Meus Palpites'
+		tt.codigo_pagina = 'M'
+		tt.qtde_total_patrocinio = 1
+		tt.valor = 9	
+		tt.save()			
+	if Pagina.objects.filter(codigo_pagina='P').count() == 0:		
+		tt = Pagina()
+		tt.nome_pagina = 'Aposta do Jogo Topo'
+		tt.codigo_pagina = 'P'
+		tt.qtde_total_patrocinio = 1
+		tt.valor = 9	
+		tt.save()			
+
 def __apostas_save_all__(participante, competicao):
 	inscr = Inscricao.objects.filter(participante=participante, competicao=competicao)[0:1].get()
 	if Aposta.objects.filter(inscricao=inscr).count() == 0:
@@ -94,51 +167,9 @@ def global_():
 		py.image_aside = 'images/patrocinadores/python.jpg'
 		py.save()
 	else:
-		py = Patrocinador.objects.filter(nome_visual='Python')[0:1].get()			
+		py = Patrocinador.objects.filter(nome_visual='Python')[0:1].get()	
 
-	# Local Patrocinio
-	if Pagina.objects.filter(codigo_pagina='R').count() == 0:		
-		rancking = Pagina()
-		rancking.nome_pagina = 'Rancking'
-		rancking.codigo_pagina = 'R'
-		rancking.qtde_total_patrocinio = 5
-		rancking.valor = 8.0
-		rancking.save()
-	if Pagina.objects.filter(codigo_pagina='T').count() == 0:		
-		tb = Pagina()
-		tb.nome_pagina = 'Tabela'
-		tb.codigo_pagina = 'T'
-		tb.qtde_total_patrocinio = 5
-		tb.valor = 6		
-		tb.save()
-	if Pagina.objects.filter(codigo_pagina='A').count() == 0:		
-		aj = Pagina()
-		aj.nome_pagina = 'Apostas do Jogo'
-		aj.codigo_pagina = 'A'
-		aj.qtde_total_patrocinio = 5
-		aj.valor = 5		
-		aj.save()
-	if Pagina.objects.filter(codigo_pagina='E').count() == 0:		
-		ae = Pagina()
-		ae.nome_pagina = 'Alteracao resultado'
-		ae.codigo_pagina = 'E'
-		ae.qtde_total_patrocinio = 1
-		ae.valor = 5		
-		ae.save()		
-	if Pagina.objects.filter(codigo_pagina='O').count() == 0:		
-		lout = Pagina()
-		lout.nome_pagina = 'Logout'
-		lout.codigo_pagina = 'O'
-		lout.qtde_total_patrocinio = 1
-		lout.valor = 3		
-		lout.save()
-	if Pagina.objects.filter(codigo_pagina='S').count() == 0:		
-		sol = Pagina()
-		sol.nome_pagina = 'Solicitacao da inscricao'
-		sol.codigo_pagina = 'S'
-		sol.qtde_total_patrocinio = 2
-		sol.valor = 1	
-		sol.save()
+	insert_auto_paginas()
 		
 	if TipoRegra.objects.filter(codigo='M').count() == 0:
 		tipo_m = TipoRegra()
