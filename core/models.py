@@ -109,6 +109,9 @@ class Jogo(models.Model):
 	#hora = models.CharField(max_length=15)
 	vencedor = models.CharField(max_length=1, blank=True, default='E') # (A - B - E)
 	local = models.ForeignKey(Local, blank=True, null=True)
+	# ToDo...:
+	#rodada = models.IntegerField(default=0)
+	#is_by_rodada = models.BooleanField(default=False)
 	status = models.ForeignKey(StatusJogo, default='E') 
 	def __unicode__(self):
 		r_a = ""

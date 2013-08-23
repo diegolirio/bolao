@@ -1,11 +1,8 @@
-	<br/>
-	
+		
 	<script type="text/javascript">
 		
 		list_add = [];
 		list_remove = [];
-		
-		
 		
 	</script>
 	
@@ -17,27 +14,35 @@
 	  <div class="modal-body">
 	  
 		<center>
-			<p>Participantes não adicionados</p>
-			<p><input type="text" id="id_pesq_part" value=""></p>
-			<select size="6" id="id_part_include">
-				<option value="1volvo">Volvo</option>
-				<option value="2saab">Saab</option>
-				<option value="3mercedes">Mercedes</option>
-				<option value="4audi">Audi</option>
-			</select>	  
-
-			<br/>
-			
-			<a href="#" class="btn btn-success">Adicionar</a>
-			<a href="#" class="btn btn-danger">Retirar</a>
-			
-			<br/><br/>
-			
-			<p>Participantes no gráfico</p>
-			<select size="5" id="id_part_not_include">
-				<option value="{{ user_inscricao.id }}">{{ user_inscricao.participante.apelido }}</option>
-				<option value="{{ view_inscricao.id }}">{{ view_inscricao.participante.apelido }}</option>
-			</select>		
+			<div class="row">
+				<p>Participantes não adicionados</p>
+				<p><input type="text" id="id_pesq_part" value=""></p>			
+				<div class="span3">
+					<select size="6" id="id_part_include">
+						<option value="1volvo">Volvo</option>
+						<option value="2saab">Saab</option>
+						<option value="3mercedes">Mercedes</option>
+						<option value="4audi">Audi</option>
+					</select>	  
+				</div>
+				<div class="span2">
+					<br/><br/><br/>
+					<a href="#" class="btn btn-success">Adicionar</a>
+				</div>
+			</div>
+			<hr/>
+			<div class="row">
+				<div class="span3">			
+					<p>Participantes no gráfico</p>
+					<select size="5" id="id_part_not_include">
+						<option value="{{ user_inscricao.id }}">{{ user_inscricao.participante.apelido }}</option>
+						<option value="{{ view_inscricao.id }}">{{ view_inscricao.participante.apelido }}</option>
+					</select>		
+				</div>
+				<div class="span2">
+					<br/><br/><br/>
+					<a href="#" class="btn btn-danger">Retirar</a>
+				</div>					
 		</center>
 	  </div>
 	  <div class="modal-footer">
