@@ -158,8 +158,10 @@ class Aposta(models.Model):
 	vencedor = models.CharField(max_length=1, blank=True, default='E') # (A - B - E)	
 	calculado = models.BooleanField(default=False)
 	colocacao = models.IntegerField(default=0)
+	# ToDo...:
+	#riscado = models.BooleanField(default=False)
 	def __unicode__(self):
-		return self.inscricao.participante.apelido + " / " + self.jogo.time_a + " " + str(self.jogo.resultado_a) + " X " + str(self.jogo.resultado_b) + " " + self.jogo.time_b + " / " + str(self.jogo.data_hora) + " / Local: " + self.jogo.local.descricao + " / " + self.jogo.status.descricao + " - Aposta: " + str(self.resultado_a) + " X " + str(self.resultado_b)
+		return self.inscricao.participante.apelido + " / " + self.jogo.time_a + " " + str(self.jogo.resultado_a) + " X " + str(self.jogo.resultado_b) + " " + self.jogo.time_b + " / " + str(self.jogo.data_hora) + " / Local: " + self.jogo.local.descricao + " / " + self.jogo.status.descricao + " - Aposta: " + str(self.resultado_a) + " X " + str(self.resultado_b) + " - Calculado: " + str(self.calculado)
 	
 class Solicitacao(models.Model):
 	participante = models.ForeignKey(Participante)

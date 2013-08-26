@@ -150,7 +150,13 @@ def tabela(request, competicao_pk):
 
 def get_palpites_all_participantes(jogo, competicao):
 	apostas = Aposta.objects.filter(jogo=jogo).order_by('-pontos')
-	inscricoes = Inscricao.objects.filter(competicao=competicao)	
+	if competicao.campeonato.status.codigo == 'E' or competicao.valor_aposta == 0:
+		inscricoes = Inscricao.objects.filter(competicao=competicao, ativo=True)	
+	else:
+		if competicao.visivel_participantes_pendente_pagamento:
+			inscricoes = Inscricao.objects.filter(competicao=competicao).exclude(ativo=False)
+		else:
+			inscricoes = Inscricao.objects.filter(competicao=competicao, pagamento=True).exclude(ativo=False)	
 	apostas_jogos_competicao = []	
 	for a in apostas:
 		for i in inscricoes:
@@ -871,6 +877,7 @@ def system_inscrever_participante_competicao(request, participante_pk, competica
 		inscricao = Inscricao()
 		inscricao.competicao = competicao
 		inscricao.participante = participante
+		#inscricao.colocacao = max()+1
 		inscricao.save()
 		
 		grupos = Grupo.objects.filter(campeonato=competicao.campeonato)
@@ -880,6 +887,11 @@ def system_inscrever_participante_competicao(request, participante_pk, competica
 				a = Aposta()
 				a.jogo = j
 				a.inscricao = inscricao
+				if j.status.codigo == 'F' or j.status.codigo == 'A':
+					a.calculado = True
+					a.riscado = True
+					# ToDo...:
+					#a.colocacao = max()+1 para este jogo
 				a.save()
 	return redirect('/system/inscricoes_participante/'+str(participante.pk))		
 	
