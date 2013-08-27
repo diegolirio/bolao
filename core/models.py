@@ -43,7 +43,7 @@ class Patrocinador(models.Model):
 	nome = models.CharField(max_length=50)	
 	url_site = models.CharField(max_length=100)	
 	# ToDo..:
-	image_aside = models.ImageField(upload_to="images/patrocinadores/", blank=True) # padrao >>>>     height_field='50', width_field='100'
+	image_aside = models.ImageField(upload_to="images/patrocinadores/", blank=True) # padrao >>>>     height_field='150', width_field='100'
 	#image_center = models.ImageField # padrao 200X400 analisar	
 	def __unicode__(self):
 		return self.nome
@@ -109,10 +109,10 @@ class Jogo(models.Model):
 	#hora = models.CharField(max_length=15)
 	vencedor = models.CharField(max_length=1, blank=True, default='E') # (A - B - E)
 	local = models.ForeignKey(Local, blank=True, null=True)
-	# ToDo...:
-	#rodada = models.IntegerField(default=0)
-	#is_by_rodada = models.BooleanField(default=False)
+	rodada = models.IntegerField(default=0)
+	is_by_rodada = models.BooleanField(default=False) # False > Rodada sera considerada um jogo! True > Rodada sera um coletivo de jogo
 	status = models.ForeignKey(StatusJogo, default='E') 
+	first_group = models.BooleanField(default=False)
 	def __unicode__(self):
 		r_a = ""
 		r_b = ""		
@@ -158,8 +158,7 @@ class Aposta(models.Model):
 	vencedor = models.CharField(max_length=1, blank=True, default='E') # (A - B - E)	
 	calculado = models.BooleanField(default=False)
 	colocacao = models.IntegerField(default=0)
-	# ToDo...:
-	#riscado = models.BooleanField(default=False)
+	riscado = models.BooleanField(default=False)
 	def __unicode__(self):
 		return self.inscricao.participante.apelido + " / " + self.jogo.time_a + " " + str(self.jogo.resultado_a) + " X " + str(self.jogo.resultado_b) + " " + self.jogo.time_b + " / " + str(self.jogo.data_hora) + " / Local: " + self.jogo.local.descricao + " / " + self.jogo.status.descricao + " - Aposta: " + str(self.resultado_a) + " X " + str(self.resultado_b) + " - Calculado: " + str(self.calculado)
 	

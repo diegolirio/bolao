@@ -119,11 +119,15 @@ def imprimir_rancking(request, competicao_pk):
 							        })			
 									
 def get_jogos_of_the_campeonato(campeonato):
-	grupos = Grupo.objects.all().filter(campeonato=campeonato)
+	grupos = Grupo.objects.all().filter(campeonato=campeonato).order_by('descricao')
 	jgs = []
 	for g in grupos:
 		js = Jogo.objects.filter(grupo=g).order_by('data_hora')
+		gr = ''
 		for j in js:
+			if gr != j.grupo.descricao:
+				j.first_group = True
+			gr = j.grupo.descricao
 			jgs.append(j)
 	return jgs			                                
 
@@ -350,6 +354,9 @@ def comparar_colocacao(request, competicao_pk, view_inscricao_pk):
 	for a in my_apts_aux:
 		if (a.jogo.status.codigo == 'A') or (a.jogo.status.codigo == 'F'):
 			my_apostas.append(a)	
+    # ToDo...: query    not In 			
+	participantes_inscritos = Inscricao.objects.filter(competicao=competicao).exclude(participante=user_participante)
+			
 	return render_to_response('_base_simple.html', 
 						      {  
 								'template': 'comparar_colocacao.html',
@@ -365,6 +372,7 @@ def comparar_colocacao(request, competicao_pk, view_inscricao_pk):
 								#'view_apostas_chart': view_apostas_chart,
 								'qtde_jogos': jogo_,
 								'perfil': True,
+								'participantes_inscritos': participantes_inscritos,
 								'foto': view_inscricao.participante.foto,
 							   })	
 							   

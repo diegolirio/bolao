@@ -35,7 +35,9 @@
 				<div class="span3">			
 					<p>Participantes no gráfico</p>
 					<select size="5" id="id_part_not_include">
-						<option value="{{ user_inscricao.id }}">{{ user_inscricao.participante.apelido }}</option>
+						{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
+							<option value="{{ user_inscricao.id }}">{{ user_inscricao.participante.apelido }}</option>
+						{% endif %}
 						<option value="{{ view_inscricao.id }}">{{ view_inscricao.participante.apelido }}</option>
 					</select>		
 				</div>
@@ -61,11 +63,13 @@
 							<td><center>Pontos</center></td>
 						</tr>
 					</thead>
-					<tr>
-						<td><img src="/media/{{ user_participante.foto }}" height="20" width="25" class="img-rounded"/> {{ user_participante.apelido }}</td>
-						<td><center>{{ user_inscricao.colocacao }}º</center></td>
-						<td><center>{{ user_inscricao.pontos }}</center></td>						
-					</tr>
+					{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
+						<tr>
+							<td><img src="/media/{{ user_participante.foto }}" height="20" width="25" class="img-rounded"/> {{ user_participante.apelido }}</td>
+							<td><center>{{ user_inscricao.colocacao }}º</center></td>
+							<td><center>{{ user_inscricao.pontos }}</center></td>						
+						</tr>
+					{% endif %}
 					<tr>
 						<td><img src="/media/{{ view_inscricao.participante.foto }}" height="20" width="25" class="img-rounded"/> {{ view_inscricao.participante.apelido }}</td>
 						<td><center>{{ view_inscricao.colocacao }}º</center></td>
@@ -118,7 +122,11 @@
       function drawChart() {	    
 	    var data = new google.visualization.DataTable();
 		data.addColumn('string', 'Jogos');
-        data.addColumn('number', 'Minha Colocação');        
+		
+		{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
+			data.addColumn('number', '{{ user_inscricao.participante.apelido }}');        
+		{% endif %}
+		
 		data.addColumn('number', '{{ view_inscricao.participante.apelido }}');
         data.addRows({{qtde_jogos}});		
 		var i = 0;
@@ -130,15 +138,15 @@
 			i++;
 		{% endfor %}
 		
-		
-		i = 0;
-		{% for a in my_apostas %}
-			//data.setValue(i, 0, '{{ a.jogo.time_a}} X {{ a.jogo.time_b }}');
-			data.setValue(i, 1, {{a.colocacao}});
-			//data.setValue(0, 2, 400);
-			i++;
-		{% endfor %}		
-			
+		{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
+			i = 0;
+			{% for a in my_apostas %}
+				//data.setValue(i, 0, '{{ a.jogo.time_a}} X {{ a.jogo.time_b }}');
+				data.setValue(i, 1, {{a.colocacao}});
+				//data.setValue(0, 2, 400);
+				i++;
+			{% endfor %}		
+		{% endif %}
 		
         var options = {
           title: 'Histórico de Colocação',
@@ -179,14 +187,18 @@
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
 		
-          ['Pontuação', 'Eu', '{{ view_inscricao.participante.apelido }}'],
+          ['Pontuação', 		   
+		   {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
+			'Eu', 
+		   {% endif %}		   
+		   '{{ view_inscricao.participante.apelido }}'],
 		  
-          ['AP',  {{ user_inscricao.quantidade_acerto_placar }},                        {{ view_inscricao.quantidade_acerto_placar }}],
-          ['AR',  {{ user_inscricao.quantidade_acerto_vencedor_um_resultado_correto }}, {{ view_inscricao.quantidade_acerto_vencedor_um_resultado_correto }}],
-          ['AV',  {{ user_inscricao.quantidade_acerto_vencedor }},                      {{ view_inscricao.quantidade_acerto_vencedor }}],
-          ['AE',  {{ user_inscricao.quantidade_acerto_empate_erro_placar }},            {{ view_inscricao.quantidade_acerto_empate_erro_placar }}],
-		  ['AS',  {{ user_inscricao.quantidade_acerto_somente_resultado_um_time }},     {{ view_inscricao.quantidade_acerto_somente_resultado_um_time }}],
-		  ['AE',  {{ user_inscricao.quantidade_erro }},                                 {{ view_inscricao.quantidade_erro }}]
+          ['AP', {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %} {{ user_inscricao.quantidade_acerto_placar }}, {% endif %}                        {{ view_inscricao.quantidade_acerto_placar }}],
+          ['AR', {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %} {{ user_inscricao.quantidade_acerto_vencedor_um_resultado_correto }}, {% endif %} {{ view_inscricao.quantidade_acerto_vencedor_um_resultado_correto }}],
+          ['AV', {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %} {{ user_inscricao.quantidade_acerto_vencedor }}, {% endif %}                      {{ view_inscricao.quantidade_acerto_vencedor }}],
+          ['AE', {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %} {{ user_inscricao.quantidade_acerto_empate_erro_placar }}, {% endif %}            {{ view_inscricao.quantidade_acerto_empate_erro_placar }}],
+		  ['AS', {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %} {{ user_inscricao.quantidade_acerto_somente_resultado_um_time }}, {% endif %}     {{ view_inscricao.quantidade_acerto_somente_resultado_um_time }}],
+		  ['AE', {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %} {{ user_inscricao.quantidade_erro }}, {% endif %}                                 {{ view_inscricao.quantidade_erro }}]
         ]);
 
         var options = {

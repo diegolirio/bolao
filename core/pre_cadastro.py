@@ -195,12 +195,10 @@ def global_():
 	else:
 		tipo_p = TipoRegra.objects.filter(codigo='P')[0:1].get()			
 
-def copa_mundo_teste():
-	
+def copa_mundo_teste():	
 	tipo_m = TipoRegra.objects.filter(codigo='M')[0:1].get()
 	tipo_g = TipoRegra.objects.filter(codigo='G')[0:1].get()
-	tipo_p = TipoRegra.objects.filter(codigo='P')[0:1].get()		
-
+	tipo_p = TipoRegra.objects.filter(codigo='P')[0:1].get()	
 	# Campeonato
 	if Campeonato.objects.filter(nome='Copa do Mundo 2014').count() == 0:
 		campeonato = Campeonato()
@@ -214,6 +212,7 @@ def copa_mundo_teste():
 	# competicao
 	pdiego = Participante.objects.filter(apelido='Diego Lirio')[0:1].get()
 	asisco = Patrocinador.objects.filter(nome_visual='Asisco')[0:1].get()
+	
 	if Competicao.objects.filter(nome='Ferraz', campeonato=campeonato).count() == 0:
 		comp = Competicao()
 		comp.campeonato = campeonato
@@ -230,23 +229,23 @@ def copa_mundo_teste():
 		com_p.patrocinador = asisco
 		com_p.principal = True
 		com_p.save()		
-		
+	
 		
 	# Grupo
-	if Grupo.objects.filter(descricao='Grupo A').count() == 0:
+	if Grupo.objects.filter(descricao='Grupo A', campeonato=campeonato).count() == 0:
 		a = Grupo()
 		a.descricao = 'Grupo A'
 		a.campeonato = campeonato
 		a.save()	
 	else:
-		a = Grupo.objects.filter(descricao='Grupo A')[0:1].get()
+		a = Grupo.objects.filter(descricao='Grupo A', campeonato=campeonato)[0:1].get()
 	####################################################
 	# Jogo
 	e = StatusJogo.objects.filter(codigo='E')[0:1].get()
-	if Jogo.objects.filter(time_a='Brasil', time_b='Italia').count() == 0:
+	if Jogo.objects.filter(time_a='Brasil', time_b='EUA').count() == 0:
 		jogo1 = Jogo()
 		jogo1.time_a = 'Brasil'
-		jogo1.time_b = 'Italia'
+		jogo1.time_b = 'EUA'
 		jogo1.resultado_a = 4
 		jogo1.resultado_b = 2
 		jogo1.grupo = a
@@ -256,7 +255,8 @@ def copa_mundo_teste():
 		jogo1.status = e	
 		jogo1.save()
 	else:
-		Jogo.objects.filter(time_a='Brasil', time_b='Italia')[0:1].get()
+		Jogo.objects.filter(time_a='Brasil', time_b='EUA')[0:1].get()
+	
 	#####################################################
 	# Inscricao
 	if Inscricao.objects.filter(participante=pdiego, competicao=comp).count() == 0:
@@ -346,164 +346,183 @@ def competicao_copa_confederacoes():
 		
 	##################################################
 	# Grupo_Conf
-	a_ = Grupo()
-	a_.descricao = 'Grupo A'
-	a_.campeonato = conf
-	a_.save()
+	if Grupo.objects.filter(descricao = 'Grupo A').count() == 0:
+		a_ = Grupo()
+		a_.descricao = 'Grupo A'
+		a_.campeonato = conf
+		a_.save()
+	else:
+		a_ = Grupo.objects.filter(descricao = 'Grupo A')[0:1].get()
 	# Grupo_Conf
-	b_ = Grupo()
-	b_.descricao = 'Grupo B'
-	b_.campeonato = conf
-	b_.save()
+	if Grupo.objects.filter(descricao = 'Grupo B').count() == 0:
+		b_ = Grupo()
+		b_.descricao = 'Grupo B'
+		b_.campeonato = conf
+		b_.save()
+	else:
+		b_ = Grupo.objects.filter(descricao = 'Grupo B')[0:1].get()		
 	# Time
 	#class Time(models.Model):
 	#	nome = models.CharField(max_length=50, unique=True)
 	#	def __unicode__(self):
 	#		return self.nome
 	####################################################
-	jogo_1 = Jogo()
-	jogo_1.time_a = 'Brasil'
-	jogo_1.time_b = 'Japao'
-	jogo_1.resultado_a = 0
-	jogo_1.resultado_b = 0
-	jogo_1.grupo = a_
-	jogo_1.data_hora = datetime.datetime.now()
-	jogo_1.vencedor = 'E'
-	jogo_1.local = Local.objects.filter(descricao='Brasilia')[0:1].get()
-	jogo_1.status = e
-	jogo_1.save()
+	l1 = Local.objects.filter(descricao='Brasilia')[0:1].get()
+	if Jogo.objects.filter(time_a='Brasil',time_b='Japao', grupo=a_, local=l1).count() == 0:
+		jogo_1 = Jogo()
+		jogo_1.time_a = 'Brasil'
+		jogo_1.time_b = 'Japao'
+		jogo_1.resultado_a = 0
+		jogo_1.resultado_b = 0
+		jogo_1.grupo = a_
+		jogo_1.data_hora = datetime.datetime.now()
+		jogo_1.vencedor = 'E'
+		jogo_1.local = l1
+		jogo_1.status = e
+		jogo_1.save()
 	####################################################
-	jogo_2 = Jogo()
-	jogo_2.time_a = 'Mexico'
-	jogo_2.time_b = 'Italia'
-	jogo_2.resultado_a = 0
-	jogo_2.resultado_b = 0
-	jogo_2.grupo = a_
-	jogo_2.data_hora = datetime.datetime.now()
-	jogo_2.vencedor = 'E'
-	jogo_2.local = Local.objects.filter(descricao='Rio de Janeiro')[0:1].get()
-	jogo_2.status = e
-	jogo_2.save()
+	if Jogo.objects.filter(time_a='Mexico',time_b='Italia', grupo=a_).count() == 0:
+		jogo_2 = Jogo()
+		jogo_2.time_a = 'Mexico'
+		jogo_2.time_b = 'Italia'
+		jogo_2.resultado_a = 0
+		jogo_2.resultado_b = 0
+		jogo_2.grupo = a_
+		jogo_2.data_hora = datetime.datetime.now()
+		jogo_2.vencedor = 'E'
+		jogo_2.local = Local.objects.filter(descricao='Rio de Janeiro')[0:1].get()
+		jogo_2.status = e
+		jogo_2.save()
 	####################################################
-	jogo_3 = Jogo()
-	jogo_3.time_a = 'Espanha'
-	jogo_3.time_b = 'Uruguai'
-	jogo_3.resultado_a = 0
-	jogo_3.resultado_b = 0
-	jogo_3.grupo = b_
-	jogo_3.data_hora = datetime.datetime.now()
-	jogo_3.vencedor = 'E'
-	jogo_3.local = Local.objects.filter(descricao='Recife')[0:1].get()
-	jogo_3.status = e
-	jogo_3.save()
+	if Jogo.objects.filter(time_a='Espanha',time_b='Uruguai', grupo=b_).count() == 0:
+		jogo_3 = Jogo()
+		jogo_3.time_a = 'Espanha'
+		jogo_3.time_b = 'Uruguai'
+		jogo_3.resultado_a = 0
+		jogo_3.resultado_b = 0
+		jogo_3.grupo = b_
+		jogo_3.data_hora = datetime.datetime.now()
+		jogo_3.vencedor = 'E'
+		jogo_3.local = Local.objects.filter(descricao='Recife')[0:1].get()
+		jogo_3.status = e
+		jogo_3.save()
 	####################################################
-	jogo_4 = Jogo()
-	jogo_4.time_a = 'Taiti'
-	jogo_4.time_b = 'Nigeria'
-	jogo_4.resultado_a = 0
-	jogo_4.resultado_b = 0
-	jogo_4.grupo = b_
-	jogo_4.data_hora = datetime.datetime.now()
-	jogo_4.vencedor = 'E'
-	jogo_4.local = Local.objects.filter(descricao='Belo Horizonte')[0:1].get()
-	jogo_4.status = e
-	jogo_4.save()
+	if Jogo.objects.filter(time_a='Taiti',time_b='Nigeria', grupo=b_).count() == 0:
+		jogo_4 = Jogo()
+		jogo_4.time_a = 'Taiti'
+		jogo_4.time_b = 'Nigeria'
+		jogo_4.resultado_a = 0
+		jogo_4.resultado_b = 0
+		jogo_4.grupo = b_
+		jogo_4.data_hora = datetime.datetime.now()
+		jogo_4.vencedor = 'E'
+		jogo_4.local = Local.objects.filter(descricao='Belo Horizonte')[0:1].get()
+		jogo_4.status = e
+		jogo_4.save()
 	####################################################
-	jogo_5 = Jogo()
-	jogo_5.time_a = 'Brasil'
-	jogo_5.time_b = 'Mexico'
-	jogo_5.resultado_a = 0
-	jogo_5.resultado_b = 0
-	jogo_5.grupo = a_
-	jogo_5.data_hora = datetime.datetime.now()
-	jogo_5.vencedor = 'E'
-	jogo_5.local = Local.objects.filter(descricao='Fortaleza')[0:1].get()
-	jogo_5.status = e
-	jogo_5.save()
+	if Jogo.objects.filter(time_a='Brasil',time_b='Mexico', grupo=a_).count() == 0:
+		jogo_5 = Jogo()
+		jogo_5.time_a = 'Brasil'
+		jogo_5.time_b = 'Mexico'
+		jogo_5.resultado_a = 0
+		jogo_5.resultado_b = 0
+		jogo_5.grupo = a_
+		jogo_5.data_hora = datetime.datetime.now()
+		jogo_5.vencedor = 'E'
+		jogo_5.local = Local.objects.filter(descricao='Fortaleza')[0:1].get()
+		jogo_5.status = e
+		jogo_5.save()
 	####################################################
-	jogo_6 = Jogo()
-	jogo_6.time_a = 'Italia'
-	jogo_6.time_b = 'Japao'
-	jogo_6.resultado_a = 0
-	jogo_6.resultado_b = 0
-	jogo_6.grupo = a_
-	jogo_6.data_hora = datetime.datetime.now()
-	jogo_6.vencedor = 'E'
-	jogo_6.local = Local.objects.filter(descricao='Recife')[0:1].get()
-	jogo_6.status = e
-	jogo_6.save()
+	if Jogo.objects.filter(time_a='Italia',time_b='Japao', grupo=a_).count() == 0:
+		jogo_6 = Jogo()
+		jogo_6.time_a = 'Italia'
+		jogo_6.time_b = 'Japao'
+		jogo_6.resultado_a = 0
+		jogo_6.resultado_b = 0
+		jogo_6.grupo = a_
+		jogo_6.data_hora = datetime.datetime.now()
+		jogo_6.vencedor = 'E'
+		jogo_6.local = Local.objects.filter(descricao='Recife')[0:1].get()
+		jogo_6.status = e
+		jogo_6.save()
 	####################################################
-	jogo_7 = Jogo()
-	jogo_7.time_a = 'Espanha'
-	jogo_7.time_b = 'Taiti'
-	jogo_7.resultado_a = 0
-	jogo_7.resultado_b = 0
-	jogo_7.grupo = b_
-	jogo_7.data_hora = datetime.datetime.now()
-	jogo_7.vencedor = 'E'
-	jogo_7.local = Local.objects.filter(descricao='Belo Horizonte')[0:1].get()
-	jogo_7.status = e	
-	jogo_7.save()
+	if Jogo.objects.filter(time_a='Espanha',time_b='Taiti', grupo=b_).count() == 0:
+		jogo_7 = Jogo()
+		jogo_7.time_a = 'Espanha'
+		jogo_7.time_b = 'Taiti'
+		jogo_7.resultado_a = 0
+		jogo_7.resultado_b = 0
+		jogo_7.grupo = b_
+		jogo_7.data_hora = datetime.datetime.now()
+		jogo_7.vencedor = 'E'
+		jogo_7.local = Local.objects.filter(descricao='Belo Horizonte')[0:1].get()
+		jogo_7.status = e	
+		jogo_7.save()
 	####################################################
-	jogo_8 = Jogo()
-	jogo_8.time_a = 'Nigeria'
-	jogo_8.time_b = 'Uruguai'
-	jogo_8.resultado_a = 0
-	jogo_8.resultado_b = 0
-	jogo_8.grupo = b_
-	jogo_8.data_hora = datetime.datetime.now()
-	jogo_8.vencedor = 'E'
-	jogo_8.local = Local.objects.filter(descricao='Salvador')[0:1].get()
-	jogo_8.status = e		
-	jogo_8.save()
+	if Jogo.objects.filter(time_a='Nigeria',time_b='Uruguai', grupo=b_).count() == 0:
+		jogo_8 = Jogo()
+		jogo_8.time_a = 'Nigeria'
+		jogo_8.time_b = 'Uruguai'
+		jogo_8.resultado_a = 0
+		jogo_8.resultado_b = 0
+		jogo_8.grupo = b_
+		jogo_8.data_hora = datetime.datetime.now()
+		jogo_8.vencedor = 'E'
+		jogo_8.local = Local.objects.filter(descricao='Salvador')[0:1].get()
+		jogo_8.status = e		
+		jogo_8.save()
 	####################################################
-	jogo_9 = Jogo()
-	jogo_9.time_a = 'Italia'
-	jogo_9.time_b = 'Brasil'
-	jogo_9.resultado_a = 0
-	jogo_9.resultado_b = 0
-	jogo_9.grupo = a_
-	jogo_9.data_hora = datetime.datetime.now()
-	jogo_9.vencedor = 'E'
-	jogo_9.local = Local.objects.filter(descricao='Salvador')[0:1].get()
-	jogo_9.status = e			
-	jogo_9.save()
+	if Jogo.objects.filter(time_a='Italia',time_b='Brasil', grupo=a_).count() == 0:
+		jogo_9 = Jogo()
+		jogo_9.time_a = 'Italia'
+		jogo_9.time_b = 'Brasil'
+		jogo_9.resultado_a = 0
+		jogo_9.resultado_b = 0
+		jogo_9.grupo = a_
+		jogo_9.data_hora = datetime.datetime.now()
+		jogo_9.vencedor = 'E'
+		jogo_9.local = Local.objects.filter(descricao='Salvador')[0:1].get()
+		jogo_9.status = e			
+		jogo_9.save()
 	####################################################
-	jogo_10 = Jogo()
-	jogo_10.time_a = 'Japao'
-	jogo_10.time_b = 'Mexico'
-	jogo_10.resultado_a = 0
-	jogo_10.resultado_b = 0
-	jogo_10.grupo = a_
-	jogo_10.data_hora = datetime.datetime.now()
-	jogo_10.vencedor = 'E'
-	jogo_10.local = Local.objects.filter(descricao='Belo Horizonte')[0:1].get()
-	jogo_10.status = e				
-	jogo_10.save()	
+	if Jogo.objects.filter(time_a='Japao',time_b='Mexico', grupo=a_).count() == 0:
+		jogo_10 = Jogo()
+		jogo_10.time_a = 'Japao'
+		jogo_10.time_b = 'Mexico'
+		jogo_10.resultado_a = 0
+		jogo_10.resultado_b = 0
+		jogo_10.grupo = a_
+		jogo_10.data_hora = datetime.datetime.now()
+		jogo_10.vencedor = 'E'
+		jogo_10.local = Local.objects.filter(descricao='Belo Horizonte')[0:1].get()
+		jogo_10.status = e				
+		jogo_10.save()	
 	####################################################
-	jogo_11 = Jogo()
-	jogo_11.time_a = 'Nigeria'
-	jogo_11.time_b = 'Espanha'
-	jogo_11.resultado_a = 0
-	jogo_11.resultado_b = 0
-	jogo_11.grupo = b_
-	jogo_11.data_hora = datetime.datetime.now()
-	jogo_11.vencedor = 'E'
-	jogo_11.local = Local.objects.filter(descricao='Fortaleza')[0:1].get()
-	jogo_11.status = e					
-	jogo_11.save()
+	if Jogo.objects.filter(time_a='Nigeria',time_b='Espanha', grupo=b_).count() == 0:
+		jogo_11 = Jogo()
+		jogo_11.time_a = 'Nigeria'
+		jogo_11.time_b = 'Espanha'
+		jogo_11.resultado_a = 0
+		jogo_11.resultado_b = 0
+		jogo_11.grupo = b_
+		jogo_11.data_hora = datetime.datetime.now()
+		jogo_11.vencedor = 'E'
+		jogo_11.local = Local.objects.filter(descricao='Fortaleza')[0:1].get()
+		jogo_11.status = e					
+		jogo_11.save()
 	####################################################
-	jogo_12 = Jogo()
-	jogo_12.time_a = 'Uruguai'
-	jogo_12.time_b = 'Taiti'
-	jogo_12.resultado_a = 0
-	jogo_12.resultado_b = 0
-	jogo_12.grupo = b_
-	jogo_12.data_hora = datetime.datetime.now()
-	jogo_12.vencedor = 'E'
-	jogo_12.local = Local.objects.filter(descricao='Recife')[0:1].get()
-	jogo_12.status = e						
-	jogo_12.save()
+	if Jogo.objects.filter(time_a='Uruguai',time_b='Taiti', grupo=b_).count() == 0:
+		jogo_12 = Jogo()
+		jogo_12.time_a = 'Uruguai'
+		jogo_12.time_b = 'Taiti'
+		jogo_12.resultado_a = 0
+		jogo_12.resultado_b = 0
+		jogo_12.grupo = b_
+		jogo_12.data_hora = datetime.datetime.now()
+		jogo_12.vencedor = 'E'
+		jogo_12.local = Local.objects.filter(descricao='Recife')[0:1].get()
+		jogo_12.status = e						
+		jogo_12.save()
 	####################################################	
 	# Inscricao
 	if Inscricao.objects.filter(participante=pdiego, competicao=comp_teste).count() == 0:

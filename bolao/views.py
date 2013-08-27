@@ -17,7 +17,7 @@ def index(request):
 				part_admin.apelido = 'Administrador'
 				part_admin.confirm_email = True
 				part_admin.confirm_send_url = '/confirm_email/' + part_admin.user.username + '/0123456789/'
-				#part_admin.foto.url = '/images/users/admin.jpg')
+				part_admin.foto = '/images/users/admin.jpg'
 				part_admin.save()
 				request.user.email_user('Confirmacao Cadastro de Admin', 'Usuario Adminstrador cadastrado com sucesso!', from_email=None)	
 				# ------------------------- Email -----------------------------------------------

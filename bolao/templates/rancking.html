@@ -21,6 +21,7 @@
 				['AS', as], // Acertou somente o Resultado de Gols de um time.
 				['ER', er]  // Errou Tudo
 			]);
+			
 			// Set chart options
 			var options = {'title': qtde_jg + ' Jogos',
 						   'width':350,
@@ -234,7 +235,7 @@
 					{% if ip.participante != user_participante and user_participante.id > 0 %}
 						<a href="/comparar_colocacao/{{competicao.id}}/{{ip.id}}/" class="text-info" target="_blank" title="Comparar colocação">
 					{% else %}
-						<a href="javascrip:undefined" class="text-info" title="Minha colocação">
+						<a href="/comparar_colocacao/{{competicao.id}}/{{ip.id}}/" class="text-info" target="_blank" title="Minha colocação">
 					{% endif %}
 							{{ ip.colocacao}}º
 						</a>
