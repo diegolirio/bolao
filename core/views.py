@@ -5,12 +5,13 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.utils import simplejson
+from django.core import serializers
 from core.const import *
 from core.models import *
 from core.forms import *
 import random
 import os
-import json
+#import json
 from django.core.mail import send_mail
 #import datetime
 from django.contrib.auth import authenticate, login
@@ -379,33 +380,9 @@ def comparar_colocacao(request, competicao_pk, view_inscricao_pk):
 #ajax							  
 def get_aposta_by_inscricao(request, inscricao_pk):   
 	view_inscricao = Inscricao.objects.get(pk=inscricao_pk)
-	to_json = list()
-	
-	#to_json_ = list()
-	#to_json_.append(view_inscricao)
-	
-	#view_apostas = Aposta.objects.filter(inscricao=view_inscricao)
-	#to_json_.append(view_apostas)
-	
-	jogo_ = 0	
-	view_inscricao_json = {
-                             'inscricao_id': view_inscricao.id,
-							 'participante_id': view_inscricao.participante.id,
-							 'participante_apelido': view_inscricao.participante.apelido,
-							 'participante_foto': view_inscricao.participante.foto.url,
-							 'inscricao_colocacao': view_inscricao.colocacao,
-							 'inscricao_pontos': view_inscricao.pontos, 
-							 'inscricao_quantidade_acerto_placar': view_inscricao.quantidade_acerto_placar, 
-							 'inscricao_quantidade_acerto_vencedor_um_resultado_correto': view_inscricao.quantidade_acerto_vencedor_um_resultado_correto, 
-							 'inscricao_quantidade_acerto_vencedor': view_inscricao.quantidade_acerto_vencedor, 
-							 'inscricao_quantidade_acerto_empate_erro_placar': view_inscricao.quantidade_acerto_empate_erro_placar,
-							 'inscricao_quantidade_acerto_somente_resultado_um_time': view_inscricao.quantidade_acerto_somente_resultado_um_time,
-							 'inscricao_quantidade_erro': view_inscricao.quantidade_erro,
-							 'quantidade_jogos': jogo_
-						  }    
-	dictFields = { 'fields': view_inscricao_json }
-	to_json.append(dictFields)
-	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")  							   
+	apostas = Aposta.objects.filter(inscricao=view_inscricao)
+	retorno = serializers.serialize("json", apostas)
+	return HttpResponse(retorno, mimetype="text/javascript")	
 							   
 def __get_code_random__():
 	code = ''

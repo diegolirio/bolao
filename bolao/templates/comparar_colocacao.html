@@ -1,8 +1,51 @@
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+	
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart_line);
+	  
+	  //var data = new google.visualization.DataTable();
+
+      function drawChart_line() {	    
+	    var data = new google.visualization.DataTable();
+		data.addColumn('string', 'Jogos');
 		
-	<script type="text/javascript">
+		{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
+			data.addColumn('number', '{{ user_inscricao.participante.apelido }}');        
+		{% endif %}
 		
-		list_add = [];
-		list_remove = [];
+		data.addColumn('number', '{{ view_inscricao.participante.apelido }}');
+        data.addRows({{qtde_jogos}});		
+		var i = 0;
+		
+		{% for a in apostas %}
+			data.setValue(i, 0, '{{ a.jogo.time_a}} X {{ a.jogo.time_b }}');
+			data.setValue(i, 2, {{a.colocacao}});
+			//data.setValue(0, 2, 400);
+			i++;
+		{% endfor %}
+		
+		{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
+			i = 0;
+			{% for a in my_apostas %}
+				//data.setValue(i, 0, '{{ a.jogo.time_a}} X {{ a.jogo.time_b }}');
+				data.setValue(i, 1, {{a.colocacao}});
+				//data.setValue(0, 2, 400);
+				i++;
+			{% endfor %}		
+		{% endif %}
+		
+        var options = {
+          title: 'Histórico de Colocação',
+          vAxis: {maxValue: 10, direction: -1} // Inverte a Coluna em ordem crescente...
+        };
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));		
+        chart.draw(data, options);
+      }
+	  
+	  
+	    list_add = [];
+	    list_remove = [];
 		
 		//function add_participante_graphs_line(){}
 		
@@ -18,7 +61,7 @@
 				} else {					
 					var qtde_add = $('#id_part_include option').length;
 					
-					//alert(qtde_add);
+					alert(qtde_add+1);
 					
 					if (qtde_add == 5) {
 						alert('É possivel adicionar somente 5 participantes!');
@@ -29,16 +72,25 @@
 						// 1. Busca lista de aposta. (Json)
 						$.getJSON('/get_aposta_by_inscricao/'+ip,  // URL 				
 								  function(retorno) {         // REQUISIÇÂO        	  				  
-
-									//alert(retorno[0].fields.participante_apelido);
+									alert(JSON.stringify(retorno));
+									//alert(retorno[0].fields.resultado_a);
 									
 									// 1.1 data.addColumn('number', '{ retorno[0].fields.participante_apelido }'); 
+									data.addColumn('number', retorno[0].fields.pk+"---"); 
+									
+									alert("pos >>> data.addColumn(");
+
+
 									/* 1.2 		
 										{% for a in apostas %}
 											data.setValue(i, qtde_add+1, {{a.colocacao}});
 											i++;
 										{% endfor %}
 									*/
+									$.each(retorno, function(i, item){
+									//	data.setValue(i, qtde_add+1, item.fields.colocacao);
+										alert("i="+i + " | qtde_add+1="+qtde_add+1 + " | Colocacao="+item.fields.colocacao);
+									});
 									
 									 $('#id_part_not_include option:selected').remove();
 									 $('#id_part_include').append('<option value="8">'+retorno[0].fields.participante_apelido+'</option>');
@@ -55,10 +107,64 @@
 				}
 			});
 			
-		});
+		});	  
+	  
+	  /*
+	  function drawChartCompare() {
+	    var data = new google.visualization.DataTable();
+		data.addColumn('string', 'Jogos');
+		data.addColumn('number', 'Colocação');
+        data.addColumn('number', 'Minha Colocação');        
+        data.addRows({{qtde_jogos}});		
+		var i = 0;
+		{% for a in apostas %}
+			data.setValue(i, 0, '{{ a.jogo.time_a}} X {{ a.jogo.time_b }}');
+			data.setValue(i, 1, {{a.colocacao}});
+			//data.setValue(0, 2, 400);
+			i++;
+		{% endfor %}
+        var options = {
+          title: 'Histórico de Colocação',
+          vAxis: {maxValue: 10, direction: -1} // Inverte a Coluna em ordem crescente...
+        };
+        var chart = new google.visualization.LineChart(document.getElementById('chart_compare_div'));		
+        chart.draw(data, options);	  
+	  }
+	  */
+	  
+    </script>
+	
+   
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart_);
+      function drawChart_() {
+        var data = google.visualization.arrayToDataTable([
 		
-				
-	</script>
+          ['Pontuação', 		   
+		   {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
+			'Eu', 
+		   {% endif %}		   
+		   '{{ view_inscricao.participante.apelido }}'],
+		  
+          ['AP', {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %} {{ user_inscricao.quantidade_acerto_placar }}, {% endif %}                        {{ view_inscricao.quantidade_acerto_placar }}],
+          ['AR', {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %} {{ user_inscricao.quantidade_acerto_vencedor_um_resultado_correto }}, {% endif %} {{ view_inscricao.quantidade_acerto_vencedor_um_resultado_correto }}],
+          ['AV', {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %} {{ user_inscricao.quantidade_acerto_vencedor }}, {% endif %}                      {{ view_inscricao.quantidade_acerto_vencedor }}],
+          ['AE', {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %} {{ user_inscricao.quantidade_acerto_empate_erro_placar }}, {% endif %}            {{ view_inscricao.quantidade_acerto_empate_erro_placar }}],
+		  ['AS', {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %} {{ user_inscricao.quantidade_acerto_somente_resultado_um_time }}, {% endif %}     {{ view_inscricao.quantidade_acerto_somente_resultado_um_time }}],
+		  ['AE', {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %} {{ user_inscricao.quantidade_erro }}, {% endif %}                                 {{ view_inscricao.quantidade_erro }}]
+        ]);
+
+        var options = {
+          title: 'Quantidade de acertos',
+		  width:450, height:350,
+          hAxis: {title: 'Histórico da Pontuação', titleTextStyle: {color: 'red'}}
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_col'));
+        chart.draw(data, options);
+      }
+    </script>
 	
 	<div id="id_modal_include_part" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	  <div class="modal-header">
@@ -81,7 +187,7 @@
 				</div>
 				<div class="span2">
 					<br/><br/><br/>
-					<a id="add_part" href="#" class="btn btn-success">Adicionar</a>
+					<a id="add_part" href="#" class="btn btn-success" >Adicionar</a>
 				</div>
 			</div>
 			<hr/>
@@ -168,104 +274,3 @@
 		</div>
 	</div>
 	
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-
-      google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-	  
-	  var data = '';
-
-      function drawChart() {	    
-	    data = new google.visualization.DataTable();
-		data.addColumn('string', 'Jogos');
-		
-		{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
-			data.addColumn('number', '{{ user_inscricao.participante.apelido }}');        
-		{% endif %}
-		
-		data.addColumn('number', '{{ view_inscricao.participante.apelido }}');
-        data.addRows({{qtde_jogos}});		
-		var i = 0;
-		
-		{% for a in apostas %}
-			data.setValue(i, 0, '{{ a.jogo.time_a}} X {{ a.jogo.time_b }}');
-			data.setValue(i, 2, {{a.colocacao}});
-			//data.setValue(0, 2, 400);
-			i++;
-		{% endfor %}
-		
-		{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
-			i = 0;
-			{% for a in my_apostas %}
-				//data.setValue(i, 0, '{{ a.jogo.time_a}} X {{ a.jogo.time_b }}');
-				data.setValue(i, 1, {{a.colocacao}});
-				//data.setValue(0, 2, 400);
-				i++;
-			{% endfor %}		
-		{% endif %}
-		
-        var options = {
-          title: 'Histórico de Colocação',
-          vAxis: {maxValue: 10, direction: -1} // Inverte a Coluna em ordem crescente...
-        };
-        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));		
-        chart.draw(data, options);
-      }
-	  /*
-	  function drawChartCompare() {
-	    var data = new google.visualization.DataTable();
-		data.addColumn('string', 'Jogos');
-		data.addColumn('number', 'Colocação');
-        data.addColumn('number', 'Minha Colocação');        
-        data.addRows({{qtde_jogos}});		
-		var i = 0;
-		{% for a in apostas %}
-			data.setValue(i, 0, '{{ a.jogo.time_a}} X {{ a.jogo.time_b }}');
-			data.setValue(i, 1, {{a.colocacao}});
-			//data.setValue(0, 2, 400);
-			i++;
-		{% endfor %}
-        var options = {
-          title: 'Histórico de Colocação',
-          vAxis: {maxValue: 10, direction: -1} // Inverte a Coluna em ordem crescente...
-        };
-        var chart = new google.visualization.LineChart(document.getElementById('chart_compare_div'));		
-        chart.draw(data, options);	  
-	  }
-	  */
-	  
-    </script>
-	
-   
-    <script type="text/javascript">
-      google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-		
-          ['Pontuação', 		   
-		   {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
-			'Eu', 
-		   {% endif %}		   
-		   '{{ view_inscricao.participante.apelido }}'],
-		  
-          ['AP', {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %} {{ user_inscricao.quantidade_acerto_placar }}, {% endif %}                        {{ view_inscricao.quantidade_acerto_placar }}],
-          ['AR', {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %} {{ user_inscricao.quantidade_acerto_vencedor_um_resultado_correto }}, {% endif %} {{ view_inscricao.quantidade_acerto_vencedor_um_resultado_correto }}],
-          ['AV', {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %} {{ user_inscricao.quantidade_acerto_vencedor }}, {% endif %}                      {{ view_inscricao.quantidade_acerto_vencedor }}],
-          ['AE', {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %} {{ user_inscricao.quantidade_acerto_empate_erro_placar }}, {% endif %}            {{ view_inscricao.quantidade_acerto_empate_erro_placar }}],
-		  ['AS', {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %} {{ user_inscricao.quantidade_acerto_somente_resultado_um_time }}, {% endif %}     {{ view_inscricao.quantidade_acerto_somente_resultado_um_time }}],
-		  ['AE', {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %} {{ user_inscricao.quantidade_erro }}, {% endif %}                                 {{ view_inscricao.quantidade_erro }}]
-        ]);
-
-        var options = {
-          title: 'Quantidade de acertos',
-		  width:450, height:350,
-          hAxis: {title: 'Histórico da Pontuação', titleTextStyle: {color: 'red'}}
-        };
-
-        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_col'));
-        chart.draw(data, options);
-      }
-    </script>
-
