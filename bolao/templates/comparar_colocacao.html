@@ -4,6 +4,50 @@
 		list_add = [];
 		list_remove = [];
 		
+		//function add_participante_graphs_line(){}
+		
+		$(function() {		
+			
+			$('#add_part').click(function() {	
+			
+				var ip = $('#id_part_include').val();	
+				
+				$('#id_loading_').ajaxStart(function() { $(this).html('<img src="/media/images/__159__.gif"/>'); });
+				
+				//alert(ip);
+				
+				
+				// 1. Busca lista de aposta. (Json)
+				$.getJSON('/get_aposta_by_inscricao/'+ip,  // URL 				
+						  function(retorno) {         // REQUISIÇÂO        	  				  
+							//alert(JSON.stringify(retorno)); // Convert JSon para String	
+							// retorno[0].fields.participante_foto
+
+							/*
+							drawChart(retorno[0].fields.inscricao_quantidade_acerto_placar, 
+									  retorno[0].fields.inscricao_quantidade_acerto_vencedor_um_resultado_correto,
+									  retorno[0].fields.inscricao_quantidade_acerto_vencedor,
+									  retorno[0].fields.inscricao_quantidade_acerto_empate_erro_placar,
+									  retorno[0].fields.inscricao_quantidade_acerto_somente_resultado_um_time, 
+									  retorno[0].fields.inscricao_quantidade_erro,
+									  retorno[0].fields.quantidade_jogos);
+							*/
+							
+							$('#id_loading_').ajaxComplete(function() { $(this).empty(); });
+							
+						  }  							
+				); 				
+				// 2. incluí na grid.
+				// 3. inclui no grafico em linha.
+				// 4. inclui no grafico em barra.
+				// 5. retira do lisbox nao inclusos.
+				// 6. add no box dos visualizados.
+				
+			});
+			
+		});
+		
+				
 	</script>
 	
 	<div id="id_modal_include_part" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -14,20 +58,20 @@
 	  <div class="modal-body">
 	  
 		<center>
+			<span id="id_loading_"></span> 
 			<div class="row">
 				<p>Participantes não adicionados</p>
 				<p><input type="text" id="id_pesq_part" value=""></p>			
 				<div class="span3">
 					<select size="6" id="id_part_include">
-						<option value="1volvo">Volvo</option>
-						<option value="2saab">Saab</option>
-						<option value="3mercedes">Mercedes</option>
-						<option value="4audi">Audi</option>
+						{% for ip in participantes_inscritos %}
+							<option value="{{ ip.id }}">{{ip.participante.apelido}}</option>
+						{% endfor %}
 					</select>	  
 				</div>
 				<div class="span2">
 					<br/><br/><br/>
-					<a href="#" class="btn btn-success">Adicionar</a>
+					<a id="add_part" href="#" class="btn btn-success">Adicionar</a>
 				</div>
 			</div>
 			<hr/>
@@ -45,6 +89,7 @@
 					<br/><br/><br/>
 					<a href="#" class="btn btn-danger">Retirar</a>
 				</div>					
+			</div>	
 		</center>
 	  </div>
 	  <div class="modal-footer">
@@ -118,9 +163,11 @@
 
       google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart);
+	  
+	  var data = '';
 
       function drawChart() {	    
-	    var data = new google.visualization.DataTable();
+	    data = new google.visualization.DataTable();
 		data.addColumn('string', 'Jogos');
 		
 		{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
