@@ -10,6 +10,7 @@ from core.models import *
 from core.forms import *
 import random
 import os
+import json
 from django.core.mail import send_mail
 #import datetime
 from django.contrib.auth import authenticate, login
@@ -380,14 +381,13 @@ def get_aposta_by_inscricao(request, inscricao_pk):
 	view_inscricao = Inscricao.objects.get(pk=inscricao_pk)
 	to_json = list()
 	
-	view_apostas = list()
-	apts_aux = Aposta.objects.filter(inscricao=view_inscricao)
-	jogo_ = 0
-	for a in apts_aux:
-		if (a.jogo.status.codigo == 'A') or (a.jogo.status.codigo == 'F'):
-			view_apostas.append(a)	
-			jogo_ = jogo_ + 1	
+	#to_json_ = list()
+	#to_json_.append(view_inscricao)
 	
+	#view_apostas = Aposta.objects.filter(inscricao=view_inscricao)
+	#to_json_.append(view_apostas)
+	
+	jogo_ = 0	
 	view_inscricao_json = {
                              'inscricao_id': view_inscricao.id,
 							 'participante_id': view_inscricao.participante.id,

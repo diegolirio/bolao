@@ -10,39 +10,49 @@
 			
 			$('#add_part').click(function() {	
 			
-				var ip = $('#id_part_include').val();	
-				
-				$('#id_loading_').ajaxStart(function() { $(this).html('<img src="/media/images/__159__.gif"/>'); });
-				
+				var ip = $('#id_part_not_include').val();	
 				//alert(ip);
 				
-				
-				// 1. Busca lista de aposta. (Json)
-				$.getJSON('/get_aposta_by_inscricao/'+ip,  // URL 				
-						  function(retorno) {         // REQUISIÇÂO        	  				  
-							//alert(JSON.stringify(retorno)); // Convert JSon para String	
-							// retorno[0].fields.participante_foto
+				if (ip == null) {
+					alert('Selecione o participante para adiciona-lo');
+				} else {					
+					var qtde_add = $('#id_part_include option').length;
+					
+					//alert(qtde_add);
+					
+					if (qtde_add == 5) {
+						alert('É possivel adicionar somente 5 participantes!');
+					} else {
+					
+						$('#id_loading_').ajaxStart(function() { $(this).html('<img src="/media/images/__159__.gif"/>'); });
+						
+						// 1. Busca lista de aposta. (Json)
+						$.getJSON('/get_aposta_by_inscricao/'+ip,  // URL 				
+								  function(retorno) {         // REQUISIÇÂO        	  				  
 
-							/*
-							drawChart(retorno[0].fields.inscricao_quantidade_acerto_placar, 
-									  retorno[0].fields.inscricao_quantidade_acerto_vencedor_um_resultado_correto,
-									  retorno[0].fields.inscricao_quantidade_acerto_vencedor,
-									  retorno[0].fields.inscricao_quantidade_acerto_empate_erro_placar,
-									  retorno[0].fields.inscricao_quantidade_acerto_somente_resultado_um_time, 
-									  retorno[0].fields.inscricao_quantidade_erro,
-									  retorno[0].fields.quantidade_jogos);
-							*/
-							
-							$('#id_loading_').ajaxComplete(function() { $(this).empty(); });
-							
-						  }  							
-				); 				
-				// 2. incluí na grid.
-				// 3. inclui no grafico em linha.
-				// 4. inclui no grafico em barra.
-				// 5. retira do lisbox nao inclusos.
-				// 6. add no box dos visualizados.
-				
+									//alert(retorno[0].fields.participante_apelido);
+									
+									// 1.1 data.addColumn('number', '{ retorno[0].fields.participante_apelido }'); 
+									/* 1.2 		
+										{% for a in apostas %}
+											data.setValue(i, qtde_add+1, {{a.colocacao}});
+											i++;
+										{% endfor %}
+									*/
+									
+									 $('#id_part_not_include option:selected').remove();
+									 $('#id_part_include').append('<option value="8">'+retorno[0].fields.participante_apelido+'</option>');
+									
+									$('#id_loading_').ajaxComplete(function() { $(this).empty(); });
+								  }  							
+						); 				
+						// 2. incluí na grid.
+						// 3. inclui no grafico em linha.
+						// 4. inclui no grafico em barra.
+						// 5. retira do lisbox nao inclusos.
+						// 6. add no box dos visualizados.
+					}
+				}
 			});
 			
 		});
@@ -63,7 +73,7 @@
 				<p>Participantes não adicionados</p>
 				<p><input type="text" id="id_pesq_part" value=""></p>			
 				<div class="span3">
-					<select size="6" id="id_part_include">
+					<select size="6" id="id_part_not_include">
 						{% for ip in participantes_inscritos %}
 							<option value="{{ ip.id }}">{{ip.participante.apelido}}</option>
 						{% endfor %}
@@ -78,7 +88,7 @@
 			<div class="row">
 				<div class="span3">			
 					<p>Participantes no gráfico</p>
-					<select size="5" id="id_part_not_include">
+					<select size="5" id="id_part_include">
 						{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
 							<option value="{{ user_inscricao.id }}">{{ user_inscricao.participante.apelido }}</option>
 						{% endif %}
