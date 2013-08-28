@@ -121,15 +121,15 @@ def imprimir_rancking(request, competicao_pk):
 							        })			
 									
 def get_jogos_of_the_campeonato(campeonato):
-	grupos = Grupo.objects.all().filter(campeonato=campeonato).order_by('descricao')
+	grupos = Grupo.objects.filter(campeonato=campeonato)
 	jgs = []
 	for g in grupos:
 		js = Jogo.objects.filter(grupo=g).order_by('data_hora')
 		gr = ''
 		for j in js:
-			if gr != j.grupo.descricao:
-				j.first_group = True
-			gr = j.grupo.descricao
+			#if gr != j.grupo.descricao:
+			#	j.first_group = True
+			#gr = j.grupo.descricao
 			jgs.append(j)
 	return jgs			                                
 

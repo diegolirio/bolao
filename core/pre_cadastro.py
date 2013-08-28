@@ -541,7 +541,7 @@ def pre_cadastro(request):
 	if request.user.username == 'admin':
 		global_()
 		__local__()
-		copa_mundo_teste()	
+		#copa_mundo_teste()	
 		competicao_copa_confederacoes()
 	return redirect('/')
 
