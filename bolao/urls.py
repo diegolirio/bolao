@@ -41,7 +41,7 @@ urlpatterns = patterns('',
     url(r'^perfil/$', 'core.views.cadastre_se'),
     url(r'^comparar_colocacao/(?P<competicao_pk>\d+)/(?P<view_inscricao_pk>\d+)/$', 'core.views.comparar_colocacao'),
 	url(r'^get_aposta_by_inscricao/(?P<inscricao_pk>\d+)/$', 'core.views.get_aposta_by_inscricao'),
-	
+	url(r'^get_inscricao_json/(?P<inscricao_pk>\d+)/$', 'core.views.get_inscricao_json'),
 	url(r'^imprimir_rancking/(?P<competicao_pk>\d+)/$', 'core.views.imprimir_rancking'),
     
     # Logado (privadas) >>> url fixado sempre a competicao como parametro

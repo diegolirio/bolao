@@ -380,9 +380,35 @@ def comparar_colocacao(request, competicao_pk, view_inscricao_pk):
 #ajax							  
 def get_aposta_by_inscricao(request, inscricao_pk):   
 	view_inscricao = Inscricao.objects.get(pk=inscricao_pk)
-	apostas = Aposta.objects.filter(inscricao=view_inscricao)
+	apostas = list()
+	apostas__aux = Aposta.objects.filter(inscricao=view_inscricao)
+	for a in apostas__aux:
+		if a.jogo.status.codigo == 'F' or a.jogo.status.codigo == 'A':
+			apostas.append(a)
 	retorno = serializers.serialize("json", apostas)
 	return HttpResponse(retorno, mimetype="text/javascript")	
+	
+def get_inscricao_json(request, inscricao_pk):
+	view_inscricao = Inscricao.objects.get(pk=inscricao_pk)
+	to_json = list()
+	view_inscricao_json = {
+                             'inscricao_id': view_inscricao.id,
+							 'participante_id': view_inscricao.participante.id,
+							 'participante_apelido': view_inscricao.participante.apelido,
+							 'participante_foto': view_inscricao.participante.foto.url,
+							 'inscricao_colocacao': view_inscricao.colocacao,
+							 'inscricao_pontos': view_inscricao.pontos, 
+							 'inscricao_quantidade_acerto_placar': view_inscricao.quantidade_acerto_placar, 
+							 'inscricao_quantidade_acerto_vencedor_um_resultado_correto': view_inscricao.quantidade_acerto_vencedor_um_resultado_correto, 
+							 'inscricao_quantidade_acerto_vencedor': view_inscricao.quantidade_acerto_vencedor, 
+							 'inscricao_quantidade_acerto_empate_erro_placar': view_inscricao.quantidade_acerto_empate_erro_placar,
+							 'inscricao_quantidade_acerto_somente_resultado_um_time': view_inscricao.quantidade_acerto_somente_resultado_um_time,
+							 'inscricao_quantidade_erro': view_inscricao.quantidade_erro
+							 #'quantidade_jogos': jogo_
+						  }    
+	dictFields = { 'fields': view_inscricao_json }
+	to_json.append(dictFields)
+	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")  	
 							   
 def __get_code_random__():
 	code = ''
