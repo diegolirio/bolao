@@ -8,29 +8,24 @@
 
 	  function chart_add_columns(data) {
 		data.addColumn('string', 'Jogos');
-		
+		data.addColumn('number', '{{ view_inscricao.participante.apelido }}');
 		{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
 			data.addColumn('number', '{{ user_inscricao.participante.apelido }}');        
 		{% endif %}
 
 		data.addRows({{qtde_jogos}});		
-		
-		{% for a in apostas %}
-			data.setValue(i, 0, '{{ a.jogo.time_a}} X {{ a.jogo.time_b }}');
-			data.setValue(i, 2, {{a.colocacao}});
-			//data.setValue(0, 2, 400);
-			i++;
-		{% endfor %}
-
-		
-		data.addColumn('number', '{{ view_inscricao.participante.apelido }}');
-        
 		var i = 0;
+		{% for a in apostas %} // view_inscricao
+			data.setValue(i, 0, '{{ a.jogo.time_a}} X {{ a.jogo.time_b }}');
+			data.setValue(i, 1, {{a.colocacao}});
+			//data.setValue(0, 1, 400);
+			i++;
+		{% endfor %}		
 		
 		{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
 			i = 0;
 			{% for a in my_apostas %}
-				data.setValue(i, 1, {{a.colocacao}});
+				data.setValue(i, 2, {{a.colocacao}});
 				i++;
 			{% endfor %}		
 		{% endif %}
@@ -176,6 +171,9 @@
       google.setOnLoadCallback(drawChart_);
 	  
       function drawChart_() {
+	  
+		/*
+	  
         var data = google.visualization.arrayToDataTable([
 		
           ['Pontuação', 		   
@@ -200,6 +198,49 @@
 
         var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_col'));
         chart.draw(data, options);
+		
+		*/
+		
+		  var data = new google.visualization.DataTable();
+		  
+		  data.addColumn('string', 'Participante');
+		  data.addColumn('number', 'AP');
+		  data.addColumn('number', 'AR');
+		  data.addColumn('number', 'AV');
+		  data.addColumn('number', 'AE');
+		  data.addColumn('number', 'AS');
+		  data.addColumn('number', 'ER');
+		  
+		  data.addRows(2);
+		  // view
+		  data.setCell(0, 0, '{{ view_inscricao.participante.apelido }}');
+		  data.setCell(0, 1, {{ view_inscricao.quantidade_acerto_placar }});
+		  data.setCell(0, 2, {{ view_inscricao.quantidade_acerto_vencedor_um_resultado_correto }});
+		  data.setCell(0, 3, {{ view_inscricao.quantidade_acerto_vencedor }});
+		  data.setCell(0, 4, {{ view_inscricao.quantidade_acerto_empate_erro_placar }});
+		  data.setCell(0, 5, {{ view_inscricao.quantidade_acerto_somente_resultado_um_time }});
+		  data.setCell(0, 6, {{ view_inscricao.quantidade_erro }});
+		  // user
+		  data.setCell(1, 0, '{{ user_inscricao.participante.apelido }}');
+		  data.setCell(1, 1, {{ user_inscricao.quantidade_acerto_placar }});
+		  data.setCell(1, 2, {{ user_inscricao.quantidade_acerto_vencedor_um_resultado_correto }});
+		  data.setCell(1, 3, {{ user_inscricao.quantidade_acerto_vencedor }});
+		  data.setCell(1, 4, {{ user_inscricao.quantidade_acerto_empate_erro_placar }});
+		  data.setCell(1, 5, {{ user_inscricao.quantidade_acerto_somente_resultado_um_time }});		  
+		  data.setCell(1, 6, {{ user_inscricao.quantidade_erro }});
+		  
+			var options = {
+			  title: 'Quantidade de acertos',
+			  width:450, height:350,
+			  hAxis: {title: 'Histórico da Pontuação', titleTextStyle: {color: 'red'}}
+			};		  
+			
+		  var view = new google.visualization.DataView(data);
+		  view.setColumns([0, 1]);
+
+		  var chart = new google.visualization.BarChart(document.getElementById('chart_div_col'));
+		  chart.draw(view, options);				
+		  		
       }
     </script>
 	
@@ -262,18 +303,18 @@
 						</tr>
 					</thead>
 					<tbody id="corpoTabela">        
+						<tr>
+							<td><img src="/media/{{ view_inscricao.participante.foto }}" height="20" width="25" class="img-rounded"/> {{ view_inscricao.participante.apelido }}</td>
+							<td><center>{{ view_inscricao.colocacao }}º</center></td>
+							<td><center>{{ view_inscricao.pontos }}</center></td>						
+						</tr>					
 						{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
 							<tr>
 								<td><img src="/media/{{ user_participante.foto }}" height="20" width="25" class="img-rounded"/> {{ user_participante.apelido }}</td>
 								<td><center>{{ user_inscricao.colocacao }}º</center></td>
 								<td><center>{{ user_inscricao.pontos }}</center></td>						
 							</tr>
-						{% endif %}
-						<tr>
-							<td><img src="/media/{{ view_inscricao.participante.foto }}" height="20" width="25" class="img-rounded"/> {{ view_inscricao.participante.apelido }}</td>
-							<td><center>{{ view_inscricao.colocacao }}º</center></td>
-							<td><center>{{ view_inscricao.pontos }}</center></td>						
-						</tr>					
+						{% endif %}						
 					</tbody>					
 				</table>
 			</div> 
