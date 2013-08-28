@@ -200,7 +200,7 @@ def aposta(request, competicao_pk):
 	patrocinador = __get_patrocinador_principal__(competicao)
 	user_participante = get_participante_by_user(request.user)
 	user_inscricao = get_inscricao(competicao, user_participante)			
-	apts = Aposta.objects.filter(inscricao=user_inscricao)
+	apts = Aposta.objects.filter(inscricao=user_inscricao).order_by('jogo')
 	return render_to_response('_base.html', 
 	                          {   'template': 'aposta.html', 
 								  'subtitulo': user_inscricao.competicao.campeonato.nome + ' ' + user_inscricao.competicao.nome,
@@ -356,8 +356,10 @@ def comparar_colocacao(request, competicao_pk, view_inscricao_pk):
 	for a in my_apts_aux:
 		if (a.jogo.status.codigo == 'A') or (a.jogo.status.codigo == 'F'):
 			my_apostas.append(a)	
-    # ToDo...: query    not In 			
-	participantes_inscritos = Inscricao.objects.filter(competicao=competicao).exclude(participante=view_inscricao.participante).order_by('participante')			
+	if user_inscricao.pk > 0:
+		participantes_inscritos = Inscricao.objects.filter(competicao=competicao).exclude(participante__in=[view_inscricao.participante, user_participante]).order_by('participante')
+	else:
+		participantes_inscritos = Inscricao.objects.filter(competicao=competicao).exclude(participante=view_inscricao.participante).order_by('participante')
 	return render_to_response('_base_simple.html', 
 						      {  
 								'template': 'comparar_colocacao.html',

@@ -552,22 +552,23 @@ def create_users(request):
 		for i in range(1,200):
 			# Salvar User
 			username = usuario_cad+str(i)
-			user = User.objects.create_user(username, 'diegolirio.dl@gmail.com', usuario_cad+str(i))
-			# Salvar Participante
-			p = Participante()
-			p.user = user
-			p.apelido = usuario_cad+str(i)
-			p.confirm_email = True
-			p.confirm_send_code = i
-			p.save()
-			conf = Campeonato.objects.filter(nome='Copa das Conferederacoes')[0:1].get()
-			compet_ = Competicao.objects.filter(nome='Ferraz', campeonato=conf)[0:1].get()
-			# Salvar Inscricao
-			insc = Inscricao()
-			insc.participante = p
-			insc.competicao = compet_
-			insc.save()
-			# Salvar Apostas
-			__apostas_save_all__(p, compet_)
+			if User.objects.filter(username=username).count() == 0:
+				user = User.objects.create_user(username, 'diegolirio.dl@gmail.com', usuario_cad+str(i))
+				# Salvar Participante
+				p = Participante()
+				p.user = user
+				p.apelido = usuario_cad+str(i)
+				p.confirm_email = True
+				p.confirm_send_code = i
+				p.save()
+				conf = Campeonato.objects.filter(nome='Copa das Conferederacoes')[0:1].get()
+				compet_ = Competicao.objects.filter(nome='Ferraz', campeonato=conf)[0:1].get()
+				# Salvar Inscricao
+				insc = Inscricao()
+				insc.participante = p
+				insc.competicao = compet_
+				insc.save()
+				# Salvar Apostas
+				__apostas_save_all__(p, compet_)
 	return redirect('/')
 	
