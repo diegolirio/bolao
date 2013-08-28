@@ -375,7 +375,7 @@ def competicao_copa_confederacoes():
 		jogo_1.resultado_a = 0
 		jogo_1.resultado_b = 0
 		jogo_1.grupo = a_
-		jogo_1.data_hora = datetime.datetime.now()
+		jogo_1.data_hora = datetime.datetime(2013, 06, 07, 16, 00, 4, 883118) # datetime.datetime.now()
 		jogo_1.vencedor = 'E'
 		jogo_1.local = l1
 		jogo_1.status = e
@@ -388,7 +388,7 @@ def competicao_copa_confederacoes():
 		jogo_2.resultado_a = 0
 		jogo_2.resultado_b = 0
 		jogo_2.grupo = a_
-		jogo_2.data_hora = datetime.datetime.now()
+		jogo_2.data_hora = datetime.datetime(2013, 06, 06, 16, 00, 4, 883118)
 		jogo_2.vencedor = 'E'
 		jogo_2.local = Local.objects.filter(descricao='Rio de Janeiro')[0:1].get()
 		jogo_2.status = e
@@ -401,7 +401,7 @@ def competicao_copa_confederacoes():
 		jogo_3.resultado_a = 0
 		jogo_3.resultado_b = 0
 		jogo_3.grupo = b_
-		jogo_3.data_hora = datetime.datetime.now()
+		jogo_3.data_hora = datetime.datetime(2013, 06, 06, 16, 00, 4, 883118)
 		jogo_3.vencedor = 'E'
 		jogo_3.local = Local.objects.filter(descricao='Recife')[0:1].get()
 		jogo_3.status = e
@@ -414,7 +414,7 @@ def competicao_copa_confederacoes():
 		jogo_4.resultado_a = 0
 		jogo_4.resultado_b = 0
 		jogo_4.grupo = b_
-		jogo_4.data_hora = datetime.datetime.now()
+		jogo_4.data_hora = datetime.datetime(2013, 06, 10, 15, 00, 4, 883118)
 		jogo_4.vencedor = 'E'
 		jogo_4.local = Local.objects.filter(descricao='Belo Horizonte')[0:1].get()
 		jogo_4.status = e
@@ -427,7 +427,7 @@ def competicao_copa_confederacoes():
 		jogo_5.resultado_a = 0
 		jogo_5.resultado_b = 0
 		jogo_5.grupo = a_
-		jogo_5.data_hora = datetime.datetime.now()
+		jogo_5.data_hora = datetime.datetime(2013, 06, 10, 16, 00, 4, 883118)
 		jogo_5.vencedor = 'E'
 		jogo_5.local = Local.objects.filter(descricao='Fortaleza')[0:1].get()
 		jogo_5.status = e
@@ -440,7 +440,7 @@ def competicao_copa_confederacoes():
 		jogo_6.resultado_a = 0
 		jogo_6.resultado_b = 0
 		jogo_6.grupo = a_
-		jogo_6.data_hora = datetime.datetime.now()
+		jogo_6.data_hora = datetime.datetime(2013, 06, 12, 11, 00, 4, 883118)
 		jogo_6.vencedor = 'E'
 		jogo_6.local = Local.objects.filter(descricao='Recife')[0:1].get()
 		jogo_6.status = e
@@ -453,7 +453,7 @@ def competicao_copa_confederacoes():
 		jogo_7.resultado_a = 0
 		jogo_7.resultado_b = 0
 		jogo_7.grupo = b_
-		jogo_7.data_hora = datetime.datetime.now()
+		jogo_7.data_hora = datetime.datetime(2013, 06, 12, 16, 00, 4, 883118)
 		jogo_7.vencedor = 'E'
 		jogo_7.local = Local.objects.filter(descricao='Belo Horizonte')[0:1].get()
 		jogo_7.status = e	
@@ -466,7 +466,7 @@ def competicao_copa_confederacoes():
 		jogo_8.resultado_a = 0
 		jogo_8.resultado_b = 0
 		jogo_8.grupo = b_
-		jogo_8.data_hora = datetime.datetime.now()
+		jogo_8.data_hora = datetime.datetime(2013, 06, 13, 16, 00, 4, 883118)
 		jogo_8.vencedor = 'E'
 		jogo_8.local = Local.objects.filter(descricao='Salvador')[0:1].get()
 		jogo_8.status = e		
@@ -479,7 +479,7 @@ def competicao_copa_confederacoes():
 		jogo_9.resultado_a = 0
 		jogo_9.resultado_b = 0
 		jogo_9.grupo = a_
-		jogo_9.data_hora = datetime.datetime.now()
+		jogo_9.data_hora = datetime.datetime(2013, 06, 13, 16, 00, 4, 883118)
 		jogo_9.vencedor = 'E'
 		jogo_9.local = Local.objects.filter(descricao='Salvador')[0:1].get()
 		jogo_9.status = e			
@@ -492,7 +492,7 @@ def competicao_copa_confederacoes():
 		jogo_10.resultado_a = 0
 		jogo_10.resultado_b = 0
 		jogo_10.grupo = a_
-		jogo_10.data_hora = datetime.datetime.now()
+		jogo_10.data_hora = datetime.datetime(2013, 06, 15, 10, 00, 4, 883118)
 		jogo_10.vencedor = 'E'
 		jogo_10.local = Local.objects.filter(descricao='Belo Horizonte')[0:1].get()
 		jogo_10.status = e				
@@ -505,7 +505,7 @@ def competicao_copa_confederacoes():
 		jogo_11.resultado_a = 0
 		jogo_11.resultado_b = 0
 		jogo_11.grupo = b_
-		jogo_11.data_hora = datetime.datetime.now()
+		jogo_11.data_hora = datetime.datetime(2013, 06, 15, 15, 00, 4, 883118)
 		jogo_11.vencedor = 'E'
 		jogo_11.local = Local.objects.filter(descricao='Fortaleza')[0:1].get()
 		jogo_11.status = e					
@@ -518,7 +518,7 @@ def competicao_copa_confederacoes():
 		jogo_12.resultado_a = 0
 		jogo_12.resultado_b = 0
 		jogo_12.grupo = b_
-		jogo_12.data_hora = datetime.datetime.now()
+		jogo_12.data_hora = datetime.datetime(2013, 06, 16, 16, 00, 4, 883118)
 		jogo_12.vencedor = 'E'
 		jogo_12.local = Local.objects.filter(descricao='Recife')[0:1].get()
 		jogo_12.status = e						
