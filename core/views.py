@@ -127,9 +127,9 @@ def get_jogos_of_the_campeonato(campeonato):
 		js = Jogo.objects.filter(grupo=g).order_by('data_hora')
 		gr = ''
 		for j in js:
-			#if gr != j.grupo.descricao:
-			#	j.first_group = True
-			#gr = j.grupo.descricao
+			if gr != j.grupo.descricao:
+				j.first_group = True
+			gr = j.grupo.descricao
 			jgs.append(j)
 	return jgs			                                
 

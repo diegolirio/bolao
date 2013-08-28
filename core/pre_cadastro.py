@@ -255,7 +255,7 @@ def copa_mundo_teste():
 		jogo1.status = e	
 		jogo1.save()
 	else:
-		Jogo.objects.filter(time_a='Brasil', time_b='EUA')[0:1].get()
+		jogo1 = Jogo.objects.filter(time_a='Brasil', time_b='EUA')[0:1].get()
 	
 	#####################################################
 	# Inscricao
