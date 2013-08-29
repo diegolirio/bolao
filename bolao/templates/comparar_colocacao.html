@@ -69,16 +69,16 @@
 		
 			if(JSON.stringify(list_add_line[ii]).indexOf('pk') > -1) {
 		
-				alert(JSON.stringify(list_add_line[ii]));
+				//alert(JSON.stringify(list_add_line[ii]));
 		
 				// ################################################################
 				// ################################################################
 				// ################################################################
 				// ################################################################
-				alert(list_add_line[ii].pk);
+				//alert(list_add_line[ii][0].fields.inscricao);
 				// ################################################################
 				
-				$('#id_part_include').find("option[value='"+list_add_line[ii].fields.inscricao+"']").attr("selected", "selected");
+				$('#id_part_include').find("option[value='"+list_add_line[ii][0].fields.inscricao+"']").attr("selected", "selected");
 				var participante = $('#id_part_include option:selected').text();			
 				data.addColumn('number', participante); 
 				
