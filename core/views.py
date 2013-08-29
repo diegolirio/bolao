@@ -382,11 +382,17 @@ def comparar_colocacao(request, competicao_pk, view_inscricao_pk):
 #ajax							  
 def get_aposta_by_inscricao(request, inscricao_pk):   
 	view_inscricao = Inscricao.objects.get(pk=inscricao_pk)
+	
 	apostas = list()
 	apostas__aux = Aposta.objects.filter(inscricao=view_inscricao)
+	i=0
 	for a in apostas__aux:
-		if a.jogo.status.codigo == 'F' or a.jogo.status.codigo == 'A':
+		if a.jogo.status.codigo == 'A' or a.jogo.status.codigo == 'F':
 			apostas.append(a)
+			i=i+1
+
+	print('QUANTIDADE DE APOSTAS >>>> ' + str(i))
+			
 	retorno = serializers.serialize("json", apostas)
 	return HttpResponse(retorno, mimetype="text/javascript")	
 	

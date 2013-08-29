@@ -9,12 +9,12 @@
 	  //var data = new google.visualization.DataTable();
 
 	  function chart_add_columns(data) {
- 
+			//data.addColumn('number', '');
 	  }
 	  
       function drawChart_line() {	    
 			var data = get_data_line();
-			//chart_add_columns(data);
+
 			var options = {
 							title: 'Histórico de Colocação',
 							vAxis: {maxValue: 10, direction: -1} // Inverte a Coluna em ordem crescente...
@@ -27,8 +27,10 @@
 			var data = new google.visualization.DataTable();
 			data.addColumn('string', 'Jogos');
 			data.addColumn('number', '{{ view_inscricao.participante.apelido }}');
+			list_add_line[0] = "[]";
 			{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
 				data.addColumn('number', '{{ user_inscricao.participante.apelido }}');        
+				list_add_line[1] = "[]";
 			{% endif %}
 
 			data.addRows({{qtde_jogos}});		
@@ -50,24 +52,55 @@
 			return data;
 	  }
 	  
-	  function drawChart_line_json(aposta_part_json, posicao) {
+	  function drawChart_line_json(aposta_part_json) {		
+		list_add_line[length_list_add-1] = aposta_part_json;		
+		var data = get_data_line();
 		
-		var data = new google.visualization.DataTable();
-		chart_add_columns(data);
+		//alert(JSON.stringify(aposta_part_json));		
 		
-		//alert(JSON.stringify(aposta_part_json));
+		{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}			
+		var col = 3;
+		{% else %}
+		var col = 2;
+		{% endif %}
+		// faço o laço correndo em todos os participantes add depois do carregamento da pág.		
 		
-		data.addColumn('number', 'other'); 
-		alert("data.addColumn('number', 'other'); ");
-		$.each(aposta_part_json, function(i, item){
-		//	data.setValue(i, qtde_add+1, item.fields.colocacao);
-			data.setValue(i, posicao, item.fields.colocacao);
-			//alert("i="+i + " | qtde_add+1="+qtde_add+1 + " | Colocacao="+item.fields.colocacao);
-		});		
-	  }
-	  
+		for (var ii = 0; ii < length_list_add; ii++) {
+		
+			if(JSON.stringify(list_add_line[ii]).indexOf('pk') > -1) {
+		
+				alert(JSON.stringify(list_add_line[ii]));
+		
+				// ################################################################
+				// ################################################################
+				// ################################################################
+				// ################################################################
+				alert(list_add_line[ii].pk);
+				// ################################################################
+				
+				$('#id_part_include').find("option[value='"+list_add_line[ii].fields.inscricao+"']").attr("selected", "selected");
+				var participante = $('#id_part_include option:selected').text();			
+				data.addColumn('number', participante); 
+				
+				$.each(list_add_line[ii], function(i, item){					
+					alert(i + ', ' + col + ', ' + item.fields.colocacao+'º');				
+					data.setValue(i, col, item.fields.colocacao);
+				});		
+				col++;
+			}
+		}
+		
+		var options = {
+						title: 'Histórico de Colocação',
+						vAxis: {maxValue: 10, direction: -1} // Inverte a Coluna em ordem crescente...
+					  };
+		var chart = new google.visualization.LineChart(document.getElementById('chart_div'));		
+		chart.draw(data, options);		
+		
+	  }  
 	  
 	    var list_add = [];
+		var list_add_line = []
 		var length_list_add = 0;
 	    //list_remove = [];
 		
@@ -79,22 +112,44 @@
 			$('#id_message_remove').empty();
 		}
 		
-		function remove_participante(inscricao, participante_apelido) {
-			alert('inscr: ' + inscricao + ' | ' + participante_apelido);
-						
-			 //$('#id_part_include option:selected').remove();
-			 // inclui na lista dos nao add
-			 //$('#id_part_not_include').append('<option value="'+list_add[i][0].fields.inscricao_id+'">'+list_add[i][0].fields.participante_apelido+'</option>');									
+		function remove_participante(inscricao) {
+			//alert('inscr: ' + inscricao);
+			
+			$('#id_part_include').find("option[value='"+inscricao+"']").attr("selected", "selected");
+			var participante = $('#id_part_include option:selected').text();		
+			
+			//alert('participante: ' + participante);
+			
+			for(var i = 0; i < length_list_add; i++) {
+				if (JSON.stringify(list_add[i]).indexOf(participante) > -1) {
+					 // limpa na lista...
+					 list_add[i] = "[]";
+					 // decrementa o users
+					 qtde_users--;					 
+					 // remove dos add...
+					 $('#id_part_include option:selected').remove();
+					 // inclui na lista dos nao add
+					 $('#id_part_not_include').append('<option value="'+inscricao+'">'+participante+'</option>');									
+					 // remove da tabela
+					 $('#id_add__'+inscricao).remove();							 
+					 // grafico barras...
+					 var data = get_data(qtde_users);
+					 update_draw_charts_bar(data);			
+					 break;
+				}								
+
+			}						
+			//			$(selectOption).find("option[index='0']").attr("selected","selected");
+			//			$(selectOption).find("option[value='DEFAULT']").attr("selected","selected");
+			//			$(selectOption).find("option[text='Default']").attr("selected","selected");								
 		}
 		
 		
 		$(function() {		
 			
-			$('#add_part').click(function() {	
-			
+			$('#add_part').click(function() {				
 				var ip = $('#id_part_not_include').val();	
-				//alert(ip);
-				
+				//alert(ip);				
 				if (ip == null) {
 					$('#id_message_add').html('Selecione o participante para adiciona-lo!   <span><a href="#" onclick="hide_msg_add();"> <i class="icon-remove"></i></a></span>');
 				} else {					
@@ -112,7 +167,7 @@
 									 linha +='  <td><img src="'+retorno[0].fields.participante_foto+'" height="20" width="25" class="img-rounded"/> '+retorno[0].fields.participante_apelido+'</td>';
 									 linha +='  <td><center>'+retorno[0].fields.inscricao_colocacao+'º</center></td>';
 									 linha +='  <td><center>'+retorno[0].fields.inscricao_pontos+'</center></td>';	
-									 linha +='  <td><center><a href="#" onclick="remove_participante('+retorno[0].fields.inscricao_id+',\''+retorno[0].fields.participante_apelido+'\');"><i class="icon-remove"></i></a></center></td>';
+									 linha +='  <td><center><a href="#" onclick="remove_participante('+retorno[0].fields.inscricao_id+');"><i class="icon-remove"></i></a></center></td>';
 									 linha +='</tr>';
 									 $('#corpoTabela').append(linha);
 									 $('#id_part_not_include option:selected').remove();
@@ -121,46 +176,36 @@
 									 //alert('ANTES add_part_grafico_barra: addRows ');
 									 add_part_grafico_barra(retorno);
 									 
-						});					
-					
-					
-						//$('#id_loading_').ajaxStart(function() { $(this).html('<img src="/media/images/__159__.gif"/>'); });
+						});			
 						
-						//$('#chart_div').html('<img src="/media/images/__159__.gif"/>');
-						
-						// 1. Busca lista de aposta. (Json)
-						/*
+						//$('#id_loading_').ajaxStart(function() { $(this).html('<img src="/media/images/__159__.gif"/>'); });						
+						//$('#chart_div').html('<img src="/media/images/__159__.gif"/>');						
+						// 1. Busca lista de aposta. (Json)						
+											
 						$.getJSON('/get_aposta_by_inscricao/'+ip,  // URL 				
 								  function(retorno) {         // REQUISIÇÂO        	  				  
-									alert(JSON.stringify(retorno));
-									//alert(retorno[0].fields.resultado_a);
-									
-									// 1.1 data.addColumn('number', '{ retorno[0].fields.participante_apelido }'); 
-									
-									drawChart_line_json(retorno, qtde_add+1);
-									
-									//data.addColumn('number', retorno[0].fields.pk+"---"); 
-									
-									alert("pos >>> drawChart_line_json");
-
-
+									//alert(JSON.stringify(retorno));
+									//alert(retorno[0].fields.resultado_a);									
+									// 1.1 data.addColumn('number', '{ retorno[0].fields.participante_apelido }'); 									
+									drawChart_line_json(retorno);									
+									//data.addColumn('number', retorno[0].fields.pk+"---"); 									
+									//alert("pos >>> drawChart_line_json");
 									/* 1.2 		
 										{% for a in apostas %}
 											data.setValue(i, qtde_add+1, {{a.colocacao}});
 											i++;
 										{% endfor %}
-									*
-									
-									$('#id_loading_').ajaxComplete(function() { $(this).empty(); });
+									*/									
+									//$('#id_loading_').ajaxComplete(function() { $(this).empty(); });
 								  }  							
 						); 		
-						*/
 						
-						// 2. incluí na grid.
-						// 3. inclui no grafico em linha.
-						// 4. inclui no grafico em barra.
-						// 5. retira do lisbox nao inclusos.
-						// 6. add no box dos visualizados.
+						
+						// 2. incluí na grid. OK
+						// 3. inclui no grafico em linha. 
+						// 4. inclui no grafico em barra.OK
+						// 5. retira do lisbox nao inclusos. OK
+						// 6. add no box dos visualizados. OK
 					}
 				}
 			});
@@ -182,7 +227,7 @@
 							//	$('#id_message_remove').html('Participante não poderá ser removido, somente os adicionados !   <span><a href="#" onclick="hide_msg_remove();"> <i class="icon-remove"></i></a></span>');
 							//}
 							//else {		
-								alert(participante_json);
+								//alert(participante_json);
 								if (participante_json.indexOf(participante) > -1) {
 									 // remove dos add...
 									 $('#id_part_include option:selected').remove();
@@ -195,6 +240,11 @@
 									 // decrementa o users
 									 qtde_users--;
 									 found__ = true;
+									 
+									 // grafico barras...
+									 var data = get_data(qtde_users);
+									 update_draw_charts_bar(data);
+									 
 									 break;
 								}								
 							//}
@@ -239,30 +289,41 @@
 	  
 	  function add_part_grafico_barra(json) {	  
 			// Gero os dados com os participantes ja add...
-			var data = get_data(qtde_users+1);
+			qtde_users++;
+			var data = get_data(qtde_users);
 			// Add em uma lista o json...
 			//list_add[qtde_users-1] = json;
 			list_add[length_list_add] = json;
 			length_list_add++;
+
+			// Atualiza grafico de barras...
+			update_draw_charts_bar(data);
 			
+	  }
+	  
+	  function update_draw_charts_bar(data) {				  
 			// verifico em qual linha do array devo iniciar...
 			//var i = 0;
 			//{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
 			//	i = 1;
-			//{% endif %}
-			
+			//{% endif %}	
+			{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}			
+			var row = 2;
+			{% else %}
+			var row = 1;
+			{% endif %}
 			// faço o laço correndo em todos os participantes add depois do carregamento da pág.			
-			for(var i = 0; i < length_list_add; i++) { /*i += 1*/
-			
+			for(var i = 0; i < length_list_add; i++) { /*i += 1*/			
+				//alert(row);			
 				if (JSON.stringify(list_add[i]).indexOf('fields') > -1) {			
-					//alert(JSON.stringify(list_add[i]));
-					data.setCell(i, 0, list_add[i][0].fields.participante_apelido);
-					data.setCell(i, 1, list_add[i][0].fields.inscricao_quantidade_acerto_placar);
-					data.setCell(i, 2, list_add[i][0].fields.inscricao_quantidade_acerto_vencedor_um_resultado_correto);
-					data.setCell(i, 3, list_add[i][0].fields.inscricao_quantidade_acerto_vencedor);
-					data.setCell(i, 4, list_add[i][0].fields.inscricao_quantidade_acerto_empate_erro_placar);
-					data.setCell(i, 5, list_add[i][0].fields.inscricao_quantidade_acerto_somente_resultado_um_time);
-					data.setCell(i, 6, list_add[i][0].fields.inscricao_quantidade_erro);
+					data.setCell(row, 0, list_add[i][0].fields.participante_apelido);
+					data.setCell(row, 1, list_add[i][0].fields.inscricao_quantidade_acerto_placar);
+					data.setCell(row, 2, list_add[i][0].fields.inscricao_quantidade_acerto_vencedor_um_resultado_correto);
+					data.setCell(row, 3, list_add[i][0].fields.inscricao_quantidade_acerto_vencedor);
+					data.setCell(row, 4, list_add[i][0].fields.inscricao_quantidade_acerto_empate_erro_placar);
+					data.setCell(row, 5, list_add[i][0].fields.inscricao_quantidade_acerto_somente_resultado_um_time);
+					data.setCell(row, 6, list_add[i][0].fields.inscricao_quantidade_erro);
+					row++;
 				}
 			}
 			
@@ -274,12 +335,13 @@
 			  hAxis: {title: 'Histórico da Pontuação', titleTextStyle: {color: 'red'}}
 			};				  		  
 		    var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_col'));
-		    chart.draw(view, options);				
-			
+		    chart.draw(view, options);		  
 	  }
 	  
 	  function get_data(addRows) {
 		  var data = new google.visualization.DataTable();
+		  
+		  //alert('qtde de linhas; ' + qtde_users);
 		  
 		  data.addColumn('string', 'Participante');
 		  data.addColumn('number', 'AP');
@@ -298,7 +360,6 @@
 					length_list_add = 2;
 				} else {
 					data.addRows(addRows);
-					qtde_users++;
 				}
 		  {% else %}
 				if (addRows == -1) {
@@ -308,7 +369,6 @@
 					length_list_add = 1;
 				} else {
 					data.addRows(addRows);
-					qtde_users++;
 				}
 		  {% endif %}
 		  
