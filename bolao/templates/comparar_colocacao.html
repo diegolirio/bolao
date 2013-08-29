@@ -9,41 +9,46 @@
 	  //var data = new google.visualization.DataTable();
 
 	  function chart_add_columns(data) {
-		data.addColumn('string', 'Jogos');
-		data.addColumn('number', '{{ view_inscricao.participante.apelido }}');
-		{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
-			data.addColumn('number', '{{ user_inscricao.participante.apelido }}');        
-		{% endif %}
-
-		data.addRows({{qtde_jogos}});		
-		var i = 0;
-		{% for a in apostas %} // view_inscricao
-			data.setValue(i, 0, '{{ a.jogo.time_a}} X {{ a.jogo.time_b }}');
-			data.setValue(i, 1, {{a.colocacao}});
-			//data.setValue(0, 1, 400);
-			i++;
-		{% endfor %}		
-		
-		{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
-			i = 0;
-			{% for a in my_apostas %}
-				data.setValue(i, 2, {{a.colocacao}});
-				i++;
-			{% endfor %}		
-		{% endif %}
-
-        var options = {
-          title: 'Histórico de Colocação',
-          vAxis: {maxValue: 10, direction: -1} // Inverte a Coluna em ordem crescente...
-        };
-        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));		
-        chart.draw(data, options);	  
+ 
 	  }
 	  
       function drawChart_line() {	    
-	    var data = new google.visualization.DataTable();
-		chart_add_columns(data);
+			var data = get_data_line();
+			//chart_add_columns(data);
+			var options = {
+							title: 'Histórico de Colocação',
+							vAxis: {maxValue: 10, direction: -1} // Inverte a Coluna em ordem crescente...
+						  };
+			var chart = new google.visualization.LineChart(document.getElementById('chart_div'));		
+			chart.draw(data, options);
       }
+	  
+	  function get_data_line() {
+			var data = new google.visualization.DataTable();
+			data.addColumn('string', 'Jogos');
+			data.addColumn('number', '{{ view_inscricao.participante.apelido }}');
+			{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
+				data.addColumn('number', '{{ user_inscricao.participante.apelido }}');        
+			{% endif %}
+
+			data.addRows({{qtde_jogos}});		
+			var i = 0;
+			{% for a in apostas %} // view_inscricao
+				data.setValue(i, 0, '{{ a.jogo.time_a}} X {{ a.jogo.time_b }}');
+				data.setValue(i, 1, {{a.colocacao}});
+				//data.setValue(0, 1, 400);
+				i++;
+			{% endfor %}		
+			
+			{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
+				i = 0;
+				{% for a in my_apostas %}
+					data.setValue(i, 2, {{a.colocacao}});
+					i++;
+				{% endfor %}		
+			{% endif %} 	
+			return data;
+	  }
 	  
 	  function drawChart_line_json(aposta_part_json, posicao) {
 		
@@ -62,10 +67,26 @@
 	  }
 	  
 	  
-	    list_add = [];
-	    list_remove = [];
+	    var list_add = [];
+		var length_list_add = 0;
+	    //list_remove = [];
 		
-		//function add_participante_graphs_line(){}
+		function hide_msg_add() {
+			$('#id_message_add').empty();
+		}
+		
+		function hide_msg_remove() {
+			$('#id_message_remove').empty();
+		}
+		
+		function remove_participante(inscricao, participante_apelido) {
+			alert('inscr: ' + inscricao + ' | ' + participante_apelido);
+						
+			 //$('#id_part_include option:selected').remove();
+			 // inclui na lista dos nao add
+			 //$('#id_part_not_include').append('<option value="'+list_add[i][0].fields.inscricao_id+'">'+list_add[i][0].fields.participante_apelido+'</option>');									
+		}
+		
 		
 		$(function() {		
 			
@@ -75,27 +96,31 @@
 				//alert(ip);
 				
 				if (ip == null) {
-					alert('Selecione o participante para adiciona-lo');
+					$('#id_message_add').html('Selecione o participante para adiciona-lo!   <span><a href="#" onclick="hide_msg_add();"> <i class="icon-remove"></i></a></span>');
 				} else {					
 					var qtde_add = $('#id_part_include option').length;
 					
 					//alert('Posicao >>> ' + qtde_add+1);
 					
 					if (qtde_add == 5) {
-						alert('É possivel adicionar somente 5 participantes!');
-					} else {
-					
+						$('#id_message_add').html('É possivel adicionar somente 5 participantes!   <span><a href="#" onclick="hide_msg_add();"> <i class="icon-remove"></i></a></span>');
+					} else {					
 						$.getJSON('/get_inscricao_json/'+ip,  // URL 				
 								  function(retorno) {         // REQUISIÇÂO       
 									 //alert(JSON.stringify(retorno));
-									 linha = '<tr>';									 
+									 linha = '<tr id="id_add__'+retorno[0].fields.inscricao_id+'">';									 
 									 linha +='  <td><img src="'+retorno[0].fields.participante_foto+'" height="20" width="25" class="img-rounded"/> '+retorno[0].fields.participante_apelido+'</td>';
 									 linha +='  <td><center>'+retorno[0].fields.inscricao_colocacao+'º</center></td>';
-									 linha +='  <td><center>'+retorno[0].fields.inscricao_pontos+'</center></td>';									 
+									 linha +='  <td><center>'+retorno[0].fields.inscricao_pontos+'</center></td>';	
+									 linha +='  <td><center><a href="#" onclick="remove_participante('+retorno[0].fields.inscricao_id+',\''+retorno[0].fields.participante_apelido+'\');"><i class="icon-remove"></i></a></center></td>';
 									 linha +='</tr>';
 									 $('#corpoTabela').append(linha);
 									 $('#id_part_not_include option:selected').remove();
-									 $('#id_part_include').append('<option value="8">'+retorno[0].fields.participante_apelido+'</option>');
+									 $('#id_part_include').append('<option value="'+retorno[0].fields.inscricao_id+'">'+retorno[0].fields.participante_apelido+'</option>');
+									 
+									 //alert('ANTES add_part_grafico_barra: addRows ');
+									 add_part_grafico_barra(retorno);
+									 
 						});					
 					
 					
@@ -140,6 +165,50 @@
 				}
 			});
 			
+			$('#id_remove_part').click(function() {
+				var inscricao_part = $('#id_part_include').val();
+				if (inscricao_part == null) {
+					$('#id_message_remove').html('Selecione o participante para remove-lo!   <span><a href="#" onclick="hide_msg_remove();"> <i class="icon-remove"></i></a></span>');
+				} else {
+					var qtde_add = $('#id_part_include option').length;
+					if(qtde_add == 1) {
+						$('#id_message_remove').html('Não é possivel remover todos os participantes!   <span><a href="#" onclick="hide_msg_remove();"> <i class="icon-remove"></i></a></span>');
+					} else {
+						var participante = $('#id_part_include option:selected').text();
+						var found__ = false;
+						for(var i = 0; i < length_list_add; i++) {
+							participante_json = JSON.stringify(list_add[i]);
+							//if (participante_json.indexOf('fields') < 0) {		
+							//	$('#id_message_remove').html('Participante não poderá ser removido, somente os adicionados !   <span><a href="#" onclick="hide_msg_remove();"> <i class="icon-remove"></i></a></span>');
+							//}
+							//else {		
+								alert(participante_json);
+								if (participante_json.indexOf(participante) > -1) {
+									 // remove dos add...
+									 $('#id_part_include option:selected').remove();
+									 // inclui na lista dos nao add
+									 $('#id_part_not_include').append('<option value="'+list_add[i][0].fields.inscricao_id+'">'+list_add[i][0].fields.participante_apelido+'</option>');									
+									 // remove da tabela
+									 $('#id_add__'+list_add[i][0].fields.inscricao_id).remove();
+									 // limpa na lista...
+									 list_add[i] = "[]";
+									 // decrementa o users
+									 qtde_users--;
+									 found__ = true;
+									 break;
+								}								
+							//}
+						}
+						if(!found__) {
+							$('#id_message_remove').html('Participante não poderá ser removido, somente os adicionados !   <span><a href="#" onclick="hide_msg_remove();"> <i class="icon-remove"></i></a></span>');
+						}						
+						
+					}
+				}
+				
+				
+			});
+			
 		});	  
 	  
 	  /*
@@ -165,12 +234,105 @@
 	  }
 	  */
 	  
-    </script>
-	
-   
-    <script type="text/javascript">
       google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart_);
+	  
+	  function add_part_grafico_barra(json) {	  
+			// Gero os dados com os participantes ja add...
+			var data = get_data(qtde_users+1);
+			// Add em uma lista o json...
+			//list_add[qtde_users-1] = json;
+			list_add[length_list_add] = json;
+			length_list_add++;
+			
+			// verifico em qual linha do array devo iniciar...
+			//var i = 0;
+			//{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
+			//	i = 1;
+			//{% endif %}
+			
+			// faço o laço correndo em todos os participantes add depois do carregamento da pág.			
+			for(var i = 0; i < length_list_add; i++) { /*i += 1*/
+			
+				if (JSON.stringify(list_add[i]).indexOf('fields') > -1) {			
+					//alert(JSON.stringify(list_add[i]));
+					data.setCell(i, 0, list_add[i][0].fields.participante_apelido);
+					data.setCell(i, 1, list_add[i][0].fields.inscricao_quantidade_acerto_placar);
+					data.setCell(i, 2, list_add[i][0].fields.inscricao_quantidade_acerto_vencedor_um_resultado_correto);
+					data.setCell(i, 3, list_add[i][0].fields.inscricao_quantidade_acerto_vencedor);
+					data.setCell(i, 4, list_add[i][0].fields.inscricao_quantidade_acerto_empate_erro_placar);
+					data.setCell(i, 5, list_add[i][0].fields.inscricao_quantidade_acerto_somente_resultado_um_time);
+					data.setCell(i, 6, list_add[i][0].fields.inscricao_quantidade_erro);
+				}
+			}
+			
+		    var view = new google.visualization.DataView(data);
+		    //view.setColumns([0, 1]);
+			var options = {
+			  title: 'Quantidade de acertos',
+			  width:450, height:350,
+			  hAxis: {title: 'Histórico da Pontuação', titleTextStyle: {color: 'red'}}
+			};				  		  
+		    var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_col'));
+		    chart.draw(view, options);				
+			
+	  }
+	  
+	  function get_data(addRows) {
+		  var data = new google.visualization.DataTable();
+		  
+		  data.addColumn('string', 'Participante');
+		  data.addColumn('number', 'AP');
+		  data.addColumn('number', 'AR');
+		  data.addColumn('number', 'AV');
+		  data.addColumn('number', 'AE');
+		  data.addColumn('number', 'AS');
+		  data.addColumn('number', 'ER');
+		  
+		  {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
+				if (addRows == -1) {
+					qtde_users = 2;
+					data.addRows(qtde_users);
+					list_add[0] = '[]';
+					list_add[1] = '[]';
+					length_list_add = 2;
+				} else {
+					data.addRows(addRows);
+					qtde_users++;
+				}
+		  {% else %}
+				if (addRows == -1) {
+					qtde_users = 1;
+					data.addRows(qtde_users);
+					list_add[0] = '[]';
+					length_list_add = 1;
+				} else {
+					data.addRows(addRows);
+					qtde_users++;
+				}
+		  {% endif %}
+		  
+		  // view
+		  data.setCell(0, 0, '{{ view_inscricao.participante.apelido }}');
+		  data.setCell(0, 1, {{ view_inscricao.quantidade_acerto_placar }});
+		  data.setCell(0, 2, {{ view_inscricao.quantidade_acerto_vencedor_um_resultado_correto }});
+		  data.setCell(0, 3, {{ view_inscricao.quantidade_acerto_vencedor }});
+		  data.setCell(0, 4, {{ view_inscricao.quantidade_acerto_empate_erro_placar }});
+		  data.setCell(0, 5, {{ view_inscricao.quantidade_acerto_somente_resultado_um_time }});
+		  data.setCell(0, 6, {{ view_inscricao.quantidade_erro }});
+		  
+		  {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
+			  // user
+			  data.setCell(1, 0, '{{ user_inscricao.participante.apelido }}');
+			  data.setCell(1, 1, {{ user_inscricao.quantidade_acerto_placar }});
+			  data.setCell(1, 2, {{ user_inscricao.quantidade_acerto_vencedor_um_resultado_correto }});
+			  data.setCell(1, 3, {{ user_inscricao.quantidade_acerto_vencedor }});
+			  data.setCell(1, 4, {{ user_inscricao.quantidade_acerto_empate_erro_placar }});
+			  data.setCell(1, 5, {{ user_inscricao.quantidade_acerto_somente_resultado_um_time }});		  
+			  data.setCell(1, 6, {{ user_inscricao.quantidade_erro }});
+		  {% endif %}
+		  return data;
+	  }
 	  
       function drawChart_() {
 	  
@@ -203,52 +365,18 @@
 		
 		*/
 		
-		  var data = new google.visualization.DataTable();
-		  
-		  data.addColumn('string', 'Participante');
-		  data.addColumn('number', 'AP');
-		  data.addColumn('number', 'AR');
-		  data.addColumn('number', 'AV');
-		  data.addColumn('number', 'AE');
-		  data.addColumn('number', 'AS');
-		  data.addColumn('number', 'ER');
-		  
-		  {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
-				data.addRows(2);
-		  {% else %}
-				data.addRows(1);
-		  {% endif %}
-		  
-		  // view
-		  data.setCell(0, 0, '{{ view_inscricao.participante.apelido }}');
-		  data.setCell(0, 1, {{ view_inscricao.quantidade_acerto_placar }});
-		  data.setCell(0, 2, {{ view_inscricao.quantidade_acerto_vencedor_um_resultado_correto }});
-		  data.setCell(0, 3, {{ view_inscricao.quantidade_acerto_vencedor }});
-		  data.setCell(0, 4, {{ view_inscricao.quantidade_acerto_empate_erro_placar }});
-		  data.setCell(0, 5, {{ view_inscricao.quantidade_acerto_somente_resultado_um_time }});
-		  data.setCell(0, 6, {{ view_inscricao.quantidade_erro }});
-		  
-		  {% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
-			  // user
-			  data.setCell(1, 0, '{{ user_inscricao.participante.apelido }}');
-			  data.setCell(1, 1, {{ user_inscricao.quantidade_acerto_placar }});
-			  data.setCell(1, 2, {{ user_inscricao.quantidade_acerto_vencedor_um_resultado_correto }});
-			  data.setCell(1, 3, {{ user_inscricao.quantidade_acerto_vencedor }});
-			  data.setCell(1, 4, {{ user_inscricao.quantidade_acerto_empate_erro_placar }});
-			  data.setCell(1, 5, {{ user_inscricao.quantidade_acerto_somente_resultado_um_time }});		  
-			  data.setCell(1, 6, {{ user_inscricao.quantidade_erro }});
-		  {% endif %}
-		  
-			var options = {
-			  title: 'Quantidade de acertos',
-			  width:450, height:350,
-			  hAxis: {title: 'Histórico da Pontuação', titleTextStyle: {color: 'red'}}
-			};		  
+		  var data = get_data(-1);
 			
 		  var view = new google.visualization.DataView(data);
 		  //view.setColumns([0, 1]);
 
-		  var chart = new google.visualization.BarChart(document.getElementById('chart_div_col'));
+			var options = {
+			  title: 'Quantidade de acertos',
+			  width:450, height:350,
+			  hAxis: {title: 'Histórico da Pontuação', titleTextStyle: {color: 'red'}}
+			};				  
+		  
+		  var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_col'));
 		  chart.draw(view, options);				
 		  		
       }
@@ -274,7 +402,8 @@
 					</select>	  
 				</div>
 				<div class="span2">
-					<br/><br/><br/>
+					<p id="id_message_add" class="text-error"></p>
+					<br/>
 					<a id="add_part" href="#" class="btn btn-success" >Adicionar</a>
 				</div>
 			</div>
@@ -290,8 +419,9 @@
 					</select>		
 				</div>
 				<div class="span2">
-					<br/><br/><br/>
-					<a href="#" class="btn btn-danger">Retirar</a>
+					<p id="id_message_remove" class="text-error"></p>
+					<br/>
+					<a href="#" class="btn btn-danger" id="id_remove_part" >Retirar</a>
 				</div>					
 			</div>	
 		</center>
@@ -310,19 +440,22 @@
 							<td>Participante</td>
 							<td><center>Colocação</center></td>
 							<td><center>Pontos</center></td>
+							<td></td>
 						</tr>
 					</thead>
 					<tbody id="corpoTabela">        
 						<tr>
 							<td><img src="/media/{{ view_inscricao.participante.foto }}" height="20" width="25" class="img-rounded"/> {{ view_inscricao.participante.apelido }}</td>
 							<td><center>{{ view_inscricao.colocacao }}º</center></td>
-							<td><center>{{ view_inscricao.pontos }}</center></td>						
+							<td><center>{{ view_inscricao.pontos }}</center></td>	
+							<td></td><!--<td><center><a href="#"><i class="icon-remove"></i></a></center></td>-->
 						</tr>					
 						{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
 							<tr>
 								<td><img src="/media/{{ user_participante.foto }}" height="20" width="25" class="img-rounded"/> {{ user_participante.apelido }}</td>
 								<td><center>{{ user_inscricao.colocacao }}º</center></td>
 								<td><center>{{ user_inscricao.pontos }}</center></td>						
+								<td></td><!--<td><center><a href="#"><i class="icon-remove"></i></a></center></td>-->
 							</tr>
 						{% endif %}						
 					</tbody>					
