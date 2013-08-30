@@ -69,9 +69,9 @@
 			// faço o laço correndo em todos os participantes add depois do carregamento da pág.					
 			for (var ii = 0; ii < length_list_add; ii++) {			
 				if(JSON.stringify(list_add_line[ii]).indexOf('pk') > -1) {					
-					$('#id_part_include')[0].selectedIndex=-1;
-					$('#id_part_include').find("option[value='"+list_add_line[ii][0].fields.inscricao+"']").attr("selected", "selected");
-					var participante = $('#id_part_include option:selected').text();			
+					$('#id_part_include2')[0].selectedIndex=-1;
+					$('#id_part_include2').find("option[value='"+list_add_line[ii][0].fields.inscricao+"']").attr("selected", "selected");
+					var participante = $('#id_part_include2 option:selected').text();			
 					data.addColumn('number', participante); 
 					
 					$.each(list_add_line[ii], function(i, item){					
@@ -96,19 +96,19 @@
 	    //list_remove = [];
 		
 		function hide_msg_add() {
-			$('#id_message_add').empty();
+			$('#id_message_add2').empty();
 		}
 		
 		function hide_msg_remove() {
-			$('#id_message_remove').empty();
+			$('#id_message_remove2').empty();
 		}
 		
 		function remove_participante(inscricao) {
 			//alert('inscr: ' + inscricao);
 			
-			$('#id_part_include').get(0).selectedIndex = -1;
-			$('#id_part_include').find("option[value='"+inscricao+"']").attr("selected", "selected");
-			var participante = $('#id_part_include option:selected').text();		
+			$('#id_part_include2').get(0).selectedIndex = -1;
+			$('#id_part_include2').find("option[value='"+inscricao+"']").attr("selected", "selected");
+			var participante = $('#id_part_include2 option:selected').text();		
 			
 			//alert('participante: ' + participante);
 			
@@ -120,9 +120,9 @@
 					 // decrementa o users
 					 qtde_users--;					 
 					 // remove dos add...
-					 $('#id_part_include option:selected').remove();
+					 $('#id_part_include2 option:selected').remove();
 					 // inclui na lista dos nao add
-					 $('#id_part_not_include').append('<option value="'+inscricao+'">'+participante+'</option>');									
+					 $('#id_part_not_include2').append('<option value="'+inscricao+'">'+participante+'</option>');									
 					 // remove da tabela
 					 $('#id_add__'+inscricao).remove();							 
 					 // grafico barras...
@@ -143,18 +143,18 @@
 		
 		$(function() {		
 			
-			$('#add_part').click(function() {				
-				var ip = $('#id_part_not_include').val();	
+			$('#add_part2').click(function() {				
+				var ip = $('#id_part_not_include2').val();	
 				//alert(ip);				
 				if (ip == null) {
-					$('#id_message_add').html('Selecione o participante para adiciona-lo!   <span><a href="#" onclick="hide_msg_add();"> <i class="icon-remove"></i></a></span>');
+					$('#id_message_add2').html('Selecione o participante para adiciona-lo!   <span><a href="javascript:undefined" onclick="hide_msg_add();"> <i class="icon-remove"></i></a></span>');
 				} else {					
-					var qtde_add = $('#id_part_include option').length;
+					var qtde_add = $('#id_part_include2 option').length;
 					
 					//alert('Posicao >>> ' + qtde_add+1);
 					
 					if (qtde_add == 5) {
-						$('#id_message_add').html('É possivel adicionar somente 5 participantes!   <span><a href="#" onclick="hide_msg_add();"> <i class="icon-remove"></i></a></span>');
+						$('#id_message_add2').html('É possivel adicionar somente 5 participantes!   <span><a href="javascript:undefined" onclick="hide_msg_add();"> <i class="icon-remove"></i></a></span>');
 					} else {					
 						$.getJSON('/get_inscricao_json/'+ip,  // URL 				
 								  function(retorno) {         // REQUISIÇÂO       
@@ -163,11 +163,11 @@
 									 linha +='  <td><img src="'+retorno[0].fields.participante_foto+'" height="20" width="25" class="img-rounded"/> '+retorno[0].fields.participante_apelido+'</td>';
 									 linha +='  <td><center>'+retorno[0].fields.inscricao_colocacao+'º</center></td>';
 									 linha +='  <td><center>'+retorno[0].fields.inscricao_pontos+'</center></td>';	
-									 linha +='  <td><center><a href="#" onclick="remove_participante('+retorno[0].fields.inscricao_id+');"><i class="icon-remove"></i></a></center></td>';
+									 linha +='  <td><center><a href="javascript:undefined" onclick="remove_participante('+retorno[0].fields.inscricao_id+');"><i class="icon-remove"></i></a></center></td>';
 									 linha +='</tr>';
 									 $('#corpoTabela').append(linha);
-									 $('#id_part_not_include option:selected').remove();
-									 $('#id_part_include').append('<option value="'+retorno[0].fields.inscricao_id+'">'+retorno[0].fields.participante_apelido+'</option>');
+									 $('#id_part_not_include2 option:selected').remove();
+									 $('#id_part_include2').append('<option value="'+retorno[0].fields.inscricao_id+'">'+retorno[0].fields.participante_apelido+'</option>');
 									 
 									 //alert('ANTES add_part_grafico_barra: addRows ');
 									 add_part_grafico_barra(retorno);
@@ -206,16 +206,16 @@
 				}
 			});
 			
-			$('#id_remove_part').click(function() {
-				var inscricao_part = $('#id_part_include').val();
+			$('#id_remove_part2').click(function() {
+				var inscricao_part = $('#id_part_include2').val();
 				if (inscricao_part == null) {
-					$('#id_message_remove').html('Selecione o participante para remove-lo!   <span><a href="#" onclick="hide_msg_remove();"> <i class="icon-remove"></i></a></span>');
+					$('#id_message_remove2').html('Selecione o participante para remove-lo!   <span><a href="javascript:undefined" onclick="hide_msg_remove();"> <i class="icon-remove"></i></a></span>');
 				} else {
-					var qtde_add = $('#id_part_include option').length;
+					var qtde_add = $('#id_part_include2 option').length;
 					if(qtde_add == 1) {
-						$('#id_message_remove').html('Não é possivel remover todos os participantes!   <span><a href="#" onclick="hide_msg_remove();"> <i class="icon-remove"></i></a></span>');
+						$('#id_message_remove2').html('Não é possivel remover todos os participantes!   <span><a href="javascript:undefined" onclick="hide_msg_remove();"> <i class="icon-remove"></i></a></span>');
 					} else {
-						var participante = $('#id_part_include option:selected').text();
+						var participante = $('#id_part_include2 option:selected').text();
 						var found__ = false;
 						for(var i = 0; i < length_list_add; i++) {
 							participante_json = JSON.stringify(list_add[i]);
@@ -226,9 +226,9 @@
 								//alert(participante_json);
 								if (participante_json.indexOf(participante) > -1) {
 									 // remove dos add...
-									 $('#id_part_include option:selected').remove();
+									 $('#id_part_include2 option:selected').remove();
 									 // inclui na lista dos nao add
-									 $('#id_part_not_include').append('<option value="'+list_add[i][0].fields.inscricao_id+'">'+list_add[i][0].fields.participante_apelido+'</option>');									
+									 $('#id_part_not_include2').append('<option value="'+list_add[i][0].fields.inscricao_id+'">'+list_add[i][0].fields.participante_apelido+'</option>');									
 									 // remove da tabela
 									 $('#id_add__'+list_add[i][0].fields.inscricao_id).remove();
 									 // limpa na lista...
@@ -250,7 +250,7 @@
 							//}
 						}
 						if(!found__) {
-							$('#id_message_remove').html('Participante não poderá ser removido, somente os adicionados !   <span><a href="#" onclick="hide_msg_remove();"> <i class="icon-remove"></i></a></span>');
+							$('#id_message_remove2').html('Participante não poderá ser removido, somente os adicionados !   <span><a href="javascript:undefined" onclick="hide_msg_remove();"> <i class="icon-remove"></i></a></span>');
 						}						
 						
 					}
@@ -522,28 +522,61 @@
 					</tbody>					
 				</table>
 			</div> 
+			<!-- Combobox Participantes -->
 			<div class="span6">
+				<div class="bs-example">
+				  <ul class="nav nav-tabs" style="margin-bottom: 15px;">
+					<li class="active"><a href="#id_others_part" data-toggle="tab">Outros participantes</a></li>
+					<li><a href="#id_add_list_hist" data-toggle="tab">Adicionados no Gráfico</a></li>			
+				  </ul>
+				</div>
+				<div id="myTabContent" class="tab-content">
+					<div class="tab-pane fade active in" id="id_others_part">														
+							<div class="span3">
+								<select size="6" id="id_part_not_include2">
+									{% for ip in participantes_inscritos %}
+										<option value="{{ ip.id }}">{{ip.participante.apelido}}</option>
+									{% endfor %}
+								</select>	  
+							</div>
+							<div class="span2">
+								<p><input type="text" id="id_pesq_part2" value="" placeholder="Pesquisar"></p>		
+								<p id="id_message_add2" class="text-error"></p>
+								<br/>
+								<a id="add_part2" href="javascript:undefined" class="btn btn-success" >Adicionar</a>
+							</div>					
+					</div>
+					<div class="tab-pane fade in" id="id_add_list_hist">
+							<div class="span3">			
+								<select size="6" id="id_part_include2">
+									{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}
+										<option value="{{ user_inscricao.id }}">{{ user_inscricao.participante.apelido }}</option>
+									{% endif %}
+									<option value="{{ view_inscricao.id }}">{{ view_inscricao.participante.apelido }}</option>
+								</select>		
+							</div>
+							<div class="span2">
+								<p id="id_message_remove2" class="text-error"></p>
+								<br/>
+								<a href="javascript:undefined" class="btn btn-danger" id="id_remove_part2" >Retirar</a>
+							</div>	
+					</div>							
+				</div>				
+				<!--
 				<br/><br/>
 				<a href="#id_modal_include_part" role="button" data-toggle="modal" class="btn btn-warning">Incluir participante</a>
-				
-				{% include 'legenda_pontos.html' %}
-				<!--
-				<h4 class="text-warning">
-					{{ user_participante.apelido }} 
-					<span class="offset1">Colocação Atual:  {{ user_inscricao.colocacao }}º</span>
-					<span class="offset1">Pontos:  {{ user_inscricao.pontos }}</span>
-				</h4>
-				<h4 class="text-warning">
-					{{ view_inscricao.participante.apelido }} 
-					<span class="offset1">Colocação Atual:  {{ view_inscricao.colocacao }}º</span>
-					<span class="offset1">Pontos:  {{ view_inscricao.pontos }}</span>
-				</h4>					
 				-->
 			</div> 	
+			<!-- End Combobox Participantes -->
+		</div>
+		<div class="row"> 
+			</br>
+			{% include 'legenda_pontos.html' %} 
 		</div>
 	</div>
 
 	<br/>	
+</div>
 
 	<div class="row">
 		<div class="span9">
@@ -558,3 +591,6 @@
 		</div>
 	</div>
 	
+	<br/><br/><br/><br/><br/><br/><br/><br/>
+	
+<div class="container">	

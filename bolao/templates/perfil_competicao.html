@@ -22,7 +22,7 @@
 
 {% include 'legenda_pontos.html' %}
 {% if view_inscricao.participante.id != user_participante.id and user_participante.user.is_authenticated  and user_inscricao.pk > 0 %}
-	<a href="/comparar_colocacao/{{competicao.id}}/{{view_inscricao.id}}/" class="btn" onclick="show_ful__(this.href); return false;">Comparar colocação</a>
+	<a href="/comparar_colocacao/{{competicao.id}}/{{view_inscricao.id}}/" class="btn" target="_blank">Comparar colocação</a>
 {% endif %}
 
 <br/><br/>

@@ -85,8 +85,11 @@ def get_patrocinador_pagina(codigo_pagina, competicao):
 				patrocinadores_pagina.append(pp)
 	except:
 		patrocinadores_pagina = []
-	return patrocinadores_pagina
+	return patrocinadores_pagina	
 	
+def get_nome_oficial_competicao(competicao):
+	from core.templatetags.functions import *
+	return 'Copa ' + get_patrocinador_principal_display(competicao) + ' ' + competicao.nome
 
 def rancking(request, competicao_pk):
 	competicao = Competicao.objects.get(pk=competicao_pk)	
@@ -101,7 +104,7 @@ def rancking(request, competicao_pk):
 	return render_to_response('_base.html', 
 							  {     'template': 'rancking.html', 
 							        'titulo': 'Rancking', 
-							        'subtitulo': competicao.campeonato.nome + ' ' + competicao.nome,
+							        'subtitulo': get_nome_oficial_competicao(competicao),
 							        'user_participante': user_participante,
 							        'user_inscricao': user_inscricao,
 							        'competicao': competicao,
@@ -301,8 +304,15 @@ def perfil_competicao_modal(request, view_inscricao_pk):
 						  }    
 	dictFields = { 'fields': view_inscricao_json }
 	to_json.append(dictFields)
-	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")  	
+	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")  
 
+def get_apostas_pos_edicao(inscricao):
+	apostas = list()
+	apts_aux = Aposta.objects.filter(inscricao=inscricao).order_by('jogo') # este encarrega de colocar os jogos no grafico (ordernar todos)		
+	for a in apts_aux:
+		if (a.jogo.status.codigo == 'A') or (a.jogo.status.codigo == 'F'):
+			apostas.append(a)		
+	return apostas	
 
 def perfil_competicao(request, competicao_pk, view_inscricao_pk):
 	competicao = Competicao.objects.get(pk=competicao_pk)	
@@ -310,22 +320,13 @@ def perfil_competicao(request, competicao_pk, view_inscricao_pk):
 	user_participante = get_participante_by_user(request.user)
 	user_inscricao = get_inscricao(competicao, user_participante)
 	view_inscricao = Inscricao.objects.get(pk=view_inscricao_pk)
-	view_apostas = list()
-	apts_aux = Aposta.objects.filter(inscricao=view_inscricao)
-	#jogo_ = apts_aux.count()
-	#if user_inscricao.pk != view_inscricao.pk:
-	jogo_ = 0
-	for a in apts_aux:
-		if (a.jogo.status.codigo == 'A') or (a.jogo.status.codigo == 'F'):
-			view_apostas.append(a)	
-			jogo_ = jogo_ + 1
-	#else:
-	#	view_apostas = apts_aux	
+	view_apostas = get_apostas_pos_edicao(view_inscricao)
+	jogo_ = len(view_apostas)
 	return render_to_response('_base.html', 
 						      {  
 								'template': 'perfil_competicao.html',
 								'titulo': view_inscricao.participante.apelido,
-								'subtitulo': '', #view_inscricao.competicao.campeonato.nome + ' ' + view_inscricao.competicao.nome,
+								'subtitulo': get_nome_oficial_competicao(competicao), #view_inscricao.competicao.campeonato.nome + ' ' + view_inscricao.competicao.nome,
 								'user_participante': user_participante,
 								'user_inscricao': user_inscricao,
 								'competicao': competicao, 	
@@ -338,33 +339,24 @@ def perfil_competicao(request, competicao_pk, view_inscricao_pk):
 								'perfil': True,
 								'foto': view_inscricao.participante.foto
 							   })
-							  
+	
 def comparar_colocacao(request, competicao_pk, view_inscricao_pk):
 	competicao = Competicao.objects.get(pk=competicao_pk)	
 	user_participante = get_participante_by_user(request.user)
 	user_inscricao = get_inscricao(competicao, user_participante)
 	view_inscricao = Inscricao.objects.get(pk=view_inscricao_pk)
-	view_apostas = list()
-	apts_aux = Aposta.objects.filter(inscricao=view_inscricao).order_by('jogo')
-	jogo_ = 0
-	for a in apts_aux:
-		if (a.jogo.status.codigo == 'A') or (a.jogo.status.codigo == 'F'):
-			view_apostas.append(a)	
-			jogo_ = jogo_ + 1	
-	my_apostas = list()
-	my_apts_aux = Aposta.objects.filter(inscricao=user_inscricao)
-	for a in my_apts_aux:
-		if (a.jogo.status.codigo == 'A') or (a.jogo.status.codigo == 'F'):
-			my_apostas.append(a)	
+	view_apostas = get_apostas_pos_edicao(view_inscricao)
+	my_apostas = get_apostas_pos_edicao(user_inscricao)
+	jogo_ = len(view_apostas)			
 	if user_inscricao.pk > 0:
 		participantes_inscritos = Inscricao.objects.filter(competicao=competicao).exclude(participante__in=[view_inscricao.participante, user_participante]).order_by('participante')
 	else:
 		participantes_inscritos = Inscricao.objects.filter(competicao=competicao).exclude(participante=view_inscricao.participante).order_by('participante')
-	return render_to_response('_base_simple.html', 
+	return render_to_response('_base.html', 
 						      {  
 								'template': 'comparar_colocacao.html',
-								'titulo': view_inscricao.participante.apelido,
-								'subtitulo': '', #view_inscricao.competicao.campeonato.nome + ' ' + view_inscricao.competicao.nome,
+								'titulo': u'Histórico de Colocação',
+								'subtitulo': view_inscricao.participante.apelido, #view_inscricao.competicao.campeonato.nome + ' ' + view_inscricao.competicao.nome,
 								'user_participante': user_participante,
 								'user_inscricao': user_inscricao,
 								'competicao': competicao, 	
@@ -381,18 +373,8 @@ def comparar_colocacao(request, competicao_pk, view_inscricao_pk):
 							  
 #ajax							  
 def get_aposta_by_inscricao(request, inscricao_pk):   
-	view_inscricao = Inscricao.objects.get(pk=inscricao_pk)
-	
-	apostas = list()
-	apostas__aux = Aposta.objects.filter(inscricao=view_inscricao)
-	i=0
-	for a in apostas__aux:
-		if a.jogo.status.codigo == 'A' or a.jogo.status.codigo == 'F':
-			apostas.append(a)
-			i=i+1
-
-	print('QUANTIDADE DE APOSTAS >>>> ' + str(i))
-			
+	view_inscricao = Inscricao.objects.get(pk=inscricao_pk)	
+	apostas = get_apostas_pos_edicao(view_inscricao)			
 	retorno = serializers.serialize("json", apostas)
 	return HttpResponse(retorno, mimetype="text/javascript")	
 	
