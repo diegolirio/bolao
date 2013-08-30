@@ -35,9 +35,13 @@
 							 //alert(retorno[0].fields.patrocinador_display);
 							 var html__ = "";
 							 html__ += '<span class="text-warning">publicidade</span><br/> ';
-							 html__ += '<a href="'+retorno[0].fields.patrocinador_link+'" target="_blank">';
-							 html__ += '   <img class="img-rounded" title="'+retorno[0].fields.patrocinador_display+'" height="100" width="150" src="'+retorno[0].fields.patrocinador_image_aside+'"/>';
-							 html__ += '</a>';
+							 if (retorno[0].fields.return_proc == 'N') {
+								html__ += '<a href="'+retorno[0].fields.patrocinador_link+'" target="_blank">';
+								html__ += '   <img class="img-rounded" title="'+retorno[0].fields.patrocinador_display+'" height="100" width="150" src="'+retorno[0].fields.patrocinador_image_aside+'"/>';
+								html__ += '</a>';
+							} else {
+								html__ += '   <img class="img-rounded" title="Anuncie aqui" height="100" width="150" src="/media/images/patrocinadores/anuncie.gif"/>';
+							}
 							 $('#id_publicidade_top').html(html__);
 				});			
 			}			

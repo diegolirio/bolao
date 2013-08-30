@@ -64,16 +64,16 @@ def insert_auto_paginas():
 		tt.save()	
 	if Pagina.objects.filter(codigo_pagina='M').count() == 0:		
 		tt = Pagina()
-		tt.nome_pagina = 'Meus Palpites'
+		tt.nome_pagina = 'Minhas Apostas Topo'
 		tt.codigo_pagina = 'M'
 		tt.qtde_total_patrocinio = 1
 		tt.valor = 9	
 		tt.save()			
 	if Pagina.objects.filter(codigo_pagina='P').count() == 0:		
 		tt = Pagina()
-		tt.nome_pagina = 'Aposta do Jogo Topo'
+		tt.nome_pagina = 'Palpites de Todos Topo'
 		tt.codigo_pagina = 'P'
-		tt.qtde_total_patrocinio = 1
+		tt.qtde_total_patrocinio = 5
 		tt.valor = 9	
 		tt.save()			
 
