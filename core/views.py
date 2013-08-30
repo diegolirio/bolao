@@ -114,6 +114,52 @@ def rancking(request, competicao_pk):
 							        'inscricoes_competicao': inscricoes_competicao,
 									'patrocinadores': patrocinadores
 							        })
+									
+def __get_one_puclicidade_global__(pagina_codigo):
+	try:
+		pagina = Pagina.objects.filter(codigo_pagina=pagina_codigo)[0:1].get()
+		pag_patr = PaginaPatrocinio.objects.get(pagina=pagina)
+		patrocinador = pag_patr.competicacao_patrocinador.patrocinador
+	except:
+		patrocinador = Patrocinador()
+	return patrocinador
+	
+def __get_one_puclicidade_pagina__(pagina_codigo, competicao):
+	patrocinador = Patrocinador()
+	try:
+		pagina = Pagina.objects.filter(codigo_pagina=pagina_codigo)[0:1].get()
+		pag_patrs = PaginaPatrocinio.objects.filter(pagina=pagina)
+		for pp in pag_patrs:
+			if pp.competicacao_patrocinador.competicao == competicao:
+				patrocinador = pp.competicacao_patrocinador.patrocinador
+				break
+	except:
+		patrocinador = Patrocinador()
+	return patrocinador	
+
+def get_one_puclicidade_pagina(request, pagina_codigo, competicao_pk):
+	competicao = Competicao.objects.get(pk=competicao_pk)
+	patrocinador = __get_one_puclicidade_pagina__(pagina_codigo, competicao)
+	try:
+		image = patrocinador.image_aside.url
+		if patrocinador.pk > 0:
+			return_proc = 'N'
+		else:
+			return_proc = 'W'
+	except:
+		image = ""
+		return_proc = 'W'
+	json = {
+			 'patrocinador_id': patrocinador.pk,
+			 'patrocinador_display': patrocinador.nome_visual,
+			 'patrocinador_link': patrocinador.url_site,
+			 'patrocinador_image_aside': image,
+			 'return_proc': return_proc
+		  }    
+	dictFields = { 'fields': json }
+	to_json = list()
+	to_json.append(dictFields)
+	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")  	
 	                                
 def imprimir_rancking(request, competicao_pk):
 	competicao = Competicao.objects.get(pk=competicao_pk)
@@ -285,8 +331,7 @@ def perfil_competicao_modal(request, view_inscricao_pk):
 	for a in apts_aux:
 		if (a.jogo.status.codigo == 'A') or (a.jogo.status.codigo == 'F'):
 			view_apostas.append(a)	
-			jogo_ = jogo_ + 1	
-	
+			jogo_ = jogo_ + 1		
 	view_inscricao_json = {
                              'inscricao_id': view_inscricao.id,
 							 'participante_id': view_inscricao.participante.id,
@@ -1494,12 +1539,7 @@ def redefinir_senha(request, user_pk, code_new_password):
 							  
 def logout(request):
 	form = UserPasswordForm()
-	try:
-		pagina = Pagina.objects.filter(codigo_pagina='O')[0:1].get()
-		pag_patr = PaginaPatrocinio.objects.get(pagina=pagina)
-		patrocinador_out = pag_patr.competicacao_patrocinador.patrocinador
-	except:
-		patrocinador_out = Patrocinador()
+	patrocinador_out = __get_one_puclicidade_global__('O')
 	return render_to_response('login.html', 
 							  {     #'template': 'login.html',
 									'form': form,

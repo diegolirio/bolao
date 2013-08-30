@@ -21,15 +21,27 @@
 			function show__(url, alt, larg) {
 				w = window.open(url, 
 								'', 
-								'height=550, width=750, top=150, left=250, scrollbars=no, resizable=no');
-								
+								'height=550, width=750, top=150, left=250, scrollbars=no, resizable=no');								
 			}
 			function show_ful__(url, alt, larg) {
 				w = window.open(url, 
 								'', 
-								'height=650, width=1170, top=100, left=30, scrollbars=no, resizable=no');
-								
+								'height=650, width=1170, top=100, left=30, scrollbars=no, resizable=no');								
 			}			
+			
+			function get_one_puclicidade_pagina(pagina_codigo, competicao_id) {
+				$.getJSON('/get_one_puclicidade_pagina/'+pagina_codigo+'/'+competicao_id+'/', 			
+						  function(retorno) {     
+							 //alert(retorno[0].fields.patrocinador_display);
+							 var html__ = "";
+							 html__ += '<span class="text-warning">publicidade</span><br/> ';
+							 html__ += '<a href="'+retorno[0].fields.patrocinador_link+'" target="_blank">';
+							 html__ += '   <img class="img-rounded" title="'+retorno[0].fields.patrocinador_display+'" height="100" width="150" src="'+retorno[0].fields.patrocinador_image_aside+'"/>';
+							 html__ += '</a>';
+							 $('#id_publicidade_top').html(html__);
+				});			
+			}			
+			
 		</script>		
 	
 	{% endblock %}

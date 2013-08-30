@@ -69,11 +69,7 @@
 	
 	$(function() {
 	
-		// ToDo...: busca patrocinador Top Rancking pela "Competicao" e "Pagina" (JSON)	
-		$('#id_publicidade_top').html('<span class="text-warning">publicidade</span><br/> '+
-									  '<a href="{{ patrocinador.patrocinador.url_site }}" target="_blank">'+
-									  '    <img class="img-rounded" title="{{patrocinador.patrocinador.nome_visual}}" height="100" width="150" src="/media/{{ patrocinador.patrocinador.image_aside }}"/>'+
-									  '</a>');
+		get_one_puclicidade_pagina('K', {{competicao.id}});
 	
 		$('.id_col').mouseenter(function() {
 			$('.id_col').addClass('btn');
