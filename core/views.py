@@ -345,7 +345,7 @@ def comparar_colocacao(request, competicao_pk, view_inscricao_pk):
 	user_inscricao = get_inscricao(competicao, user_participante)
 	view_inscricao = Inscricao.objects.get(pk=view_inscricao_pk)
 	view_apostas = list()
-	apts_aux = Aposta.objects.filter(inscricao=view_inscricao)
+	apts_aux = Aposta.objects.filter(inscricao=view_inscricao).order_by('jogo')
 	jogo_ = 0
 	for a in apts_aux:
 		if (a.jogo.status.codigo == 'A') or (a.jogo.status.codigo == 'F'):

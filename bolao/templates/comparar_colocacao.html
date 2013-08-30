@@ -17,6 +17,7 @@
 
 			var options = {
 							title: 'Histórico de Colocação',
+							width:900, height:480,
 							vAxis: {maxValue: 10, direction: -1} // Inverte a Coluna em ordem crescente...
 						  };
 			var chart = new google.visualization.LineChart(document.getElementById('chart_div'));		
@@ -54,50 +55,40 @@
 	  
 	  function drawChart_line_json(aposta_part_json) {		
 		list_add_line[length_list_add-1] = aposta_part_json;		
-		var data = get_data_line();
-		
+		var data = get_data_line();		
 		//alert(JSON.stringify(aposta_part_json));		
-		
-		{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}			
-		var col = 3;
-		{% else %}
-		var col = 2;
-		{% endif %}
-		// faço o laço correndo em todos os participantes add depois do carregamento da pág.		
-		
-		for (var ii = 0; ii < length_list_add; ii++) {
-		
-			if(JSON.stringify(list_add_line[ii]).indexOf('pk') > -1) {
-		
-				//alert(JSON.stringify(list_add_line[ii]));
-		
-				// ################################################################
-				// ################################################################
-				// ################################################################
-				// ################################################################
-				//alert(list_add_line[ii][0].fields.inscricao);
-				// ################################################################
-				
-				$('#id_part_include').find("option[value='"+list_add_line[ii][0].fields.inscricao+"']").attr("selected", "selected");
-				var participante = $('#id_part_include option:selected').text();			
-				data.addColumn('number', participante); 
-				
-				$.each(list_add_line[ii], function(i, item){					
-					alert(i + ', ' + col + ', ' + item.fields.colocacao+'º');				
-					data.setValue(i, col, item.fields.colocacao);
-				});		
-				col++;
+		update_draw_charts_line(data);
+	  }
+	  
+	  function update_draw_charts_line(data) {		
+			{% if user_inscricao.id > 0 and user_inscricao.id != view_inscricao.id %}			
+			var col = 3;
+			{% else %}
+			var col = 2;
+			{% endif %}
+			// faço o laço correndo em todos os participantes add depois do carregamento da pág.					
+			for (var ii = 0; ii < length_list_add; ii++) {			
+				if(JSON.stringify(list_add_line[ii]).indexOf('pk') > -1) {					
+					$('#id_part_include')[0].selectedIndex=-1;
+					$('#id_part_include').find("option[value='"+list_add_line[ii][0].fields.inscricao+"']").attr("selected", "selected");
+					var participante = $('#id_part_include option:selected').text();			
+					data.addColumn('number', participante); 
+					
+					$.each(list_add_line[ii], function(i, item){					
+						data.setValue(i, col, item.fields.colocacao);
+					});		
+					col++;
+				}
 			}
-		}
-		
-		var options = {
-						title: 'Histórico de Colocação',
-						vAxis: {maxValue: 10, direction: -1} // Inverte a Coluna em ordem crescente...
-					  };
-		var chart = new google.visualization.LineChart(document.getElementById('chart_div'));		
-		chart.draw(data, options);		
-		
-	  }  
+			
+			var options = {
+							title: 'Histórico de Colocação',
+							width:900, height:480,
+							vAxis: {maxValue: 10, direction: -1} // Inverte a Coluna em ordem crescente...
+						  };
+			var chart = new google.visualization.LineChart(document.getElementById('chart_div'));		
+			chart.draw(data, options);		
+	  }
 	  
 	    var list_add = [];
 		var list_add_line = []
@@ -115,6 +106,7 @@
 		function remove_participante(inscricao) {
 			//alert('inscr: ' + inscricao);
 			
+			$('#id_part_include').get(0).selectedIndex = -1;
 			$('#id_part_include').find("option[value='"+inscricao+"']").attr("selected", "selected");
 			var participante = $('#id_part_include option:selected').text();		
 			
@@ -124,6 +116,7 @@
 				if (JSON.stringify(list_add[i]).indexOf(participante) > -1) {
 					 // limpa na lista...
 					 list_add[i] = "[]";
+					 list_add_line[i] = "[]";
 					 // decrementa o users
 					 qtde_users--;					 
 					 // remove dos add...
@@ -135,6 +128,9 @@
 					 // grafico barras...
 					 var data = get_data(qtde_users);
 					 update_draw_charts_bar(data);			
+					 // grafico linha
+					 var data = get_data_line();		
+					 update_draw_charts_line(data);					 
 					 break;
 				}								
 
@@ -237,6 +233,7 @@
 									 $('#id_add__'+list_add[i][0].fields.inscricao_id).remove();
 									 // limpa na lista...
 									 list_add[i] = "[]";
+									 list_add_line[i] = "[]";
 									 // decrementa o users
 									 qtde_users--;
 									 found__ = true;
@@ -245,6 +242,9 @@
 									 var data = get_data(qtde_users);
 									 update_draw_charts_bar(data);
 									 
+									 // grafico linha
+									 var data = get_data_line();		
+									 update_draw_charts_line(data);
 									 break;
 								}								
 							//}
@@ -331,7 +331,7 @@
 		    //view.setColumns([0, 1]);
 			var options = {
 			  title: 'Quantidade de acertos',
-			  width:450, height:350,
+			  width:500, height:480,
 			  hAxis: {title: 'Histórico da Pontuação', titleTextStyle: {color: 'red'}}
 			};				  		  
 		    var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_col'));
@@ -432,7 +432,8 @@
 
 			var options = {
 			  title: 'Quantidade de acertos',
-			  width:450, height:350,
+			  //width:450, height:350,
+			  width:500, height:480,
 			  hAxis: {title: 'Histórico da Pontuação', titleTextStyle: {color: 'red'}}
 			};				  
 		  
