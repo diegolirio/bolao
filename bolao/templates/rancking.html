@@ -228,20 +228,35 @@
 			</tr>
 			
 			{% for ip in inscricoes_competicao %}
+			
+			{% if ip.participante.id == user_participante.id %}
+				<h1>
+			{% endif %}
 			<tr>
 				<td>
-					{% if ip.participante != user_participante and user_participante.id > 0 %}
-						<a href="/comparar_colocacao/{{competicao.id}}/{{ip.id}}/" class="text-info" target="_blank" title="Comparar colocação">
-					{% else %}
-						<a href="/comparar_colocacao/{{competicao.id}}/{{ip.id}}/" class="text-info" target="_blank" title="Minha colocação">
-					{% endif %}
+					<a href="/comparar_colocacao/{{competicao.id}}/{{ip.id}}/" class="text-info" target="_blank" title="Comparar colocação">
+						{% if ip.participante.id == user_participante.id %}
+							<h4>{{ ip.colocacao}}º</h4>
+						{% else %}
 							{{ ip.colocacao}}º
-						</a>
+						{% endif %}
+					</a>
 				</td>
 				<td> <!-- nome participante -->
-					<a href="#modal_part" role="button" data-toggle="modal" onclick="get_detail_participante( {{ ip.id }} );">
-						<img src="/media/{{ ip.participante.foto }}" height="20" width="25" class="img-rounded"/>
-						{{ ip.participante }}
+					<a href="#modal_part" role="button" data-toggle="modal" onclick="get_detail_participante( {{ ip.id }} );" {% if ip.participante.id == user_participante.id %} class="text-warning" {% endif %}>
+						{% if ip.participante.id == user_participante.id %}
+							<h4>
+						{% endif %}						
+							<img src="/media/{{ ip.participante.foto }}" 
+								{% if ip.participante.id == user_participante.id %}
+								 height="30" width="37" class="img-rounded"/>
+								{% else %}
+								 height="20" width="25" class="img-rounded"/>
+								{% endif %}
+							{{ ip.participante }}
+						{% if ip.participante.id == user_participante.id %}
+							</h4>
+						{% endif %}									
 					</a>
 					<!--
 					<a href="/perfil_competicao/{{competicao.id}}/{{ip.id}}/" {% if ip.participante.id == user_participante.id %} class="text-warning" {% endif %}>
@@ -250,14 +265,62 @@
 					</a>
 					-->
 				</td>
-				<td class="muted">{{ ip.id }}</td>
-				<td class="text-info"><center><b>{{ ip.pontos }}</b></center></td>
-				<td class="muted">{{ ip.quantidade_acerto_placar }}</td>
-				<td class="muted">{{ ip.quantidade_acerto_vencedor_um_resultado_correto }}</td>
-				<td class="muted">{{ ip.quantidade_acerto_vencedor }}</td>
-				<td class="muted">{{ ip.quantidade_acerto_empate_erro_placar }}</td>
-				<td class="muted">{{ ip.quantidade_acerto_somente_resultado_um_time }}</td>
-				<td class="muted">{{ ip.quantidade_erro }}</td>
+				<td class="muted">
+					{% if ip.participante.id == user_participante.id %}
+						<h4>{{ ip.id }}</h4>
+					{% else %}
+						{{ ip.id }}
+					{% endif %}
+				</td>
+				<td class="text-info"><center><b>
+					{% if ip.participante.id == user_participante.id %}
+						<h4>{{ ip.pontos }}</h4>
+					{% else %}
+						{{ ip.pontos }}
+					{% endif %}										
+				</b></center></td>
+				<td class="muted">
+					{% if ip.participante.id == user_participante.id %}
+						<h4>{{ ip.quantidade_acerto_placar }}</h4>
+					{% else %}
+						{{ ip.quantidade_acerto_placar }}
+					{% endif %}									
+				</td>
+				<td class="muted">
+					{% if ip.participante.id == user_participante.id %}
+						<h4>{{ ip.quantidade_acerto_vencedor_um_resultado_correto }}</h4>
+					{% else %}
+						{{ ip.quantidade_acerto_vencedor_um_resultado_correto }}
+					{% endif %}												
+				</td>
+				<td class="muted">
+					{% if ip.participante.id == user_participante.id %}
+						<h4>{{ ip.quantidade_acerto_vencedor }}</h4>
+					{% else %}
+						{{ ip.quantidade_acerto_vencedor }}
+					{% endif %}																	
+				</td>
+				<td class="muted">
+					{% if ip.participante.id == user_participante.id %}
+						<h4>{{ ip.quantidade_acerto_empate_erro_placar }}</h4>
+					{% else %}
+						{{ ip.quantidade_acerto_empate_erro_placar }}
+					{% endif %}														
+				</td>
+				<td class="muted">
+					{% if ip.participante.id == user_participante.id %}
+						<h4>{{ ip.quantidade_acerto_somente_resultado_um_time }}</h4>
+					{% else %}
+						{{ ip.quantidade_acerto_somente_resultado_um_time }}
+					{% endif %}																
+				</td>
+				<td class="muted">
+					{% if ip.participante.id == user_participante.id %}
+						<h4>{{ ip.quantidade_erro }}</h4>
+					{% else %}
+						{{ ip.quantidade_erro }}
+					{% endif %}																					
+				</td>
 			</tr>
 			{% empty %}
 				<h2 class="muted">Não há participantes cadastrados</h2>
