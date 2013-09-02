@@ -195,6 +195,75 @@ def global_():
 	else:
 		tipo_p = TipoRegra.objects.filter(codigo='P')[0:1].get()			
 
+def copa_brasil():
+	tipo_m = TipoRegra.objects.filter(codigo='M')[0:1].get()
+	if Campeonato.objects.filter(nome='Copa do Brasil 2013').count() == 0:
+		campeonato = Campeonato()
+		campeonato.nome = 'Copa do Brasil 2013'
+		campeonato.status = StatusJogo.objects.filter(codigo='E')[0:1].get()
+		campeonato.tipo_regra = tipo_m
+		campeonato.save()
+	else:
+		campeonato = Campeonato.objects.filter(nome='Copa do Brasil 2013')[0:1].get()
+		
+	pdiego = Participante.objects.filter(apelido='Diego Lirio')[0:1].get()
+		
+	if Competicao.objects.filter(nome='Uninove', campeonato=campeonato).count() == 0:
+		comp = Competicao()
+		comp.campeonato = campeonato
+		comp.nome = 'Uninove'
+		comp.presidente = pdiego
+		comp.save()	
+	else:
+		comp = Competicao.objects.filter(nome='Uninove', campeonato=campeonato)[0:1].get()
+		
+	asisco = Patrocinador.objects.filter(nome_visual='Asisco')[0:1].get()
+	if Competicao_Patrocinadores.objects.filter(competicao=comp, patrocinador=asisco).count() == 0:
+		com_p = Competicao_Patrocinadores()
+		com_p.competicao = comp
+		com_p.patrocinador = asisco
+		com_p.principal = True
+		com_p.save()						
+	# Grupo
+	if Grupo.objects.filter(descricao='Jogo 1', campeonato=campeonato).count() == 0:
+		j1 = Grupo()
+		j1.descricao = 'Jogo 1'
+		j1.campeonato = campeonato
+		j1.save()	
+	else:
+		j1 = Grupo.objects.filter(descricao='Jogo 1', campeonato=campeonato)[0:1].get()
+	####################################################
+	# Jogo
+	e = StatusJogo.objects.filter(codigo='E')[0:1].get()
+	if Jogo.objects.filter(time_a='Corinthians', time_b='Grêmio').count() == 0:
+		jogo1 = Jogo()
+		jogo1.time_a = 'Corinthians'
+		jogo1.time_b = 'Grêmio'
+		jogo1.resultado_a = 0
+		jogo1.resultado_b = 0
+		jogo1.grupo = j1
+		jogo1.data_hora = datetime.datetime.now()
+		jogo1.vencedor = 'E'
+		jogo1.local = Local.objects.get(pk=3)
+		jogo1.status = e	
+		jogo1.save()
+	else:
+		jogo1 = Jogo.objects.filter(time_a='Corinthians', time_b='Grêmio')[0:1].get()
+	
+	#####################################################
+	# Inscricao
+	if Inscricao.objects.filter(participante=pdiego, competicao=comp).count() == 0:
+		idiego = Inscricao()
+		idiego.participante = pdiego
+		idiego.competicao = comp
+		idiego.save()
+	else:
+		idiego = Inscricao.objects.filter(participante=pdiego, competicao=comp)[0:1].get()
+	######################################################
+	# Aposta
+	__apostas_save_all__(pdiego, comp)		
+	
+
 def copa_mundo_teste():	
 	tipo_m = TipoRegra.objects.filter(codigo='M')[0:1].get()
 	tipo_g = TipoRegra.objects.filter(codigo='G')[0:1].get()
@@ -543,6 +612,7 @@ def pre_cadastro(request):
 		__local__()
 		#copa_mundo_teste()	
 		competicao_copa_confederacoes()
+		copa_brasil()
 	return redirect('/')
 
 @login_required		
