@@ -135,6 +135,8 @@ class Inscricao(models.Model):
 	quantidade_acerto_empate_erro_placar = models.IntegerField(default=0)
 	quantidade_acerto_somente_resultado_um_time = models.IntegerField(default=0)
 	quantidade_erro = models.IntegerField(default=0)
+	# ToDo...:
+	#nao_participou = models.IntegerField(default=0)
 	# end Pontucao
 	pagamento = models.BooleanField(default=False)
 	ativo = models.BooleanField(default=True)

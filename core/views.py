@@ -942,7 +942,18 @@ def system_inscricoes_participante(request, participante_pk):
 							   'minhas_inscricoes': minhas_inscricoes,
 							   'outras_competicoes': outras_competicoes,
 							   'participante': participante
-	                           }, RequestContext(request))		
+	                           }, RequestContext(request))	
+
+def get_ultima_colocacao_rodada(competicao, jogo):
+	max = 0
+	inscricoes = Inscricao.objects.filter(competicao=competicao)
+	for i in inscricoes:
+		apostas_ = Aposta.objects.filter(inscricao=i)
+		for a in apostas_:
+			if a.jogo == jogo:
+				if a.colocacao > max:
+					max = a.colocacao
+	return max
 	                           
 def system_inscrever_participante_competicao(request, participante_pk, competicao_pk):
 	user_participante = get_participante_by_user(request.user)
@@ -967,8 +978,7 @@ def system_inscrever_participante_competicao(request, participante_pk, competica
 				if j.status.codigo == 'F' or j.status.codigo == 'A':
 					a.calculado = True
 					a.riscado = True
-					# ToDo...:
-					#a.colocacao = max()+1 para este jogo
+					a.colocacao = get_ultima_colocacao_rodada(competicao, j)
 				a.save()
 	return redirect('/system/inscricoes_participante/'+str(participante.pk))		
 	
