@@ -4,7 +4,6 @@ from core.const import *
 from datetime import datetime
 
 # Create your models here.
-
 class Participante(models.Model):
 	user = models.ForeignKey(User, unique=True)
 	foto = models.ImageField(upload_to="images/users/", blank=True, default="images/users/user_xxx.jpg")
@@ -136,7 +135,7 @@ class Inscricao(models.Model):
 	quantidade_acerto_somente_resultado_um_time = models.IntegerField(default=0)
 	quantidade_erro = models.IntegerField(default=0)
 	# ToDo...:
-	#nao_participou = models.IntegerField(default=0)
+	nao_participou = models.IntegerField(default=0)
 	# end Pontucao
 	pagamento = models.BooleanField(default=False)
 	ativo = models.BooleanField(default=True)
@@ -196,6 +195,16 @@ class PaginaPatrocinio(models.Model):
 	competicacao_patrocinador = models.ForeignKey(Competicao_Patrocinadores)
 	def __unicode__(self):
 		return self.pagina.nome_pagina + ' - ' + self.competicacao_patrocinador.patrocinador.nome
-		
-		
-		
+	
+class Atividade(models.Model):
+	competicao = models.ForeignKey(Competicao)
+	inscricao = models.ForeignKey(Inscricao) # ToDo...: Analisar Troca para participante...
+	mensagem = models.CharField(max_length=600)	
+	data_hora = models.DateField(default=datetime.now)
+	imagem = models.ImageField(upload_to="images/atividade/", blank=True)
+	
+class ComentarioAtividade(models.Model):
+	inscricao = models.ForeignKey(Inscricao)
+	atividade = models.ForeignKey(Atividade)
+	mensagem = models.CharField(max_length=200)	
+	data_hora = models.DateTimeField(default=datetime.now)

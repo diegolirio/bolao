@@ -1,0 +1,24 @@
+{% if user_inscricao.pk > 0 %}
+<center>
+	<p>
+		<img src="/media/{{user_inscricao.participante.foto}}" height="40" width="40" class="img-rounded"/>
+		<input type="text" id="id_mensagem"> 
+		<a href="#" class="btn btn-primary">publicar</a>
+	</p>
+</center>
+{% endif %}
+
+{% for a in atividades %}
+	<div class="row">
+		<hr/>
+		<div class="span">
+			<img src="/media/{{a.inscricao.participante.foto}}" height="50" width="50" class="img-rounded"/>
+		</div>
+		<div class="span6">
+			<p class="text-info">{{ a.inscricao.participante.apelido }}</p>
+			<p>{{ a.mensagem }}</p>
+		</div>
+	</div>
+{% empty %}
+	<h4>Seja o Primeiro a publicar no <span class="text-warning">{{ subtitulo }}</span>.</h4>
+{% endfor %}

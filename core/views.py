@@ -87,7 +87,7 @@ def get_patrocinador_pagina(codigo_pagina, competicao):
 		patrocinadores_pagina = []
 	return patrocinadores_pagina	
 	
-def get_nome_oficial_competicao(competicao):
+def __get_nome_oficial_competicao__(competicao):
 	from core.templatetags.functions import *
 	return 'Copa ' + get_patrocinador_principal_display(competicao) + ' ' + competicao.nome
 
@@ -98,13 +98,11 @@ def rancking(request, competicao_pk):
 	user_inscricao = get_inscricao(competicao, user_participante)
 	inscricoes_competicao = get_rancking_by_competicao(competicao)
 	valor_acumulado = inscricoes_competicao.count() * competicao.valor_aposta
-	#patrocinadores = Competicao_Patrocinadores.objects.filter(competicao=competicao).order_by('-principal')
-	#ToDo...: >>>>> PatrocinioLocal.objects.filter(
 	patrocinadores = get_patrocinador_pagina('R', competicao)
 	return render_to_response('_base.html', 
 							  {     'template': 'rancking.html', 
 							        'titulo': 'Rancking', 
-							        'subtitulo': get_nome_oficial_competicao(competicao),
+							        'subtitulo': __get_nome_oficial_competicao__(competicao),
 							        'user_participante': user_participante,
 							        'user_inscricao': user_inscricao,
 							        'competicao': competicao,
@@ -113,6 +111,21 @@ def rancking(request, competicao_pk):
 							        'valor_acumulado': valor_acumulado,
 							        'inscricoes_competicao': inscricoes_competicao,
 									'patrocinadores': patrocinadores
+							        })
+									
+def blog(request, competicao_pk):
+	competicao = Competicao.objects.get(pk=competicao_pk)	
+	user_participante = get_participante_by_user(request.user)
+	user_inscricao = get_inscricao(competicao, user_participante)
+	atividades = Atividade.objects.filter(competicao=competicao).order_by('data_hora')
+	return render_to_response('_base.html', 
+							  {     'template': 'blog.html', 
+							        'titulo': 'Blog', 
+							        'subtitulo': 'Feeds ' + __get_nome_oficial_competicao__(competicao),
+							        'user_participante': user_participante,
+							        'competicao': competicao,
+									'user_inscricao': user_inscricao,
+									'atividades': atividades
 							        })
 									
 def __get_one_puclicidade_global__(pagina_codigo):
@@ -188,12 +201,11 @@ def tabela(request, competicao_pk):
 	user_participante = get_participante_by_user(request.user)
 	user_inscricao = get_inscricao(competicao, user_participante)
 	jgs = get_jogos_of_the_campeonato(competicao.campeonato)
-	#patrocinadores = Competicao_Patrocinadores.objects.filter(competicao=competicao).order_by('-principal')
 	patrocinadores = get_patrocinador_pagina('T', competicao)
 	return render_to_response('_base.html', 
 							  {       'template': 'tabela.html', 
 								      'titulo': 'Tabela',
-								      'subtitulo': competicao.campeonato.nome + ' ' + competicao.nome,
+								      'subtitulo': __get_nome_oficial_competicao__(competicao),
 								      'user_participante': user_participante,
 								      'user_inscricao': user_inscricao,
 								      'competicao': competicao,
@@ -233,7 +245,7 @@ def apostas_jogo(request, competicao_pk, jogo_pk):
 	return render_to_response('_base.html', 
 	                          {   'template': 'apostas_jogo.html', 
 								  'titulo': 'Palpites de Todos',
-								  'subtitulo': competicao.campeonato.nome + ' ' + competicao.nome,
+								  'subtitulo': __get_nome_oficial_competicao__(competicao),
 								  'user_participante': user_participante,
 								  'user_inscricao': user_inscricao,
 								  'competicao': competicao,	
@@ -252,7 +264,7 @@ def aposta(request, competicao_pk):
 	apts = Aposta.objects.filter(inscricao=user_inscricao).order_by('jogo')
 	return render_to_response('_base.html', 
 	                          {   'template': 'aposta.html', 
-								  'subtitulo': user_inscricao.competicao.campeonato.nome + ' ' + user_inscricao.competicao.nome,
+								  'subtitulo': __get_nome_oficial_competicao__(competicao),
 	                              'titulo': 'Minhas Apostas',
 	                              'user_participante': user_participante,
 	                              'user_inscricao': user_inscricao,
@@ -965,10 +977,10 @@ def system_inscrever_participante_competicao(request, participante_pk, competica
 		inscricao = Inscricao()
 		inscricao.competicao = competicao
 		inscricao.participante = participante
-		#inscricao.colocacao = max()+1
-		inscricao.save()
-		
+		#inscricao.colocacao = max()+1 # Calcular novamente
+		inscricao.save()		
 		grupos = Grupo.objects.filter(campeonato=competicao.campeonato)
+		qtde_nao_participou = 0
 		for g in grupos:
 			jogos = Jogo.objects.filter(grupo=g)
 			for j in jogos:
@@ -979,7 +991,9 @@ def system_inscrever_participante_competicao(request, participante_pk, competica
 					a.calculado = True
 					a.riscado = True
 					a.colocacao = get_ultima_colocacao_rodada(competicao, j)
+					qtde_nao_participou += 1
 				a.save()
+		inscricao.nao_participou = qtde_nao_participou
 	return redirect('/system/inscricoes_participante/'+str(participante.pk))		
 	
 def set_ativo_participante_competicao(ativo, inscricao):
@@ -1296,13 +1310,6 @@ def __calcula_rancking__(competicao):
 
 
 
-
-
-
-
-
-# ------- exclude abaixo
-
 	
 # Faz o Calculo do campeonato para todas as competicoes do mesmo.
 @login_required
@@ -1472,27 +1479,7 @@ def regras(request):
 	                          {   'template': 'regras.html', 
 							      'titulo': 'Regras ', 
 								  'subtitulo': 'Regras', 
-								  'user_participante': user_participante})	
-		
-"""		
-def lembrar_senha(request):
-	execute_transation = 'N'
-	mensagem = ''
-	if request.method == 'POST':
-		form = UserEmailForm(request.FILES, request.POST)	
-		if form.is_valid:
-			print(form['email'].value)
-			execute_transation = 'S'
-			mensagem = 'Email enviado com sucesso!'		
-		else:
-			execute_transation = 'S'
-			mensagem = 'Email inválido!'				
-	else:
-		form = UserEmailForm()
-	return render_to_response('_base_simple.html',
-	                            { 'template': 'lembrar_senha.html', 'execute_transation': execute_transation, 'mensagem': mensagem }, 
-							  context_instance=RequestContext(request))
-"""							  
+								  'user_participante': user_participante})						  
 
 def lembrar_senha(request):
 	execute_transation = 'N'
