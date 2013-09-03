@@ -117,7 +117,7 @@ def blog(request, competicao_pk):
 	competicao = Competicao.objects.get(pk=competicao_pk)	
 	user_participante = get_participante_by_user(request.user)
 	user_inscricao = get_inscricao(competicao, user_participante)
-	atividades = Atividade.objects.filter(competicao=competicao).order_by('data_hora')
+	atividades = Atividade.objects.filter(competicao=competicao).order_by('data_hora')[0:15]
 	return render_to_response('_base.html', 
 							  {     'template': 'blog.html', 
 							        'titulo': 'Blog', 

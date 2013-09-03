@@ -42,3 +42,7 @@ def get_patrocinador_principal_img(competicao):
 def get_comentarios_atividade(atividade):
 	return ComentarioAtividade.objects.filter(atividade=atividade)
 	
+@register.filter('get_qtde_comentarios')	
+def get_qtde_comentarios(atividade):
+	return ComentarioAtividade.objects.filter(atividade=atividade).count()
+	
