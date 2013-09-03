@@ -1,3 +1,5 @@
+{% load functions %}
+
 {% if user_inscricao.pk > 0 %}
 <center>
 	<p>
@@ -16,7 +18,19 @@
 		</div>
 		<div class="span6">
 			<p class="text-info">{{ a.inscricao.participante.apelido }}</p>
-			<p>{{ a.mensagem }}</p>
+			<p class="well">{{ a.mensagem }}</p>
+			<p class="muted">comentarios</p>
+			{% for c in a|get_comentarios_atividade %}
+				<div class="row">
+					<div class="span">
+						<img src="/media/{{c.inscricao.participante.foto}}" height="25" width="25" class="img-rounded"/>
+					</div>
+					<div class="span">
+						<p class="text-info">{{ c.inscricao.participante.apelido }}</p>
+						<p>{{ c.mensagem }}</p>
+					</div>
+				</div>
+			{% endfor %}
 		</div>
 	</div>
 {% empty %}

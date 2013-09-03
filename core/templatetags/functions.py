@@ -36,5 +36,9 @@ def get_patrocinador_principal_img(competicao):
 		patrocinador = Competicao_Patrocinadores.objects.filter(competicao=competicao, principal=True)[0:1].get()
 	except:
 		return ''
-	return patrocinador.patrocinador.image_aside		
+	return patrocinador.patrocinador.image_aside	
+
+@register.filter('get_comentarios_atividade')	
+def get_comentarios_atividade(atividade):
+	return ComentarioAtividade.objects.filter(atividade=atividade)
 	

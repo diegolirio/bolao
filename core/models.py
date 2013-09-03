@@ -202,9 +202,16 @@ class Atividade(models.Model):
 	mensagem = models.CharField(max_length=600)	
 	data_hora = models.DateField(default=datetime.now)
 	imagem = models.ImageField(upload_to="images/atividade/", blank=True)
+	def __unicode__(self):
+		return self.inscricao.participante.apelido + ' ( ' + self.mensagem + ' ) '
 	
 class ComentarioAtividade(models.Model):
 	inscricao = models.ForeignKey(Inscricao)
 	atividade = models.ForeignKey(Atividade)
 	mensagem = models.CharField(max_length=200)	
 	data_hora = models.DateTimeField(default=datetime.now)
+	def __unicode__(self):
+		return self.inscricao.participante.apelido + ' ( ' + self.mensagem + ' ) '	
+	
+	
+	
