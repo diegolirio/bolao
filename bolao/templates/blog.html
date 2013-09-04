@@ -4,69 +4,142 @@
 	
 	var qtde_atde = 15; // quantidade de atividades...
 	
-	function load_coment(atividade_pk, id) {
+	function load_coment____(atividade_pk, id) {
 		$('#'+id).html('<img src="/media/images/__159__.gif"/>');
 		alert('ajax: Busca comentarios');
 		$('#'+id).empty();
 	}
 	
+	function load_coment(atividade_pk) {
+		$('#id_img_load_coment'+atividade_pk).html('<img src="/media/images/__159__.gif"/>');
+		//alert('ajax: Busca comentarios');
+		$.getJSON('/get_comentarios/'+atividade_pk,  // URL 				
+				  function(retorno) {         // REQUISICAO       
+					 //alert(JSON.stringify(retorno));
+					 //linha = '<tr id="id_add__'+retorno[0].fields.inscricao_id+'">';	
+					 				 
+					 
+					 html_ = "";
+					 html_ += '<div class="row">';
+					 html_ += '    <div class="span">';
+					 html_ += '    		<img src="'+retorno[0].participante.foto+'" height="25" width="25" class="img-rounded"/>';
+					 html_ += '    </div>';
+					 html_ += '    <div class="span">';
+					 html_ += '        <p class="text-info">'+ retorno[0].participante.apelido +' <span class="muted" style="font-size: 12px;"> | '+retorno[0].comentario.data_hora+'</span></p>';
+				     html_ += '        <p>'+retorno[0].comentario.mensagem+'</p>';
+					 html_ += '    </div>';
+					 html_ += '</div>					 ';
+					 
+					 $('#id_coments'+atividade_pk).html(html_);					 
+					 $('#id_load_coment'+atividade_pk).empty();
+				  }
+		);
+	}	
+	
+	function comentar_atividade(atividade_pk) {
+		//alert($('#id_mensagem_comentar'+atividade_pk).val());
+		if($('#id_mensagem_comentar'+atividade_pk).val() != "") { 
+			html_ = "";
+			html_ += '<div class="row">';
+			html_ += '    <div class="span">';
+			html_ += '    		<img src="/media/{{user_participante.foto}}" height="25" width="25" class="img-rounded"/>';
+			html_ += '    </div>';
+			html_ += '    <div class="span">';
+			html_ += '        <p class="text-info">{{user_participante.apelido}} <span class="muted" style="font-size: 12px;"> | '+'MEIA NOITE'+'</span></p>';
+			html_ += '        <p>'+$('#id_mensagem_comentar'+atividade_pk).val()+'</p>';
+			html_ += '    </div>';
+			html_ += '</div>					 ';
+			$('#id_comentar'+atividade_pk).append(html_);
+			$('#id_mensagem_comentar'+atividade_pk).val("");
+		}
+	}
+	
+	function delete_atividade(atividade_pk) {
+		$('#id_atividade'+atividade_pk).empty();
+	}
+	
 	$(function() {
-		$('#id_carregar_mais').click(function() {
-			$('#id_img_load_atividade').html('<img src="/media/images/__159__.gif"/>');
+		$('.carregar_mais').click(function() {
+			$('.carregar_mais').html('<img src="/media/images/__159__.gif"/>');
 			alert('ajax: Busca mais Feeds: de ' + qtde_atde + ' a ' + (qtde_atde+15));
 			qtde_atde += 15;
-			$('#id_img_load_atividade').empty();
-		});		
+			$('.carregar_mais').html('<a href="javascript:undefined" class="btn">Carregar mais</a>');
+		});				
 	});
 	
 </script>
 
 {% if user_inscricao.pk > 0 %}
-<center>
-	<p>
-		<img src="/media/{{user_inscricao.participante.foto}}" height="40" width="40" class="img-rounded"/>
-		<input type="text" id="id_mensagem"> 
-		<a href="#" class="btn btn-primary">publicar</a>
-	</p>
-</center>
+	<center>
+		<p>
+			<img src="/media/{{user_inscricao.participante.foto}}" height="40" width="40" class="img-rounded"/>
+			<input type="text" id="id_mensagem"> 
+			<a href="#" class="btn btn-primary">publicar</a>
+		</p>
+	</center>
 {% endif %}
 
 {% for a in atividades %}
 	<div class="row">
-		<hr/>
-		<div class="span">
-			<img src="/media/{{a.inscricao.participante.foto}}" height="50" width="50" class="img-rounded"/>
-		</div>
-		<div class="span6">
-			<p class="text-info">{{ a.inscricao.participante.apelido }}</p>
-			<p class="well">{{ a.mensagem }}</p>
-			<a href="javascript:undefined" id="id_load_coment{{a.id}}" onclick="load_coment({{a.id}}, 'id_img_load_coment'+{{a.id}});">
-				<p class="muted">
-					{{ a|get_qtde_comentarios }} comentarios 
-					<span id="id_img_load_coment{{a.id}}"></span> 
+		<div id="id_atividade{{a.id}}">
+			<hr/>
+			<div class="span">
+				<img src="/media/{{a.inscricao.participante.foto}}" height="50" width="50" class="img-rounded"/>
+			</div>
+			<div class="span6">
+				<p class="text-info">
+					{{ a.inscricao.participante.apelido }} 
+					<span class="pull-right muted" style="font-size: 12px;">
+						{{ a.data_hora }} 
+						{% if user_participante.id > 0 and user_participante == a.inscricao.participante %}
+							<a href="javascript:undefined" onclick="delete_atividade({{a.id}})"><i class="icon-remove"></i></a>
+						{% endif %}
+					</span> 
 				</p>
-			</a>
-			<!--
-			{% for c in a|get_comentarios_atividade %}
-				<div class="row">
-					<div class="span">
-						<img src="/media/{{c.inscricao.participante.foto}}" height="25" width="25" class="img-rounded"/>
-					</div>
-					<div class="span">
-						<p class="text-info">{{ c.inscricao.participante.apelido }}</p>
-						<p>{{ c.mensagem }}</p>
-					</div>
+				<p class="well">{{ a.mensagem }}</p>
+				<div id="id_load_coment{{a.id}}">
+					{% if a|get_qtde_comentarios == 0 %}
+						<p class="muted">{{ a|get_qtde_comentarios }} comentarios </p>
+					{% else %}
+						<a href="javascript:undefined" onclick="load_coment({{a.id}});">
+							<p class="muted">
+								{{ a|get_qtde_comentarios }} comentarios 
+								<span id="id_img_load_coment{{a.id}}"></span> 
+							</p>
+						</a>
+					{% endif %}
 				</div>
-			{% endfor %}
-			-->
+				<div id="id_coments{{a.id}}"></div>
+				<div id="id_comentar{{a.id}}"></div>
+				<div id="id_comentar_atividade{{a.id}}">
+					<img src="/media/{{user_inscricao.participante.foto}}" height="30" width="30" class="img-rounded"/>
+					<input type="text" id="id_mensagem_comentar{{a.id}}"> 
+					<a href="javascript:undefined" class="btn" id="id_publicar_mensagem{{a.id}}" onclick="comentar_atividade({{a.id}});">publicar</a>				
+				</div>
+				<!--
+				{% for c in a|get_comentarios_atividade %}
+					<div class="row">
+						<div class="span">
+							<img src="/media/{{c.inscricao.participante.foto}}" height="25" width="25" class="img-rounded"/>
+						</div>
+						<div class="span">
+							<p class="text-info">{{ c.inscricao.participante.apelido }}</p>
+							<p>{{ c.mensagem }}</p>
+						</div>
+					</div>
+				{% endfor %}
+				-->
+			</div>
 		</div>
 	</div>
 {% empty %}
 	<h4>Seja o Primeiro a publicar no <span class="text-warning">{{ subtitulo }}</span>.</h4>
 {% endfor %}
 
-<hr/>
-<div id="id_img_load_atividade"></div><a href="javascript:undefined" class="btn" id="id_carregar_mais">Carregar mais</a>
+	<hr/>
+	<div class="carregar_mais">
+		<a href="javascript:undefined" class="btn">Carregar mais</a>
+	</div>
 
 
 

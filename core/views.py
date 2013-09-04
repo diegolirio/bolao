@@ -127,6 +127,31 @@ def blog(request, competicao_pk):
 									'user_inscricao': user_inscricao,
 									'atividades': atividades
 							        })
+# json
+def get_comentarios(request, atividade_pk):
+	atividade = Atividade.objects.get(pk=atividade_pk)
+	comentarios = ComentarioAtividade.objects.filter(atividade=atividade).order_by('data_hora')
+	to_json = list()	
+	for c in comentarios:
+		participante = c.inscricao.participante	
+		view_participante_json = {'id': participante.id, 'apelido': participante.apelido, 'foto': participante.foto.url }   	
+		view_comentarios_json = {'inscricao': c.inscricao.id,'atividade': c.atividade.id,'mensagem' : c.mensagem,'data_hora': c.data_hora.strftime("%d/%m/%Y %H:%M")}    
+		dictFields = { 'comentario': view_comentarios_json, 'participante': view_participante_json }
+		to_json.append(dictFields)
+	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")  	
+
+# json	
+def get_atividades(request, competicao_pk):
+	competicao = Competicao.objects.get(pk=competicao_pk)
+	atividades = Atividade.objects.filter(competicao=competicao)
+	to_json = list()
+	view_comentarios_json = {
+                             'inscricao_id': view_inscricao.id,
+							 'participante_id': view_inscricao.participante.id
+						  }    
+	dictFields = { 'fields': view_comentarios_json }
+	to_json.append(dictFields)
+	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")  		
 									
 def __get_one_puclicidade_global__(pagina_codigo):
 	try:
@@ -1470,8 +1495,7 @@ def patrocinadores(request, competicao_pk):
 	                               'patrocinadores': patrocinadores,
 								   'patrocinador': patrocinador,
 	                               'competicao': competicao
-	                          })				
-	
+	                          })					
 		
 def regras(request):
 	user_participante = get_participante_by_user(request.user)

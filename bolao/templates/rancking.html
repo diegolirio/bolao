@@ -1,3 +1,5 @@
+{% load functions %}
+
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">
 
@@ -225,6 +227,7 @@
 				<td class="text-error" title="Acerto de Empate com placar diferente (3 pontos)"><center>AE</center></td>
 				<td class="text-error" title="Acerto de Somente da quantidade de gols de um Time (2 pontos)"><center>AS</center></td>
 				<td class="text-error" title="Errou Tudo (Zero pontos)"><center>ER</center></td>
+				<td class="text-error" title="% de aproveitamento"><center>%</center></td>
 			</tr>
 			
 			{% for ip in inscricoes_competicao %}
@@ -335,6 +338,15 @@
 					{% endif %}																					
 					</center>
 				</td>
+				<td class="muted">
+					<center>
+					{% if ip.participante.id == user_participante.id %}
+						<h4>{{ ip|get_aproveitamento }}</h4>
+					{% else %}
+						{{ ip|get_aproveitamento }}
+					{% endif %}																					
+					</center>
+				</td>				
 			</tr>
 			{% empty %}
 				<h2 class="muted">Não há participantes cadastrados</h2>

@@ -2,6 +2,7 @@ __author__ = 'diegolirio'
 
 from django import template
 from core.models import *
+from core.const import *
 
 register = template.Library()
 
@@ -45,4 +46,27 @@ def get_comentarios_atividade(atividade):
 @register.filter('get_qtde_comentarios')	
 def get_qtde_comentarios(atividade):
 	return ComentarioAtividade.objects.filter(atividade=atividade).count()
+	
+@register.filter('get_aproveitamento')		
+def get_aproveitamento(inscricao):
+	grupos = Grupo.objects.filter(campeonato=inscricao.competicao.campeonato)
+	qtde = 0
+	for g in grupos:
+		jgs_aux = Jogo.objects.filter(grupo=g)
+		for j in jgs_aux:
+			if j.status.codigo != 'E':
+				qtde = qtde + 1
+	pontuacao_100_ = PONTOS_PLACAR * qtde
+	aproveitamento = inscricao.pontos * 100 / pontuacao_100_ 
+	return aproveitamento
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
