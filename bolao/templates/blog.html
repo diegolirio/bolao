@@ -17,7 +17,6 @@
 				  function(retorno) {         // REQUISICAO       
 					 //alert(JSON.stringify(retorno));
 					 //linha = '<tr id="id_add__'+retorno[0].fields.inscricao_id+'">';	
-					 				 
 					 
 					 html_ = "";
 					 html_ += '<div class="row">';
@@ -64,21 +63,43 @@
 			alert('ajax: Busca mais Feeds: de ' + qtde_atde + ' a ' + (qtde_atde+15));
 			qtde_atde += 15;
 			$('.carregar_mais').html('<a href="javascript:undefined" class="btn">Carregar mais</a>');
-		});				
+		});			
+
+		$('#id_publicar_atividade').click(function() {
+			var mensagem__ = $('#id_message').val();
+			var inscricao_pk = {{user_inscricao.id}};
+			var competicao_pk = {{competicao.id}};
+			if($('#id_message').val() != "") {
+				alert('Inscricao: ' + inscricao_pk + ' | Competicao: ' + competicao_pk + ' | Mensagem: ' + mensagem__);
+				$.getJSON('/inserir_atividade/'+inscricao_pk+'/'+competicao_pk,  // URL 	
+						  { mensagem: mensagem__ },	     // Parametros	
+						  function(retorno) {                                    // REQUISICAO       
+							 //alert(JSON.stringify(retorno));
+							 //linha = '<tr id="id_add__'+retorno[0].fields.inscricao_id+'">';	
+						  }				
+			} else {
+				alert('Digite a mensagem!!!');
+			}
+		});
+		
 	});
 	
 </script>
 
 {% if user_inscricao.pk > 0 %}
-	<center>
-		<p>
-			<img src="/media/{{user_inscricao.participante.foto}}" height="40" width="40" class="img-rounded"/>
-			<input type="text" id="id_mensagem"> 
-			<a href="#" class="btn btn-primary">publicar</a>
-		</p>
-	</center>
+	<div span="row">	
+		  <div class="form-group offset3">
+			<img src="/media/{{user_inscricao.participante.foto}}" height="50" width="50" class="img-circle"/>
+			<div class="col-lg-10">
+			  <textarea class="form-control span4" rows="3" id="id_message" placeholder="Sua mensagem"></textarea><br/>
+			  <a href="#" id="id_publicar_atividade" class="btn btn-primary input-medium">publicar</a>
+			</div>
+		  </div>	
+	</div>			
+	<br/><br/><br/><br/>
 {% endif %}
 
+<div class="span8">
 {% for a in atividades %}
 	<div class="row">
 		<div id="id_atividade{{a.id}}">
@@ -140,6 +161,9 @@
 	<div class="carregar_mais">
 		<a href="javascript:undefined" class="btn">Carregar mais</a>
 	</div>
+</div>
+<div class="span4">
+</div>
 
 
 
