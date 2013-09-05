@@ -32,6 +32,7 @@ urlpatterns = patterns('',
 	# ------------------------------------------------------------------------------------------------
     # Nao Logado (publicas)
     url(r'^rancking/(?P<competicao_pk>\d+)/$', 'core.views.rancking', name='rancking'),
+	url(r'^get_jogo_simulacao/(?P<competicao_pk>\d+)/(?P<sequencia_jogo>\d+)/$', 'core.views.get_jogo_simulacao', name='get_jogo_simulacao'), # ajax.jquery
     url(r'^tabela/(?P<competicao_pk>\d+)/$', 'core.views.tabela', name='tabela'),
     url(r'^aposta/(?P<competicao_pk>\d+)/$', 'core.views.aposta'),
     url(r'^apostas_jogo/(?P<competicao_pk>\d+)/(?P<jogo_pk>\d+)/$', 'core.views.apostas_jogo'),
@@ -44,6 +45,8 @@ urlpatterns = patterns('',
 	url(r'^get_inscricao_json/(?P<inscricao_pk>\d+)/$', 'core.views.get_inscricao_json'),
 	url(r'^imprimir_rancking/(?P<competicao_pk>\d+)/$', 'core.views.imprimir_rancking'),
 	url(r'^blog/(?P<competicao_pk>\d+)/$', 'core.views.blog'),
+	
+	url(r'^get_atividades/(?P<competicao_pk>\d+)/(?P<qtde_inicial>\d+)/$', 'core.views.get_atividades'), # ajax.json
 	
 	url(r'^get_comentarios/(?P<atividade_pk>\d+)/$', 'core.views.get_comentarios'), # ajax.json
 	
