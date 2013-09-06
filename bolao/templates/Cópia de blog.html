@@ -189,3 +189,53 @@
 
 
 
+
+
+
+
+
+
+							  var html_ = "";
+							  html_ += '<div class="row">';
+							  html_ += '    <div id="a'+item.atividade.id+'>';
+							  html_ += '  		<hr/>';
+							  html_ += '  		<div class="span">';
+							  html_ += '			<img src="'+item.participante.foto+'" height="50" width="50" class="img-rounded"/>';
+							  html_ += '		</div>';
+							  html_ += '		<div class="span6">';
+							  html_ += '			<p class="text-info">';
+							  html_ +=   				item.participante.apelido;
+							  html_ += '				<span class="pull-right muted" style="font-size: 12px;">':
+							  html_ += 						item.atividade.data_hora;
+							  if ( {{ user_participante.id }} > 0 && {{ user_participante }} == item.participante) {
+								  //html_ += '					{% if user_participante.id > 0 and user_participante == a.inscricao.participante %}';
+								  html_ += '    					<a href="javascript:undefined" onclick="delete_atividade({{a.id}})"><i class="icon-remove"></i></a>';
+								  //html_ += '					{% endif %}';
+							  }
+							  html_ += '				</span> ';
+							  html_ += '			</p>';
+							  html_ += '			<p class="well">'+item.atividade.mensagem+'</p>';
+							  html_ += '				<div id="id_load_coment'+item.atividade.id+'">';
+							  
+							  
+							  html_ += '					{% if a|get_qtde_comentarios == 0 %}';
+							  html_ += '						<p class="muted">{{ a|get_qtde_comentarios }} comentarios </p>';
+							  html_ += '					{% else %}';
+							  html_ += '						<a href="javascript:undefined" onclick="load_coment({{a.id}});">';
+							  html_ += '							<p class="muted">';
+							  html_ += '								{{ a|get_qtde_comentarios }} comentarios ';
+							  html_ += '								<span id="id_img_load_coment{{a.id}}"></span> ';
+							  html_ += '							</p>';
+							  html_ += '						</a>';
+							  html_ += '					{% endif %}';
+							  html_ += '				</div>';
+							  html_ += '				<div id="id_coments{{a.id}}"></div>';
+							  html_ += '				<div id="id_comentar{{a.id}}"></div>';
+							  html_ += '				<div id="id_comentar_atividade{{a.id}}">';
+							  html_ += '					<img src="/media/{{user_inscricao.participante.foto}}" height="30" width="30" class="img-rounded"/>';
+							  html_ += '					<input type="text" id="id_mensagem_comentar{{a.id}}"> ';
+							  html_ += '					<a href="javascript:undefined" class="btn" id="id_publicar_mensagem{{a.id}}" onclick="comentar_atividade({{a.id}});">publicar</a>';
+							  html_ += '				</div>	';
+							  html_ += '		 </div>';
+							  html_ += '	</div>';
+							  html_ += '</div>';	
