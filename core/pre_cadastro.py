@@ -75,7 +75,34 @@ def insert_auto_paginas():
 		tt.codigo_pagina = 'P'
 		tt.qtde_total_patrocinio = 5
 		tt.valor = 9	
-		tt.save()			
+		tt.save()		
+
+def insert_auto_atividades():
+	if Atividade.objects.filter(codigo='P').count() == 0:
+		a_p = Atividade()
+		a_p.descricao = 'Postou'
+		a_p.codigo = 'P'
+		a_p.save()
+	if Atividade.objects.filter(codigo='C').count() == 0:
+		a_c = Atividade()
+		a_c.descricao = 'Compartilhou'
+		a_c.codigo = 'C'
+		a_c.save()	
+	if Atividade.objects.filter(codigo='Y').count() == 0:	
+		a_y = Atividade()
+		a_y.descricao = 'Curtiu'
+		a_y.codigo = 'Y'
+		a_y.save()		
+	if Atividade.objects.filter(codigo='N').count() == 0:
+		a_n = Atividade()
+		a_n.descricao = 'Não Curtiu'
+		a_n.codigo = 'N'
+		a_n.save()		
+	if Atividade.objects.filter(codigo='O').count() == 0:
+		a_n = Atividade()
+		a_n.descricao = 'Comentou'
+		a_n.codigo = 'O'
+		a_n.save()		
 
 def __apostas_save_all__(participante, competicao):
 	inscr = Inscricao.objects.filter(participante=participante, competicao=competicao)[0:1].get()
@@ -193,7 +220,10 @@ def global_():
 		tipo_p.nome = 'Pontos corridos'
 		tipo_p.save()
 	else:
-		tipo_p = TipoRegra.objects.filter(codigo='P')[0:1].get()			
+		tipo_p = TipoRegra.objects.filter(codigo='P')[0:1].get()		
+
+	# Atividades...
+	insert_auto_atividades()
 
 def copa_brasil():
 	tipo_m = TipoRegra.objects.filter(codigo='M')[0:1].get()

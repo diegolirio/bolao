@@ -9,69 +9,133 @@
 		$.getJSON('/get_posts/'+competicao_pk+'/'+qtde_atde,  // URL 				
 				  function(retorno) {     
 					  //alert(JSON.stringify(retorno));					  
-					  $.each( retorno, function( i, item ) {
-							//alert(item.participante.apelido + ' - ' + item.post.mensagem);	
-							
-							var html_ = "";
-							html_ += '<div class="row">';
-							html_ += '    <div id="a'+item.post.id+'">';
-							html_ += '  		<hr/>';
-							html_ += '  		<div class="span">';
-							html_ += '				<img src="'+item.participante.foto+'" height="50" width="50" class="img-rounded"/>';
-							html_ += '			</div>';	
-							html_ += '			<div class="span6">';
-							html_ += '				<p class="text-info">';
-							html_ += 					item.participante.apelido;							
-						    html_ += '				<span class="pull-right muted" style="font-size: 12px;">';
-							html_ += 						item.post.data_hora;
-							if ( {{ user_participante.id }} > 0 && {{ user_participante.id }} == item.participante.id) {
-							   html_ += '    					<a href="javascript:undefined" onclick="delete_atividade('+item.post.id+')"><i class="icon-remove"></i></a>';
-							}
-							html_ += '				</span> ';			
-							html_ += '				</p>';	
-							html_ += '				<p class="well">'+item.post.mensagem+'</p>';
-							if ( item.post.count_coment > 0) {
-								  html_ += '			    <a href="javascript:undefined" onclick="load_coment('+item.post.id+');">';
-								  html_ += '					<p class="muted">';
-								  html_ += 							item.post.count_coment+' comentarios ';
-								  html_ += '						<span id="id_img_load_coment'+item.post.id+'"></span> ';
-								  html_ += '					</p>';
-								  html_ += '				</a>';							
-							} else {
-								  html_ += '				<p class="muted">'+item.post.count_coment+' comentarios </p>';
-							}
-							html_ += '				<div id="id_comentar_post'+item.post.id+'">';
-							html_ += '					<img src="'+item.participante.foto+'" height="30" width="30" class="img-rounded"/>';
-							html_ += '					<input type="text" id="id_mensagem_comentar'+item.post.id+'"> ';
-							html_ += '					<a href="javascript:undefined" class="btn" id="id_publicar_mensagem'+item.post.id+'" onclick="comentar_atividade('+item.post.id+');">publicar</a>';
-							html_ += '				</div>	';						
-							html_ += '	  		</div>';							
-							html_ += '	  </div>';
-							html_ += '</div>';
-							
-							$('#id_posts').html(html_);
-					  });
+					  var html_ = get_html_posts(retorno);
+					  $('#id_posts').html(html_);
 				  }
 		 );		
-	}	
+	}
 	
+	function get_html_posts(json_post) {
+		  var html_ = "";
+		  $.each( json_post, function( i, item ) {
+				//alert(item.participante.apelido + ' - ' + item.post.mensagem);	
+				html_ += '<div class="row">';
+				html_ += '    <div id="id_post'+item.post.id+'">';
+				html_ += '  		<hr/>';
+				html_ += '  		<div class="span">';
+				html_ += '				<img src="'+item.participante.foto+'" height="50" width="50" class="img-rounded"/>';
+				html_ += '			</div>';	
+				html_ += '			<div class="span6">';
+				html_ += '				<p class="text-info">';
+				html_ += 					item.participante.apelido;							
+				html_ += '				<span class="pull-right muted" style="font-size: 12px;">';
+				html_ += 						item.post.data_hora;
+				if ( {{ user_participante.id }} > 0 && {{ user_participante.id }} == item.participante.id) {
+				   html_ += '    					<a href="javascript:undefined" title="Excluir" onclick="delete_post('+item.post.id+')"><i class="icon-remove"></i></a>';
+				}
+				html_ += '				</span> ';			
+				html_ += '				</p>';	
+				html_ += '				<p class="well">'+item.post.mensagem+'</p>';
+				if ( item.post.count_coment > 0) {
+					  html_ += '		<a href="javascript:undefined" onclick="load_coment('+item.post.id+');">';
+					  html_ += '		    <p class="muted">';
+					  html_ += 					item.post.count_coment+' comentarios  <span id="id_img_load_coment'+item.post.id+'"></span><br/><br/>';
+					  html_ += '			</p>';
+					  html_ += '		</a>';							
+					  
+					  html_ += '		<span id="id_coments'+item.post.id+'"></span> ';
+					  
+				} else {
+					  html_ += '		<p class="muted">'+item.post.count_coment+' comentarios </p>';
+				}
+				html_ += '				<div id="id_comentar_post'+item.post.id+'">';
+				html_ += '					<img src="'+item.participante.foto+'" height="30" width="30" class="img-rounded"/>';
+				html_ += '					<input type="text" id="id_mensagem_comentar'+item.post.id+'"> ';
+				html_ += '					<a href="javascript:undefined" class="btn" id="id_publicar_mensagem'+item.post.id+'" onclick="comentar_atividade('+item.post.id+');">publicar</a>';
+				html_ += '				</div>	';						
+				html_ += '	  		</div>';							
+				html_ += '	  </div>';
+				html_ += '</div>';
+		  });	
+		  return html_;
+	}
+
+	function load_coment(post_id) {
+		$('#id_img_load_coment'+post_id).html('<img src="/media/images/__159__.gif"/>');
+		//alert('ajax: Busca comentarios');
+		var html_ = "";
+		$.getJSON('/get_comentarios/'+post_id,  // URL 				
+				  function(retorno) {         // REQUISICAO    
+				     $.each( retorno, function( i, item ) {
+						 html_ += '<div class="row">';
+						 html_ += '    <div class="span">';
+						 html_ += '    		<img src="'+item.participante.foto+'" height="25" width="25" class="img-rounded"/>';
+						 html_ += '    </div>';
+						 html_ += '    <div class="span">';
+						 html_ += '        <p class="text-info">'+ item.participante.apelido +' <span class="muted" style="font-size: 12px;"> | '+item.comentario.data_hora+'</span></p>';
+						 html_ += '        <p>'+item.comentario.mensagem+'</p>';
+						 html_ += '    </div>';
+						 html_ += '</div>					 ';
+					 });
+					 
+					 $('#id_coments'+post_id).html(html_);
+					 $('#id_img_load_coment'+post_id).empty();
+				  }
+		);
+		
+	}
 	
+	function delete_post(post_id) {
+		alert('Em desenvolvimento: Post ID >>> ' + post_id);
+		$('#id_post'+post_id).empty();
+	}
+	
+	$(function() {
+		
+		$('.carregar_mais').click(function() {
+			$('#id_posts').append(html_);
+		});
+		
+		$('#id_publicar_post').click(function() {
+			var mensagem__ = $('#id_message').val();
+			var inscricao_pk = {{user_inscricao.id}};
+			var competicao_pk = {{competicao.id}};
+			if($('#id_message').val() != "") {
+				//alert('Inscricao: ' + inscricao_pk + ' | Competicao: ' + competicao_pk + ' | Mensagem: ' + mensagem__);
+				$.getJSON('/inserir_post/'+inscricao_pk+'/'+competicao_pk,  // URL 	
+						  { mensagem: mensagem__ },	     // Parametros	
+						  function(retorno) {           // REQUISICAO  
+							 //alert(JSON.stringify(retorno));
+							 //linha = '<tr id="id_add__'+retorno[0].fields.inscricao_id+'">';	
+							 if (retorno[0].returnProc.status == "N") {
+								$(window.document.location).attr('href','/blog/'+competicao_pk);
+							 } else {
+								//alert(retorno[0].returnProc.mensagem);
+								$('#id_alert').html(retorno[0].returnProc.mensagem);
+							 }
+						  });				
+			} else {
+				$('#id_alert').html('Digite a mensagem!!!');
+			}
+		});	
+	});
 	
 </script>
 
 {% if user_inscricao.pk > 0 %}
+	<!-- ============= Publicar ================= -->
 	<div span="row">	
 		  <div class="offset3">
-			<img src="/media/{{user_inscricao.participante.foto}}" height="50" width="50" class="img-circle"/>
+			<img src="/media/{{user_inscricao.participante.foto}}" height="50" width="50" class="img-circle"/> <span id="id_alert" class="text-warning"></span>
 			<div class="col-lg-10">
 			  <textarea class="form-control span4" rows="3" id="id_message" placeholder="Sua mensagem"></textarea><br/>
-			  <a href="#" id="id_publicar_atividade_" class="btn btn-primary input-medium" onclick="posts('1');">publicar</a>
+			  <a href="javascript:undefined" id="id_publicar_post" class="btn btn-primary input-medium" onclick="posts('1');">publicar</a>
 			</div>
 		  </div>	
 	</div>			
 	<br/><br/><br/><br/>
 {% endif %}
-
+	<!-- ============= Posts Vazio ================= -->
 	<div class="row">
 		<div class="span8">
 			<div class="row">

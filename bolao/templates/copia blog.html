@@ -89,7 +89,7 @@
 				$.getJSON('/inserir_atividade/'+inscricao_pk+'/'+competicao_pk,  // URL 	
 						  { mensagem: mensagem__ },	     // Parametros	
 						  function(retorno) {                                    // REQUISICAO       
-							 //alert(JSON.stringify(retorno));
+							 alert(JSON.stringify(retorno));
 							 //linha = '<tr id="id_add__'+retorno[0].fields.inscricao_id+'">';	
 						  }				
 			} else {
@@ -135,7 +135,6 @@
 				</p>
 				<p class="well">{{ a.mensagem }}</p>
 				<div id="id_load_coment{{a.id}}">
-
 				</div>
 				<div id="id_coments{{a.id}}"></div>
 				<div id="id_comentar{{a.id}}"></div>

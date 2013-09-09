@@ -172,7 +172,7 @@ def blog(request, competicao_pk):
 # json
 def get_comentarios(request, post_pk):
 	post = Post.objects.get(pk=post_pk)
-	comentarios = ComentarioPost.objects.filter(post=post).order_by('data_hora')
+	comentarios = ComentarioPost.objects.filter(post=post).order_by('-data_hora')
 	to_json = list()	
 	for c in comentarios:
 		participante = c.inscricao.participante	
@@ -186,7 +186,7 @@ def get_comentarios(request, post_pk):
 def get_posts(request, competicao_pk, qtde_inicial):
 	competicao = Competicao.objects.get(pk=competicao_pk)
 	qtde_final = int(qtde_inicial) + 15
-	posts = Post.objects.filter(competicao=competicao)[qtde_inicial: qtde_final]
+	posts = Post.objects.filter(competicao=competicao).order_by('-data_hora')[qtde_inicial: qtde_final]
 	to_json = list()
 	for a in posts:
 		view_participante_json = {'id': a.inscricao.participante.id, 'apelido': a.inscricao.participante.apelido, 'foto': a.inscricao.participante.foto.url }	
@@ -199,6 +199,42 @@ def get_posts(request, competicao_pk, qtde_inicial):
 		dictFields = { 'participante': view_participante_json, 'post': view_posts_json }
 		to_json.append(dictFields)
 	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")  		
+	
+# json	
+def inserir_post(request, inscricao_pk, competicao_pk):
+	inscricao = Inscricao.objects.get(pk=inscricao_pk)
+	competicao = Competicao.objects.get(pk=competicao_pk)
+	returnMgs = "";
+	returnStatus = "E";
+	try:
+		mensagem = request.GET['mensagem']	
+		if inscricao.pk == 0:
+			returnMgs = "Participante não inscrito ou não logado";
+		elif competicao.pk == 0:
+			returnMgs = "Competição inválida";
+		elif mensagem == "":
+			returnMgs = "Digite a Mensagem";
+		else:
+			new_post = Post()
+			new_post.competicao = competicao
+			new_post.inscricao = inscricao
+			new_post.mensagem = mensagem
+			new_post.save()			
+			r_a = RegistroAtividade()
+			r_a.post = new_post
+			r_a.atividade = Atividade.objects.filter(codigo='P')[0:1].get()
+			r_a.save()
+			returnStatus = "N"		
+	except:
+		returnMgs = "Digite a Mensagem"
+	json = {
+			 'mensagem': returnMgs,
+			 'status': returnStatus
+		  }    
+	dictFields = { 'returnProc': json }
+	to_json = list()
+	to_json.append(dictFields)
+	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")  	
 									
 def __get_one_puclicidade_global__(pagina_codigo):
 	try:
