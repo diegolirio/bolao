@@ -196,22 +196,31 @@ class PaginaPatrocinio(models.Model):
 	def __unicode__(self):
 		return self.pagina.nome_pagina + ' - ' + self.competicacao_patrocinador.patrocinador.nome
 	
-class Atividade(models.Model):
+class Post(models.Model):
 	competicao = models.ForeignKey(Competicao)
 	inscricao = models.ForeignKey(Inscricao) # ToDo...: Analisar Troca para participante...
 	mensagem = models.CharField(max_length=600)	
 	data_hora = models.DateField(default=datetime.now)
-	imagem = models.ImageField(upload_to="images/atividade/", blank=True)
+	imagem = models.ImageField(upload_to="images/post/", blank=True)
 	def __unicode__(self):
 		return self.inscricao.participante.apelido + ' ( ' + self.mensagem + ' ) '
 	
-class ComentarioAtividade(models.Model):
+class ComentarioPost(models.Model):
 	inscricao = models.ForeignKey(Inscricao)
-	atividade = models.ForeignKey(Atividade)
+	post = models.ForeignKey(Post)
 	mensagem = models.CharField(max_length=200)	
 	data_hora = models.DateTimeField(default=datetime.now)
 	def __unicode__(self):
 		return self.inscricao.participante.apelido + ' ( ' + self.mensagem + ' ) '	
+		
+class Atividade(models.Model):
+	descricao = models.CharField(max_length=50) # Postou (P) | Compartilhou (C) | Curtiu (Y) | Nao Curtiu (N) | Comentou (O)
+	codigo = models.CharField(max_length=1)
+	
+class RegistroAtividade(models.Model):
+	post = models.ForeignKey(Post)
+	atividade = models.ForeignKey(Atividade)
+	data_hora = models.DateTimeField(default=datetime.now)
 	
 	
 	

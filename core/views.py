@@ -115,6 +115,17 @@ def rancking(request, competicao_pk):
 									'qtde_jogos': qtde_jogos
 							        })
 									
+"""
+dir__apostas = list()
+apostas = Aposta.objects.filter(jogo=jogo)	
+for a in apostas:
+	view_apostas_json = {'id': a.id }
+	dictFieldsApostas = { 'aposta': view_apostas_json }
+	dir__apostas.append(dictFieldsApostas)
+dir__view = {'apostas': dir__apostas}
+to_json.append(dir__view)
+"""									
+									
 def get_jogo_simulacao(request, competicao_pk, sequencia_jogo):
 	competicao = Competicao.objects.get(pk=competicao_pk)
 	grupos = Grupo.objects.filter(campeonato=competicao.campeonato)
@@ -136,28 +147,19 @@ def get_jogo_simulacao(request, competicao_pk, sequencia_jogo):
 					  'resultado_b': jogo.resultado_b, 
 					  'data_hora': jogo.data_hora.strftime("%d/%m/%Y %H:%M"),
 					  'vencedor': jogo.vencedor,
-					  'local': jogo.local,
-					  'rodada': jogo.rodada}
-	to_json = list()
-	
+					  'local': jogo.local.descricao,
+					  'rodada': jogo.rodada
+					 }
+	to_json = list()	
 	dir__jogo = {'jogo': view_jogo_json}
 	to_json.append(dir__jogo)
-	
-	dir__apostas = list()
-	apostas = Aposta.objects.filter(jogo=jogo)	
-	for a in apostas:
-		view_apostas_json = {'id': a.id }
-		dictFieldsApostas = { 'aposta': view_apostas_json }
-		dir__apostas.append(dictFieldsApostas)
-	dir__view = {'apostas': dir__apostas}
-	to_json.append(dir__view)
 	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")  		
 									
 def blog(request, competicao_pk):
 	competicao = Competicao.objects.get(pk=competicao_pk)	
 	user_participante = get_participante_by_user(request.user)
 	user_inscricao = get_inscricao(competicao, user_participante)
-	#atividades = Atividade.objects.filter(competicao=competicao).order_by('data_hora')[0:15]
+	posts = Post.objects.filter(competicao=competicao).order_by('data_hora')[0:15]
 	return render_to_response('_base.html', 
 							  {     'template': 'blog.html', 
 							        'titulo': 'Blog', 
@@ -165,35 +167,36 @@ def blog(request, competicao_pk):
 							        'user_participante': user_participante,
 							        'competicao': competicao,
 									'user_inscricao': user_inscricao,
-									#'atividades': atividades
+									'posts': posts
 							        })
 # json
-def get_comentarios(request, atividade_pk):
-	atividade = Atividade.objects.get(pk=atividade_pk)
-	comentarios = ComentarioAtividade.objects.filter(atividade=atividade).order_by('data_hora')
+def get_comentarios(request, post_pk):
+	post = Post.objects.get(pk=post_pk)
+	comentarios = ComentarioPost.objects.filter(post=post).order_by('data_hora')
 	to_json = list()	
 	for c in comentarios:
 		participante = c.inscricao.participante	
 		view_participante_json = {'id': participante.id, 'apelido': participante.apelido, 'foto': participante.foto.url }   	
-		view_comentarios_json = {'inscricao': c.inscricao.id,'atividade': c.atividade.id,'mensagem' : c.mensagem,'data_hora': c.data_hora.strftime("%d/%m/%Y %H:%M")}    
+		view_comentarios_json = {'inscricao': c.inscricao.id,'post': c.post.id,'mensagem' : c.mensagem,'data_hora': c.data_hora.strftime("%d/%m/%Y %H:%M")}    
 		dictFields = { 'comentario': view_comentarios_json, 'participante': view_participante_json }
 		to_json.append(dictFields)
 	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")  	
 
 # json	
-def get_atividades(request, competicao_pk, qtde_inicial):
+def get_posts(request, competicao_pk, qtde_inicial):
 	competicao = Competicao.objects.get(pk=competicao_pk)
 	qtde_final = int(qtde_inicial) + 15
-	atividades = Atividade.objects.filter(competicao=competicao)[qtde_inicial: qtde_final]
+	posts = Post.objects.filter(competicao=competicao)[qtde_inicial: qtde_final]
 	to_json = list()
-	for a in atividades:
+	for a in posts:
 		view_participante_json = {'id': a.inscricao.participante.id, 'apelido': a.inscricao.participante.apelido, 'foto': a.inscricao.participante.foto.url }	
 		try:
 			imagem = a.imagem.url
 		except:
 			imagem = ""
-		view_atividades_json = {'id': a.id, 'mensagem': a.mensagem, 'data_hora': a.data_hora.strftime("%d/%m/%Y %H:%M"), 'imagem': imagem }		
-		dictFields = { 'participante': view_participante_json, 'atividade': view_atividades_json }
+		qtde_coment = ComentarioPost.objects.filter(post=a).count()
+		view_posts_json = {'id': a.id, 'mensagem': a.mensagem, 'data_hora': a.data_hora.strftime("%d/%m/%Y %H:%M"), 'imagem': imagem, 'count_coment': qtde_coment }		
+		dictFields = { 'participante': view_participante_json, 'post': view_posts_json }
 		to_json.append(dictFields)
 	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")  		
 									

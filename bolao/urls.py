@@ -46,9 +46,9 @@ urlpatterns = patterns('',
 	url(r'^imprimir_rancking/(?P<competicao_pk>\d+)/$', 'core.views.imprimir_rancking'),
 	url(r'^blog/(?P<competicao_pk>\d+)/$', 'core.views.blog'),
 	
-	url(r'^get_atividades/(?P<competicao_pk>\d+)/(?P<qtde_inicial>\d+)/$', 'core.views.get_atividades'), # ajax.json
+	url(r'^get_posts/(?P<competicao_pk>\d+)/(?P<qtde_inicial>\d+)/$', 'core.views.get_posts'), # ajax.json
 	
-	url(r'^get_comentarios/(?P<atividade_pk>\d+)/$', 'core.views.get_comentarios'), # ajax.json
+	url(r'^get_comentarios/(?P<post_pk>\d+)/$', 'core.views.get_comentarios'), # ajax.json
 	
 	url(r'^get_one_puclicidade_pagina/(?P<pagina_codigo>\w+)/(?P<competicao_pk>\d+)/$', 'core.views.get_one_puclicidade_pagina'), # ajax.json
     

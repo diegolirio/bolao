@@ -56,8 +56,11 @@ def get_aproveitamento(inscricao):
 		for j in jgs_aux:
 			if j.status.codigo != 'E':
 				qtde = qtde + 1
-	pontuacao_100_ = PONTOS_PLACAR * qtde
-	aproveitamento = inscricao.pontos * 100 / pontuacao_100_ 
+	if qtde > 0:
+		pontuacao_100_ = PONTOS_PLACAR * qtde
+		aproveitamento = inscricao.pontos * 100 / pontuacao_100_ 
+	else:
+		aproveitamento = 100
 	return aproveitamento
 	
 	
