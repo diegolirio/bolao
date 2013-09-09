@@ -10,6 +10,7 @@
 				  function(retorno) {     
 					  //alert(JSON.stringify(retorno));					  
 					  var html_ = get_html_posts(retorno);
+					  alert(html_);
 					  $('#id_posts').html(html_);
 				  }
 		 );		
@@ -17,6 +18,8 @@
 	
 	function get_html_posts(json_post) {
 		  var html_ = "";
+		  var user_participante_id = {{ user_participante.id }}; // ToDo...: Erro qdo nao estiver logado....!
+		  
 		  $.each( json_post, function( i, item ) {
 				//alert(item.participante.apelido + ' - ' + item.post.mensagem);	
 				html_ += '<div class="row">';
@@ -30,7 +33,7 @@
 				html_ += 					item.participante.apelido;							
 				html_ += '				<span class="pull-right muted" style="font-size: 12px;">';
 				html_ += 						item.post.data_hora;
-				if ( {{ user_participante.id }} > 0 && {{ user_participante.id }} == item.participante.id) {
+				if ( user_participante_id > 0 && user_participante_id == item.participante.id) {
 				   html_ += '    					<a href="javascript:undefined" title="Excluir" onclick="delete_post('+item.post.id+')"><i class="icon-remove"></i></a>';
 				}
 				html_ += '				</span> ';			
@@ -129,7 +132,7 @@
 			<img src="/media/{{user_inscricao.participante.foto}}" height="50" width="50" class="img-circle"/> <span id="id_alert" class="text-warning"></span>
 			<div class="col-lg-10">
 			  <textarea class="form-control span4" rows="3" id="id_message" placeholder="Sua mensagem"></textarea><br/>
-			  <a href="javascript:undefined" id="id_publicar_post" class="btn btn-primary input-medium" onclick="posts('1');">publicar</a>
+			  <a href="javascript:undefined" id="id_publicar_post" class="btn btn-primary input-medium" >publicar</a>
 			</div>
 		  </div>	
 	</div>			
