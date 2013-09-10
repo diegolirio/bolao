@@ -172,7 +172,7 @@ def blog(request, competicao_pk):
 # json
 def get_comentarios(request, post_pk):
 	post = Post.objects.get(pk=post_pk)
-	comentarios = ComentarioPost.objects.filter(post=post).order_by('-data_hora')
+	comentarios = ComentarioPost.objects.filter(post=post).order_by('data_hora')
 	to_json = list()	
 	for c in comentarios:
 		participante = c.inscricao.participante	
@@ -187,6 +187,7 @@ def get_posts(request, competicao_pk, qtde_inicial):
 	competicao = Competicao.objects.get(pk=competicao_pk)
 	qtde_final = int(qtde_inicial) + 15
 	posts = Post.objects.filter(competicao=competicao).order_by('-data_hora')[qtde_inicial: qtde_final]
+	count_posts = Post.objects.filter(competicao=competicao).count()
 	to_json = list()
 	for a in posts:
 		view_participante_json = {'id': a.inscricao.participante.id, 'apelido': a.inscricao.participante.apelido, 'foto': a.inscricao.participante.foto.url }	
@@ -195,7 +196,7 @@ def get_posts(request, competicao_pk, qtde_inicial):
 		except:
 			imagem = ""
 		qtde_coment = ComentarioPost.objects.filter(post=a).count()
-		view_posts_json = {'id': a.id, 'mensagem': a.mensagem, 'data_hora': a.data_hora.strftime("%d/%m/%Y %H:%M"), 'imagem': imagem, 'count_coment': qtde_coment }		
+		view_posts_json = {'id': a.id, 'mensagem': a.mensagem, 'data_hora': a.data_hora.strftime("%d/%m/%Y %H:%M"), 'imagem': imagem, 'count_coment': qtde_coment, 'count_posts': count_posts }		
 		dictFields = { 'participante': view_participante_json, 'post': view_posts_json }
 		to_json.append(dictFields)
 	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")  		
@@ -204,16 +205,16 @@ def get_posts(request, competicao_pk, qtde_inicial):
 def inserir_post(request, inscricao_pk, competicao_pk):
 	inscricao = Inscricao.objects.get(pk=inscricao_pk)
 	competicao = Competicao.objects.get(pk=competicao_pk)
-	returnMgs = "";
-	returnStatus = "E";
+	returnMgs = ""
+	returnStatus = "E"
 	try:
 		mensagem = request.GET['mensagem']	
 		if inscricao.pk == 0:
-			returnMgs = "Participante não inscrito ou não logado";
+			returnMgs = "Participante não inscrito ou não logado"
 		elif competicao.pk == 0:
-			returnMgs = "Competição inválida";
+			returnMgs = "Competição inválida"
 		elif mensagem == "":
-			returnMgs = "Digite a Mensagem";
+			returnMgs = "Digite a Mensagem"
 		else:
 			new_post = Post()
 			new_post.competicao = competicao
@@ -235,6 +236,59 @@ def inserir_post(request, inscricao_pk, competicao_pk):
 	to_json = list()
 	to_json.append(dictFields)
 	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")  	
+	
+def delete_post(request, post_pk):
+	returnMgs = ""
+	returnStatus = "E"
+	try:
+		post = Post.objects.get(pk=post_pk)
+		post.delete()
+		returnMgs = "Post Excluído com sucesso!"
+		returnStatus = "N"
+	except:
+		returnMgs = "Erro ao excluir! "
+		returnStatus = "E"		
+	json = { 'mensagem': returnMgs, 'status': returnStatus }    
+	dictFields = { 'returnProc': json }
+	to_json = list()
+	to_json.append(dictFields)
+	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")  			
+	
+def insert_coment(request, inscricao_pk, post_pk):
+	inscricao = Inscricao.objects.get(pk=inscricao_pk)
+	post = Post.objects.get(pk=post_pk)
+	returnMgs = "";
+	returnStatus = "E";
+	try:
+		mensagem = request.GET['mensagem']	
+		if inscricao.pk == 0:
+			returnMgs = "Participante não inscrito ou não logado";
+		elif post.pk == 0:
+			returnMgs = "Post não encontrado";
+		elif mensagem == "":
+			returnMgs = "Digite a Mensagem";
+		else:
+			coment = ComentarioPost()
+			coment.post = post
+			coment.inscricao = inscricao
+			coment.mensagem = mensagem
+			coment.save()			
+			r_a = RegistroAtividade()
+			r_a.post = post
+			r_a.atividade = Atividade.objects.filter(codigo='O')[0:1].get() # Comentou
+			r_a.save()
+			returnStatus = "N"		
+			returnMgs = "Comentario incluso com sucesso...!"
+	except:
+		returnMgs = "Digite a Mensagem"
+	json = {
+			 'mensagem': returnMgs,
+			 'status': returnStatus
+		  }    
+	dictFields = { 'returnProc': json }
+	to_json = list()
+	to_json.append(dictFields)
+	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")  			
 									
 def __get_one_puclicidade_global__(pagina_codigo):
 	try:
