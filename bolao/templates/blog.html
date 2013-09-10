@@ -50,10 +50,11 @@
 				}
 				{% if user_participante.id > 0 %}
 					  html_ += '		<div id="id_coment_insert'+item.post.id+'"></div>';
+					  html_ += '		<div id="id_coment_alert'+item.post.id+'" class="text-warning"></div>';
 					  html_ += '		<div id="id_comentar_post'+item.post.id+'">';
 					  html_ += '			<img src="/media/{{user_participante.foto}}" height="30" width="30" class="img-rounded"/>';
 					  html_ += '            <textarea class="form-control span4" rows="2" id="id_mensagem_comentar'+item.post.id+'" placeholder="Sua mensagem"></textarea>';
-					  html_ += '			<a href="javascript:undefined" class="btn" id="id_publicar_mensagem'+item.post.id+'" onclick="comentar_post('+item.post.id+');">publicar</a>';
+					  html_ += '			<a href="javascript:undefined" class="btn" id="id_publicar_mensagem'+item.post.id+'" onclick="comentar_post('+item.post.id+','+item.participante.id+');">publicar</a>';
 					  html_ += '		</div>	';						
 				{% endif %}
 				html_ += '	  		</div>';							
@@ -70,15 +71,23 @@
 		$.getJSON('/get_comentarios/'+post_id,  // URL 				
 				  function(retorno) {         // REQUISICAO    
 				     $.each( retorno, function( i, item ) {
-						 html_ += '<div class="row">';
-						 html_ += '    <div class="span">';
-						 html_ += '    		<img src="'+item.participante.foto+'" height="25" width="25" class="img-rounded"/>';
-						 html_ += '    </div>';
-						 html_ += '    <div class="span">';
-						 html_ += '        <p class="text-info">'+ item.participante.apelido +' <span class="muted" style="font-size: 12px;"> | '+item.comentario.data_hora+'</span></p>';
-						 html_ += '        <p>'+item.comentario.mensagem+'</p>';
-						 html_ += '    </div>';
-						 html_ += '</div>					 ';
+						 //html_ += '<div class="row">';
+						 //html_ += '    <div class="span">';
+						 //html_ += '    		<img src="'+item.participante.foto+'" height="25" width="25" class="img-rounded"/>';
+						 //html_ += '    </div>';
+						 //html_ += '    <div class="span">';
+						 //html_ += '        <p class="text-info">'+ item.participante.apelido +' <span class="muted" style="font-size: 12px;"> | '+item.comentario.data_hora+'</span></p>';
+						 //html_ += '        <p>'+item.comentario.mensagem+'</p>';
+						 //html_ += '    </div>';
+						 //html_ += '</div>					 ';
+						 html_ += get_html_coment(item.participante.apelido, 
+						                          item.participante.foto, 
+												  item.comentario.mensagem, 
+												  item.comentario.data_hora, 
+												  item.comentario.id,
+												  item.participante.id,
+												  item.comentario.dono_participante_post_id,
+												  post_id);
 					 });
 					 
 					 $('#id_coments'+post_id).html(html_);
@@ -100,7 +109,7 @@
 				   });
 	}
 	
-	function comentar_post(post_id) {
+	function comentar_post(post_id, post_participante_id) {
 		//alert(post_id);
 		var mensagem__ = $('#id_mensagem_comentar'+post_id).val();
 		var inscricao_pk = {{user_inscricao.id}};
@@ -110,28 +119,67 @@
 					  { mensagem: mensagem__ },	     // Parametros	
 					  function(retorno) {           // REQUISICAO  
 						 if (retorno[0].returnProc.status == "N") {
-							 var html_ = "";
-							 html_ += '<div class="row">';
-							 html_ += '    <div class="span">';
-							 html_ += '    		<img src="/media/{{user_inscricao.participante.foto}}" height="25" width="25" class="img-rounded"/>';
-							 html_ += '    </div>';
-							 html_ += '    <div class="span">';
-							 html_ += '        <p class="text-info">{{user_inscricao.participante.apelido}} <span class="muted" style="font-size: 12px;"> | </span></p>';
-							 html_ += '        <p>'+mensagem__+'</p>';
-							 html_ += '    </div>';
-							 html_ += '</div>					 ';				
+							 var html_ = get_html_coment('{{user_inscricao.participante.apelido}}', 
+							                             '/media/{{user_inscricao.participante.foto}}', 
+														 mensagem__, 
+														 retorno[0].returnProc.data_hora, 
+														 retorno[0].returnProc.coment_id,
+														 {{user_inscricao.participante.id}},
+														 post_participante_id,
+														 post_id);
+							 //html_ += '<div class="row">';
+							 //html_ += '    <div class="span">';
+							 //html_ += '    		<img src="/media/{{user_inscricao.participante.foto}}" height="25" width="25" class="img-rounded"/>';
+							 //html_ += '    </div>';
+							 //html_ += '    <div class="span">';
+							 //html_ += '        <p class="text-info">{{user_inscricao.participante.apelido}} <span class="muted" style="font-size: 12px;"> | </span></p>';
+							 //html_ += '        <p>'+mensagem__+'</p>';
+							 //html_ += '    </div>';
+							 //html_ += '</div>					 ';				
 							 $('#id_coment_insert'+post_id).append(html_);
 							 $('#qtde_coment'+post_id).html(parseInt($('#qtde_coment'+post_id).html())+1);
-							 $('#id_mensagem_comentar'+post_id).empty();
+							 $('#id_mensagem_comentar'+post_id).val("");
+							 $('#id_coment_alert'+post_id).empty();
 						 } else {
-							alert(retorno[0].returnProc.mensagem);
-							//$('#id_alert').html(retorno[0].returnProc.mensagem);
+							//alert(retorno[0].returnProc.mensagem);
+							$('#id_coment_alert'+post_id).html(retorno[0].returnProc.mensagem);
 						 }
 					  });				
 		} else {
-			//$('#id_alert').html('Digite a mensagem!!!');
-			alert('Digite a mensagem');
+			$('#id_coment_alert'+post_id).html('Digite a mensagem');
+			//alert('Digite a mensagem');
 		}		
+	}
+	
+	function get_html_coment(apelido, foto, mensagem, data_hora, coment_id, participante_id, dono_post_participante, post_id) {
+		 var html_ = "";
+		 html_ += '<div class="row" id="id_coment'+coment_id+'">';
+		 html_ += '    <div class="span">';
+		 html_ += '    		<img src="'+foto+'" height="25" width="25" class="img-rounded"/>';
+		 html_ += '    </div>';
+		 html_ += '    <div class="span">';
+		 html_ += '        <p class="text-info">'+ apelido +' <span class="muted" style="font-size: 12px;"> | '+data_hora+'</span>';
+		 if (participante_id == {{user_participante.id}} || dono_post_participante == {{user_participante.id}}) { // Excluir Coment
+			html_ += '				<a href="javascript:undefined" title="Excluir" onclick="delete_coment('+coment_id+','+post_id+')"><i class="icon-remove"></i></a>';
+		}
+		 html_ += '		   </p>';
+		 html_ += '        <p class="span5">'+mensagem+'</p>';
+		 html_ += '    </div>';
+		 html_ += '</div>					 ';
+		 return html_;
+	}
+	
+	function delete_coment(coment_id, post_id) {
+		//alert(coment_id);
+		$.getJSON('/delete_coment/'+coment_id,  // URL 	
+				  function(retorno) {           // REQUISICAO  
+					 if (retorno[0].returnProc.status == "N") {
+						$('#id_coment'+coment_id).empty(); 
+						$('#qtde_coment'+post_id).html(parseInt($('#qtde_coment'+post_id).html())-1);
+					 } else {
+						 alert(retorno[0].returnProc.mensagem);
+					 }
+				   });		
 	}
 	
 	$(function() {

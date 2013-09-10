@@ -126,34 +126,45 @@ dir__view = {'apostas': dir__apostas}
 to_json.append(dir__view)
 """									
 									
-def get_jogo_simulacao(request, competicao_pk, sequencia_jogo):
+def get_jogos_simulacao(request, competicao_pk):
 	competicao = Competicao.objects.get(pk=competicao_pk)
 	grupos = Grupo.objects.filter(campeonato=competicao.campeonato)
-	jogos = list()	
+	jogos_aux = list()	
 	status=StatusJogo.objects.filter(codigo='E')[0:1].get()
 	for g in grupos:
-		j = Jogo.objects.filter(grupo=g, status=status)[sequencia_jogo:1].get()
-		print(j.data_hora)
-		jogos.append(j)
-	jogo = jogos[0]
-	for j_ in jogos:
-		if j_.data_hora < jogo.data_hora:
-			jogo = j_
-	print(jogo.time_a + " X " + jogo.time_b + '   |    ' + jogo.data_hora.strftime("%d/%m/%Y %H:%M"))
-	view_jogo_json = {'id': jogo.id, 
-	                  'time_a': jogo.time_a, 
-					  'time_b': jogo.time_b, 
-					  'resultado_a': jogo.resultado_a, 
-					  'resultado_b': jogo.resultado_b, 
-					  'data_hora': jogo.data_hora.strftime("%d/%m/%Y %H:%M"),
-					  'vencedor': jogo.vencedor,
-					  'local': jogo.local.descricao,
-					  'rodada': jogo.rodada
-					 }
-	to_json = list()	
-	dir__jogo = {'jogo': view_jogo_json}
-	to_json.append(dir__jogo)
-	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")  		
+		jgs = Jogo.objects.filter(grupo=g, status=status)
+		for j in jgs:
+			jogos_aux.append(j)
+	jogo = jogos_aux[0]
+	jogos = list()
+	y = 0
+	for i in range(len(jogos_aux)*len(jogos_aux)):
+		if jogos_aux[y].data_hora < jogo.data_hora:
+			exist = False
+			for jr in jogos:
+				if jr == jogos_aux[y]:
+					exist = True
+					break
+			if not exist:
+				jogo = jogos_aux[y]
+		y = y + 1
+		if len(jogos_aux)-1 == y:
+			if len(jogos_aux) == len(jogos):
+				break
+			else:
+				jogos.append(jogo)
+				# Verifica se existe o não Existe o Jogo na Lista Real e existe na Aux. Add, se existe não add...
+				for j in jogos_aux:
+					exist = False
+					for jj in jogos:
+						if j == jj:
+							exist = True
+							break
+					if not exist:
+						jogo = jogos_aux[0]			
+				y = 0
+	retorno = serializers.serialize("json", jogos)
+	return HttpResponse(retorno, mimetype="text/javascript")							
 									
 def blog(request, competicao_pk):
 	competicao = Competicao.objects.get(pk=competicao_pk)	
@@ -177,7 +188,7 @@ def get_comentarios(request, post_pk):
 	for c in comentarios:
 		participante = c.inscricao.participante	
 		view_participante_json = {'id': participante.id, 'apelido': participante.apelido, 'foto': participante.foto.url }   	
-		view_comentarios_json = {'inscricao': c.inscricao.id,'post': c.post.id,'mensagem' : c.mensagem,'data_hora': c.data_hora.strftime("%d/%m/%Y %H:%M")}    
+		view_comentarios_json = {'id': c.pk, 'inscricao': c.inscricao.id, 'post': c.post.id, 'mensagem' : c.mensagem, 'data_hora': c.data_hora.strftime("%d/%m/%Y %H:%M"), 'dono_participante_post_id': c.post.inscricao.participante.id}    
 		dictFields = { 'comentario': view_comentarios_json, 'participante': view_participante_json }
 		to_json.append(dictFields)
 	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")  	
@@ -245,8 +256,25 @@ def delete_post(request, post_pk):
 		post.delete()
 		returnMgs = "Post Excluído com sucesso!"
 		returnStatus = "N"
-	except:
-		returnMgs = "Erro ao excluir! "
+	except Exception,e:
+		returnMgs = "Erro ao excluir! " + e.__str__()
+		returnStatus = "E"		
+	json = { 'mensagem': returnMgs, 'status': returnStatus }    
+	dictFields = { 'returnProc': json }
+	to_json = list()
+	to_json.append(dictFields)
+	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")  	
+
+def delete_coment(request, coment_pk):
+	returnMgs = ""
+	returnStatus = "E"
+	try:
+		coment = ComentarioPost.objects.get(pk=coment_pk)
+		coment.delete()
+		returnMgs = "Comentario Excluído com sucesso!"
+		returnStatus = "N"
+	except Exception,e:
+		returnMgs = "Erro ao excluir! "  + e.__str__()
 		returnStatus = "E"		
 	json = { 'mensagem': returnMgs, 'status': returnStatus }    
 	dictFields = { 'returnProc': json }
@@ -259,6 +287,8 @@ def insert_coment(request, inscricao_pk, post_pk):
 	post = Post.objects.get(pk=post_pk)
 	returnMgs = "";
 	returnStatus = "E";
+	coment_id = -1
+	data_hora = datetime.now
 	try:
 		mensagem = request.GET['mensagem']	
 		if inscricao.pk == 0:
@@ -272,18 +302,22 @@ def insert_coment(request, inscricao_pk, post_pk):
 			coment.post = post
 			coment.inscricao = inscricao
 			coment.mensagem = mensagem
-			coment.save()			
+			coment.save()		
 			r_a = RegistroAtividade()
 			r_a.post = post
 			r_a.atividade = Atividade.objects.filter(codigo='O')[0:1].get() # Comentou
 			r_a.save()
+			coment_id = coment.id
+			data_hora = coment.data_hora
 			returnStatus = "N"		
 			returnMgs = "Comentario incluso com sucesso...!"
 	except:
-		returnMgs = "Digite a Mensagem"
+		returnMgs = "Digite a Mensagem..."
 	json = {
 			 'mensagem': returnMgs,
-			 'status': returnStatus
+			 'status': returnStatus,
+			 'coment_id': coment_id,
+			 'data_hora': data_hora.strftime("%d/%m/%Y %H:%M"),
 		  }    
 	dictFields = { 'returnProc': json }
 	to_json = list()
@@ -590,7 +624,7 @@ def comparar_colocacao(request, competicao_pk, view_inscricao_pk):
 								'foto': view_inscricao.participante.foto,
 							   })	
 							  
-#ajax							  
+#ajax.json						  
 def get_aposta_by_inscricao(request, inscricao_pk):   
 	view_inscricao = Inscricao.objects.get(pk=inscricao_pk)	
 	apostas = get_apostas_pos_edicao(view_inscricao)			

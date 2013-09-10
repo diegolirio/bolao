@@ -32,7 +32,7 @@ urlpatterns = patterns('',
 	# ------------------------------------------------------------------------------------------------
     # Nao Logado (publicas)
     url(r'^rancking/(?P<competicao_pk>\d+)/$', 'core.views.rancking', name='rancking'),
-	url(r'^get_jogo_simulacao/(?P<competicao_pk>\d+)/(?P<sequencia_jogo>\d+)/$', 'core.views.get_jogo_simulacao', name='get_jogo_simulacao'), # ajax.jquery
+	url(r'^get_jogos_simulacao/(?P<competicao_pk>\d+)/$', 'core.views.get_jogos_simulacao', name='get_jogos_simulacao'), # ajax.jquery
     url(r'^tabela/(?P<competicao_pk>\d+)/$', 'core.views.tabela', name='tabela'),
     url(r'^aposta/(?P<competicao_pk>\d+)/$', 'core.views.aposta'),
     url(r'^apostas_jogo/(?P<competicao_pk>\d+)/(?P<jogo_pk>\d+)/$', 'core.views.apostas_jogo'),
@@ -51,6 +51,8 @@ urlpatterns = patterns('',
 	url(r'^delete_post/(?P<post_pk>\d+)/$', 'core.views.delete_post'), # ajax.json
 	url(r'^get_comentarios/(?P<post_pk>\d+)/$', 'core.views.get_comentarios'), # ajax.json
 	url(r'^insert_coment/(?P<inscricao_pk>\d+)/(?P<post_pk>\d+)/$', 'core.views.insert_coment'), # ajax.json
+	url(r'^delete_coment/(?P<coment_pk>\d+)/$', 'core.views.delete_coment'), # ajax.json
+	
 	url(r'^get_one_puclicidade_pagina/(?P<pagina_codigo>\w+)/(?P<competicao_pk>\d+)/$', 'core.views.get_one_puclicidade_pagina'), # ajax.json
     
     # Logado (privadas) >>> url fixado sempre a competicao como parametro
