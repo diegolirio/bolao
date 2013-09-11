@@ -164,7 +164,32 @@ def get_jogos_simulacao(request, competicao_pk):
 						jogo = jogos_aux[0]			
 				y = 0
 	retorno = serializers.serialize("json", jogos)
-	return HttpResponse(retorno, mimetype="text/javascript")							
+	return HttpResponse(retorno, mimetype="text/javascript")			
+
+def get_apostas_simulacao(request,competicao_pk):
+	competicao = Competicao.objects.get(pk=competicao_pk)
+	inscricoes = Inscricao.objects.filter(competicao=competicao)
+	apostas = list()
+	for i in inscricoes:
+		apostas_aux = Aposta.objects.filter(inscricao=i)
+		for a in apostas_aux:
+			apostas.append(a)
+	retorno = serializers.serialize("json", apostas)
+	return HttpResponse(retorno, mimetype="text/javascript")	
+	
+def get_inscricoes_simulacao(request,competicao_pk):
+	competicao = Competicao.objects.get(pk=competicao_pk)
+	inscricoes = Inscricao.objects.filter(competicao=competicao)
+	retorno = serializers.serialize("json", inscricoes)
+	return HttpResponse(retorno, mimetype="text/javascript")	
+	
+def get_partipante_foto_apelido(request, participante_pk):
+	participante = Participante.objects.get(pk=participante_pk)
+	view_participante_json = {'id': participante.id, 'apelido': participante.apelido, 'foto': participante.foto.url }   	
+	dictFields = { 'participante': view_participante_json }
+	to_json = list()
+	to_json.append(dictFields)
+	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")  	
 									
 def blog(request, competicao_pk):
 	competicao = Competicao.objects.get(pk=competicao_pk)	

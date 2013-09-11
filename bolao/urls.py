@@ -33,6 +33,10 @@ urlpatterns = patterns('',
     # Nao Logado (publicas)
     url(r'^rancking/(?P<competicao_pk>\d+)/$', 'core.views.rancking', name='rancking'),
 	url(r'^get_jogos_simulacao/(?P<competicao_pk>\d+)/$', 'core.views.get_jogos_simulacao', name='get_jogos_simulacao'), # ajax.jquery
+	url(r'^get_apostas_simulacao/(?P<competicao_pk>\d+)/$', 'core.views.get_apostas_simulacao', name='get_apostas_simulacao'), # ajax.jquery
+	url(r'^get_inscricoes_simulacao/(?P<competicao_pk>\d+)/$', 'core.views.get_inscricoes_simulacao', name='get_inscricoes_simulacao'), # ajax.jquery
+	url(r'^get_partipante_foto_apelido/(?P<participante_pk>\d+)/$', 'core.views.get_partipante_foto_apelido', name='get_partipante_foto_apelido'), # ajax.jquery
+	
     url(r'^tabela/(?P<competicao_pk>\d+)/$', 'core.views.tabela', name='tabela'),
     url(r'^aposta/(?P<competicao_pk>\d+)/$', 'core.views.aposta'),
     url(r'^apostas_jogo/(?P<competicao_pk>\d+)/(?P<jogo_pk>\d+)/$', 'core.views.apostas_jogo'),

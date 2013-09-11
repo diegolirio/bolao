@@ -9,6 +9,13 @@
 	// Set a callback to run when the Google Visualization API is loaded.
 	//google.setOnLoadCallback(drawChart);
 	
+	var index_jogo = 0;
+	var max_index_jogo = 0;	
+	
+	var json_jogos = "";
+	var json_apostas = "";		
+	var json_inscricoes = "";	
+	
     function drawChart(ap, ar, av, ae, as, er, qtde_jg) {
 			// Create the data table.
 			var data = new google.visualization.DataTable();
@@ -63,15 +70,71 @@
 							  retorno[0].fields.inscricao_quantidade_acerto_empate_erro_placar,
 							  retorno[0].fields.inscricao_quantidade_acerto_somente_resultado_um_time, 
 							  retorno[0].fields.inscricao_quantidade_erro,
-							  retorno[0].fields.quantidade_jogos);
-					
+							  retorno[0].fields.quantidade_jogos);					
 				  }           
 		);  	
 	}
 	
-	$(function() {
-		var index_jogo = 1;
-		var max_index_jogo = 0;	
+	function get_pontos_ganho_simulacao(inscricao_id) {
+		var p = 0;
+		$.each( json_apostas, function( i, a ) {
+			if(a.fields.calculado && a.fields.inscricao == inscricao_id) {
+				p += a.fields.pontos;
+			}
+		});
+		return p;
+	}
+	
+	function get_html_simulacao(inscricao) {
+		var html_tbody = "";
+		html_tbody += '<tr name="row_'+inscricao.pk+'">'; // row_[inscricao]
+		html_tbody += '   <td >'+inscricao.fields.colocacao+'</td>';
+		//html_tbody += '	  <td ><img src="/media/images/users/diego.jpeg" height="20" width="25" class="img-rounded"/> Diego Lirio</td>';
+		html_tbody += '	  <td ><span id="id_p_info'+inscricao.fields.participante+'"></span></td>';
+		html_tbody += '   <td ><center class="pontos">'+inscricao.fields.pontos+'</center></td>';
+		html_tbody += '   <td ><center>+'+get_pontos_ganho_simulacao(inscricao.pk)+'</center></td>';
+		html_tbody += '   <td ><center>'+inscricao.fields.quantidade_acerto_placar+'</center></td>';
+		html_tbody += '   <td ><center>'+inscricao.fields.quantidade_acerto_vencedor_um_resultado_correto+'</center></td>';
+		html_tbody += '   <td ><center>'+inscricao.fields.quantidade_acerto_vencedor+'</center></td>';
+		html_tbody += '   <td ><center>'+inscricao.fields.quantidade_acerto_empate_erro_placar+'</center></td>';
+		html_tbody += '   <td ><center>'+inscricao.fields.quantidade_acerto_somente_resultado_um_time+'</center></td>';
+		//html_tbody += '   <td ><center>'+inscricao.fields.quantidade_erro+'</center></td>';
+		html_tbody += '   <td ><center class="ra'+inscricao.fields.pk+'"><input type="number" style="width: 80px; height: 35px; font-size: 12px;" value="0" name="n1_resultado_a" min="0"></center></td>';
+		html_tbody += '   <td ><center>X</center></td>';
+		html_tbody += '   <td ><center class="rb'+inscricao.fields.pk+'"><input type="number" style="width: 80px; height: 35px; font-size: 12px;" value="0" name="n1_resultado_b" min="0"></center></td>';
+		html_tbody += '</tr>	';			
+		load_partipante_foto_apelido(inscricao.fields.participante);		
+		return html_tbody;
+	}
+	
+	function load_partipante_foto_apelido(participante_id) {
+		$.getJSON('/get_partipante_foto_apelido/'+participante_id, 
+				  function(retorno) {
+						$('#id_p_info'+participante_id).html('<img src="'+retorno[0].participante.foto+'" height="20" width="25" class="img-rounded"/> '+retorno[0].participante.apelido);
+				  });	
+		return true;
+	}
+	
+	function popula_jogo(jogo) {
+		var html_ = "";
+		html_ += '<i class=" icon-large icon-chevron-left"></i>';
+		html_ += jogo.fields.time_a;
+		html_ += '<input type="number" id="id_jogo_resultado_a" style="width: 80px; height: 60px; font-size: 30px;" value="'+jogo.fields.resultado_a+'" min="0"> ';
+		html_ += '<span class="muted">X</span> ';
+		html_ += '<input type="number" id="id_jogo_resultado_b" style="width: 80px; height: 60px; font-size: 30px;" value="'+jogo.fields.resultado_b+'" min="0"> ';
+		html_ += jogo.fields.time_b;
+		html_ += '<i class="icon-large icon-chevron-right"></i>';
+		$('#id_jogo_simulado').html(html_);
+		$('#id_time_a').html(jogo.fields.time_a);
+		$('#id_time_b').html(jogo.fields.time_b);		
+	}
+	
+	function calc_aposta(jogo, apostas) {
+	
+	}
+	
+	// #### jquery
+	$(function() {		
 		get_one_puclicidade_pagina('K', {{competicao.id}});
 	
 		$('.id_col').mouseenter(function() {
@@ -82,56 +145,222 @@
 		
 		$('#id_tab_simular').click(function() {
 			if($('#id_jogo_simulado').html() == '') {
+			
+				$('#id_loading_table_simulacao').html('<img src="/media/images/__159__.gif"/>');
+			
 				$('#id_img_load_sim').html('<img src="/media/images/__159__.gif"/>');
 				$.getJSON('/get_jogos_simulacao/'+{{competicao.id}},   // URL 				
 						function(retorno) {                        // REQUISIÇÂO  
-							alert(JSON.stringify(retorno));
+							//alert(JSON.stringify(retorno));
+							json_jogos = retorno;
 							max_index_jogo = retorno.length;
-							var html_ = "";
-							html_ += '<i class=" icon-large icon-chevron-left"></i>';
-							html_ += retorno[index_jogo].fields.time_a;
-							html_ += '<input type="number" style="width: 80px; height: 60px; font-size: 30px;" value="'+retorno[index_jogo].fields.resultado_a+'" min="0"> ';
-							html_ += '<span class="muted">X</span> ';
-							html_ += '<input type="number" style="width: 80px; height: 60px; font-size: 30px;" value="'+retorno[index_jogo].fields.resultado_b+'" min="0"> ';
-							html_ += retorno[index_jogo].fields.time_b;
-							html_ += '<i class="icon-large icon-chevron-right"></i>';
-							$('#id_jogo_simulado').html(html_);
-							$('#id_time_a').html(retorno[index_jogo].fields.time_a);
-							$('#id_time_b').html(retorno[index_jogo].fields.time_b);
+							//var html_ = "";
+							//html_ += '<i class=" icon-large icon-chevron-left"></i>';
+							//html_ += retorno[index_jogo].fields.time_a;
+							//html_ += '<input type="number" id="id_jogo_resultado_a" style="width: 80px; height: 60px; font-size: 30px;" value="'+retorno[index_jogo].fields.resultado_a+'" min="0"> ';
+							//html_ += '<span class="muted">X</span> ';
+							//html_ += '<input type="number" id="id_jogo_resultado_b" style="width: 80px; height: 60px; font-size: 30px;" value="'+retorno[index_jogo].fields.resultado_b+'" min="0"> ';
+							//html_ += retorno[index_jogo].fields.time_b;
+							//html_ += '<i class="icon-large icon-chevron-right"></i>';
+							//$('#id_jogo_simulado').html(html_);
+							//$('#id_time_a').html(retorno[index_jogo].fields.time_a);
+							//$('#id_time_b').html(retorno[index_jogo].fields.time_b);
+							popula_jogo(retorno[index_jogo]);
 							$('#id_img_load_sim').empty();
+							
+							// 1 - ToDo...: Calcula Vencedor do Jogo... (Inicialmente todos virao 0 X 0 e vencedor E)
+							
+							// pega as apostas... de todos os jogos (json)
+							$.getJSON('/get_apostas_simulacao/'+{{competicao.id}},  		
+													function(retorno_apostas) {
+														//alert('Apostas: ' + retorno_apostas.length);
+														//alert(JSON.stringify(retorno_apostas));
+
+														
+														// Calcula Pontos nas Apostas
+														$.each( retorno_apostas, function( i, item_ ) {
+
+															// 4 - ToDo...: Calcula pontos somatorio (classe inscricao) e quantidade de acertos (ap, ar, av, ae, as, er)
+															// 5 - ToDo...: Calcula Rancking (classe inscricao = colocacao)																
+															// 6 - popula a classe inscricao na tabela de simulacao
+
+															
+															if(retorno[index_jogo].pk == item_.fields.jogo) {		
+																// Calcula vencedor da aposta..
+																//alert(retorno[index_jogo].pk + ' == ' + item_.fields.jogo);	
+																
+																// 3 - ToDo...: Calcula Apostas (pontos individuais/unitario/ganho no jogo)															
+																if (item_.fields.resultado_a == retorno[index_jogo].fields.resultado_a && item_.fields.resultado_b == retorno[index_jogo].fields.resultado_b) {
+																	item_.fields.pontos = 7;
+																	retorno_apostas[i].fields.pontos = 7;
+																}
+																//if (a.resultado_a == jogo.resultado_a) and (a.resultado_b == jogo.resultado_b):
+																//	a.pontos = PONTOS_PLACAR																
+																else if (item_.fields.vencedor == retorno[index_jogo].fields.vencedor && 
+																         item_.fields.vencedor != 'E' && 
+																		 (item_.fields.resultado_a == retorno[index_jogo].fields.resultado_a || item_.fields.resultado_b == retorno[index_jogo].fields.resultado_b)) {
+																	item_.fields.pontos = 5;
+																	retorno_apostas[i].fields.pontos = 5;
+																}
+																//elif (a.vencedor == jogo.vencedor) and (a.vencedor != 'E') and ((a.resultado_a == jogo.resultado_a) or (a.resultado_b == jogo.resultado_b)):
+																//	a.pontos = PONTOS_VENCEDOR_RESULTADO_GOLS_UM_TIME
+																else if (item_.fields.vencedor == retorno[index_jogo].fields.vencedor && item_.fields.vencedor != 'E') {
+																	item_.fields.pontos = 4;
+																	retorno_apostas[i].fields.pontos = 4;
+																}
+																//elif (a.vencedor == jogo.vencedor) and (a.vencedor != 'E'):
+																//	a.pontos = PONTOS_VENCEDOR
+																else if (item_.fields.vencedor == retorno[index_jogo].fields.vencedor && item_.fields.vencedor == 'E') {
+																	item_.fields.pontos = 3;
+																	retorno_apostas[i].fields.pontos = 3;
+																}
+																//elif (a.vencedor == jogo.vencedor) and (a.vencedor == 'E'):
+																//	a.pontos = PONTOS_EMPATE_PLACAR_INCORRETO
+																else if (item_.fields.vencedor != retorno[index_jogo].fields.vencedor && 
+																		 (item_.fields.resultado_a == retorno[index_jogo].fields.resultado_a || item_.fields.resultado_b == retorno[index_jogo].fields.resultado_b)) {
+																	item_.fields.pontos = 2;
+																	retorno_apostas[i].fields.pontos = 2;
+																}
+																//elif (a.vencedor != jogo.vencedor) and ((a.resultado_a == jogo.resultado_a) or (a.resultado_b == jogo.resultado_b)):
+																//	a.pontos = PONTOS_SOMENTE_RESULTADO_GOLS_UM_TIME
+																else {
+																	item_.fields.pontos = 0;
+																	retorno_apostas[i].fields.pontos = 0;
+																}
+																//else:
+																//	a.pontos = PONTOS_ERRO									
+																item_.fields.calculado = true;
+																retorno_apostas[i].fields.calculado = true;
+															}
+														});
+														json_apostas = retorno_apostas;
+														
+														// Calcula Somatorio para as apostas calculadas...
+														// Busca inscricoes (json), de jogos finalizados/andamento
+														$.getJSON('/get_inscricoes_simulacao/'+{{competicao.id}}, 
+																  function(retorno_inscricoes) {
+																		//alert(JSON.stringify(retorno_inscricoes));
+																		$('#id_corpo_tabela_sim').empty();
+																		$.each( retorno_inscricoes, function( i, inscricao) {
+																			
+																			// *********** Soma inscricoes ***************
+																			// 4 - ToDo...: Calcula pontos somatorio (classe inscricao) e quantidade de acertos (ap, ar, av, ae, as, er)
+																			$.each( json_apostas, function( i, a) {
+																				if (a.fields.inscricao == inscricao.pk && a.fields.calculado) {
+																					inscricao.fields.pontos += a.fields.pontos;																					
+																					//if a.pontos == PONTOS_PLACAR:
+																					//	qtde_ap = qtde_ap + 1	
+																					if (a.fields.pontos == 7) {
+																						inscricao.fields.quantidade_acerto_placar++;
+																					} 
+																					//if a.pontos == PONTOS_VENCEDOR_RESULTADO_GOLS_UM_TIME:
+																					//	qtde_ar = qtde_ar + 1		
+																					else if (a.fields.pontos == 5) {
+																						inscricao.fields.quantidade_acerto_vencedor_um_resultado_correto++;
+																					}
+																					//elif a.pontos == PONTOS_VENCEDOR:
+																					//	qtde_av = qtde_av + 1
+																					else if (a.fields.pontos == 4) {
+																						inscricao.fields.quantidade_acerto_vencedor++;
+																					}																					
+																					//elif a.pontos == PONTOS_EMPATE_PLACAR_INCORRETO:
+																					//	qtde_ae = qtde_ae + 1	
+																					else if (a.fields.pontos == 3) {
+																						inscricao.fields.quantidade_acerto_empate_erro_placar++;
+																					}																					
+																					//elif a.pontos == PONTOS_SOMENTE_RESULTADO_GOLS_UM_TIME:
+																					//	qtde_as = qtde_as + 1	
+																					else if (a.fields.pontos == 2) {
+																						inscricao.fields.quantidade_acerto_somente_resultado_um_time++;
+																					}																						
+																					//elif (a.jogo.status.codigo != 'E') and (a.pontos == PONTOS_ERRO):
+																					//	qtde_er = qtde_er + 1
+																					// ############## ERRO NAO CALCULA NA SIMULACAO...
+																				}
+																			});
+																			//retorno_inscricoes[i].fields.pontos = inscricao.fields.pontos;	
+																			// *********** Soma Fim.
+																		});
+																		
+																		$.each( retorno_inscricoes, function( i, i_popula) {																			
+																			// 5 - ToDo...: Calcula Rancking (classe inscricao = colocacao)																
+																			//var html_tbody = get_html_simulacao(retorno_inscricoes[i]);
+																			//$('#id_corpo_tabela_sim').append(html_tbody);	
+																			//******  5 Fim															
+																		});																		
+																		
+																		$.each( retorno_inscricoes, function( i, i_popula) {																			
+																			//******  6 - popula a classe inscricao na tabela de simulacao ******
+																			var html_tbody = get_html_simulacao(retorno_inscricoes[i]);
+																			$('#id_corpo_tabela_sim').append(html_tbody);	
+																			//******  6 Fim
+																		});
+																		
+																		$('#id_loading_table_simulacao').empty();	
+																		
+																  });
+																  
+															  
+																  
+													});
+							// e calcula a primeira.. (inscricoes)
+							// popula na tabela simulacao
 						}
 				);
 				
 				// inscricao....
 				
-				var html_tbody = "";
-				html_tbody += '<tr name="row_1">'; // row_[inscricao]
-				html_tbody += '   <td >1</td>';
-				html_tbody += '	  <td ><img src="/media/images/users/diego.jpeg" height="20" width="25" class="img-rounded"/> Diego Lirio</td>';
-				html_tbody += '   <td ><center class="pontos">36</center></td>';
-				html_tbody += '   <td ><center>+7</center></td>';
-				html_tbody += '   <td ><center>2</center></td>';
-				html_tbody += '   <td ><center>1</center></td>';
-				html_tbody += '   <td ><center>2</center></td>';
-				html_tbody += '   <td ><center>0</center></td>';
-				html_tbody += '   <td ><center>1</center></td>';
-				html_tbody += '   <td ><center>2</center></td>';
-				html_tbody += '   <td ><center class="ra"><input type="number" style="width: 80px; height: 35px; font-size: 12px;" value="0" name="n1_resultado_a" min="0"></center></td>';
-				html_tbody += '   <td ><center>X</center></td>';
-				html_tbody += '   <td ><center class="rb"><input type="number" style="width: 80px; height: 35px; font-size: 12px;" value="0" name="n1_resultado_b" min="0"></center></td>';
-				html_tbody += '</tr>	';
-				$('#id_corpo_tabela_sim').html(html_tbody+html_tbody);				
+				//var html_tbody = get_html_simulacao('inscricao');
+				//$('#id_corpo_tabela_sim').html(html_tbody+html_tbody);				
 				//$('#id_jogo_simulado').html('Brasil <span class="muted">X</span> Italia');
 				//$('#id_img_load_sim').empty();
 			}
 		});
 		
 		$('#id_recalc').click(function() {
-			var txt = "";
-			$('#id_table_simulator #id_corpo_tabela_sim tr').each(function(){
-				alert('Linha: ' + $(this).attr("name"));
-				alert('Pontos: ' + $(this).find('td .pontos').html());
-				alert('Resultado: ' + $(this).find('td center.ra input').val() + ' X ' + $(this).find('td center.rb input').val());
+			
+			// 1. Preenche Resultado do Jogo
+			json_jogos[index_jogo].fields.resultado_a = $('#id_jogo_simulado input#id_jogo_resultado_a').val();
+			json_jogos[index_jogo].fields.resultado_b = $('#id_jogo_simulado input#id_jogo_resultado_b').val();
+			
+			//alert(json_jogos[index_jogo].fields.resultado_a + ' X ' + json_jogos[index_jogo].fields.resultado_b);			
+			
+			// 2. Calcula vencedor do Jogo
+			if (json_jogos[index_jogo].fields.resultado_a > json_jogos[index_jogo].fields.resultado_b) {
+				json_jogos[index_jogo].fields.vencedor = 'A';
+			} else if (json_jogos[index_jogo].fields.resultado_a < json_jogos[index_jogo].fields.resultado_b) {
+				json_jogos[index_jogo].fields.vencedor = 'B';
+			} else {
+				json_jogos[index_jogo].fields.vencedor = 'E';
+			}
+			
+			$('#id_table_simulator #id_corpo_tabela_sim tr').each(function() {
+			
+				// 3. Preenche resultado das Apostas dos participantes...
+				//  Obs...: Aposta recebera os resultados por Jogo, e inscricao linha a linha
+				var inscricao = $(this).attr("name");
+				var aposta_resultado_a = $(this).find('td center.ra input').val();
+				var aposta_resultado_b = $(this).find('td center.rb input').val();				
+				$.each( retorno_apostas, function( i, a ) {
+					if (a.fields.inscricao == inscricao && a.fields.jogo == json_jogos[index_jogo].pk) {
+						a.fields.resultado_a = aposta_resultado_a;
+						a.fields.resultado_a = aposta_resultado_b;
+						if (a.fields.resultado_a > a.fields.resultado_b) {
+							a.fields.vencedor = 'A';
+						} else if (a.fields.resultado_a < a.fields.resultado_b) {
+							a.fields.vencedor = 'B';
+						} else {
+							a.fields.vencedor = 'E';
+						}
+					}
+				});
+				
+				// 4. Calc...
+				
+				//alert('Linha: ' + $(this).attr("name")); // inscricao
+				//alert('Pontos: ' + $(this).find('td .pontos').html()); // pontos da inscricao
+				//alert('Resultado: ' + $(this).find('td center.ra input').val() + ' X ' + $(this).find('td center.rb input').val()); // resultado da aposta
+				
 				//$(this).find('td').each(function(){
 					//do your stuff, you can use $(this) to get current cell
 					//txt += "-"+$(this).html();
@@ -439,19 +668,20 @@
 								<td class="text-error" title="Colocação">Col.</td>
 								<td class="text-error">Participante</td>
 								<td class="text-error" title="Pontos"><center>Pontos</center></td>
-								<td class="text-error" title="Pontos"><center>+</center></td>
+								<td class="text-error" title="Pontos somados na simulação"><center>+</center></td>
 								<td class="text-error" title="Acerto do Placar (7 pontos)"><center>AP</center></td>
 								<td class="text-error" title="Acerto do Vencedor e quantidade de gols de um Time (5 pontos)"><center>AR</center></td>
 								<td class="text-error" title="Acerto do Vencedor (4 pontos)"><center>AV</center></td>
 								<td class="text-error" title="Acerto de Empate com placar diferente (3 pontos)"><center>AE</center></td>
 								<td class="text-error" title="Acerto de Somente da quantidade de gols de um Time (2 pontos)"><center>AS</center></td>
-								<td class="text-error" title="Errou Tudo (Zero pontos)"><center>ER</center></td>
+								<!--<td class="text-error" title="Errou Tudo (Zero pontos)"><center>ER</center></td>-->
 								<td class="text-error" title=""><center id="id_time_a">Brasil</center></td>
 								<td class="text-error" title=""><center>X</center></td>
 								<td class="text-error" title=""><center id="id_time_b">Itália</center></td>
 							</tr>	
 							<tbody id="id_corpo_tabela_sim"></tbody>
 						</table>
+						<div id="id_loading_table_simulacao"><img src="/media/images/__159__.gif"/></div>
 					</div>							
 				</div>				
 				<!--
