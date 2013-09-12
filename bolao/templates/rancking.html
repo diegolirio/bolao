@@ -277,14 +277,57 @@
 	}
 
 	function order_rancking() {
+	
+		/*
+	
+		var retorno_inscricoes_aux = json_inscricoes;
 		// Ordernar a Inscricao......
+		for (var i = 0; i < retorno_inscricoes_aux.length; i++) {
+			
+			// Pega a inscricao que nao foi add para a ordenacao
+			var inscr_maior = "";
+			$.each( json_inscricoes, function( i, inscr_m) {
+				if (inscr_m.fields.pagamento == false) { // Se pagamento == true ja foi add na ordenacao
+					inscr_maior = json_inscricoes[0];
+					break;
+				}
+			});
+			
+			$.each( json_inscricoes, function( i, inscr) {
+				if (inscr.fields.pontos > inscr_maior.fields.pontos) {
+					inscr_maior = inscr;
+				} 
+				else if (inscr.fields.pontos == inscr_maior.fields.pontos) {
+					if (inscr.fields.quantidade_acerto_placar > inscr_maior.fields.quantidade_acerto_placar) {
+						inscr_maior = inscr;
+					} 
+					else if (inscr.fields.quantidade_acerto_vencedor_um_resultado_correto > inscr_maior.fields.quantidade_acerto_vencedor_um_resultado_correto) {
+						inscr_maior = inscr;
+					} 
+					else if(inscr.fields.quantidade_acerto_vencedor > inscr_maior.fields.quantidade_acerto_vencedor) {
+						inscr_maior = inscr;
+					} 
+					else if(inscr.fields.quantidade_acerto_empate_erro_placar > inscr_maior.fields.quantidade_acerto_empate_erro_placar) {
+						inscr_maior = inscr;
+					} 
+					else if(inscr.fields.quantidade_acerto_somente_resultado_um_time > inscr_maior.fields.quantidade_acerto_somente_resultado_um_time) {
+						inscr_maior = inscr;
+					}
+				}
+			}
+			inscr_maior.fields.colocacao = i+1;
+			// json_inscricoes: fazer loop para pegar o mesmo numero de inscricao para setar pagamento=true
+			$.each( json_inscricoes, function( i, inscr_) {
+				if (inscr_maior.pk == inscr_.pk) {
+					json_inscricoes[i].fields.pagamento = true;
+				}
+			});
+			retorno_inscricoes_aux[i] = inscr_maior;
+		}
+		json_inscricoes = retorno_inscricoes_aux;
 		
-		// 5 - ToDo...: Calcula Rancking (classe inscricao = colocacao)																
-		//$.each( retorno_inscricoes, function( i, i_popula) {
-			//var html_tbody = get_html_simulacao(retorno_inscricoes[i]);
-			//$('#id_corpo_tabela_sim').append(html_tbody);	
-			//******  5 Fim															
-		//});	
+		*/
+		
 	}
 	
 	// #### jquery
