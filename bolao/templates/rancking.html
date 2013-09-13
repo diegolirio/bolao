@@ -171,15 +171,17 @@
 	function popula_jogo(jogo) {
 		var html_ = "";
 		if (index_jogo > 0) {
-			html_ += '<a href="javascript:underfined" title="Jogo anterior: '+json_jogos[index_jogo-1].fields.time_a+' X '+json_jogos[index_jogo-1].fields.time_b+'" onclick="proximo_jogo_a_calcular_simulacao('+(index_jogo-1)+');"><i class=" icon-large icon-chevron-left"></i></a>';
+			//html_ += '<a href="javascript:underfined" title="Jogo anterior: '+json_jogos[index_jogo-1].fields.time_a+' X '+json_jogos[index_jogo-1].fields.time_b+'" onclick="proximo_jogo_a_calcular_simulacao('+(index_jogo-1)+');"><i class=" icon-large icon-chevron-left"></i></a>';
+			  html_ += '<a href="javascript:underfined" title="Jogo anterior: '+json_jogos[index_jogo-1].fields.time_a+' X '+json_jogos[index_jogo-1].fields.time_b+'" onclick="proximo_jogo_a_calcular_simulacao('+(index_jogo-1)+');"><img src="/media/images/prior.png"></img></a>';
 		}
-		html_ += jogo.fields.time_a;
+		html_ += '<span class="offset1">' +jogo.fields.time_a + '</span>';
 		html_ += '<input type="number" class="class_jogo_resultado_a" style="width: 80px; height: 60px; font-size: 30px;" value="'+jogo.fields.resultado_a+'" min="0"> ';
 		html_ += '<span class="muted">X</span> ';
 		html_ += '<input type="number" class="class_jogo_resultado_b" style="width: 80px; height: 60px; font-size: 30px;" value="'+jogo.fields.resultado_b+'" min="0"> ';
 		html_ += jogo.fields.time_b;
-		if (index_jogo < max_index_jogo) {
-			html_ += '<a href="javascript:underfined" title="Próximo jogo: '+json_jogos[index_jogo+1].fields.time_a+' X '+json_jogos[index_jogo+1].fields.time_b+'" onclick="proximo_jogo_a_calcular_simulacao('+(index_jogo+1)+');"><i class="icon-large icon-chevron-right"></i></a>';
+		if (index_jogo < max_index_jogo-1) {
+			//html_ += '<a class="offset1" href="javascript:underfined" title="Próximo jogo: '+json_jogos[index_jogo+1].fields.time_a+' X '+json_jogos[index_jogo+1].fields.time_b+'" onclick="proximo_jogo_a_calcular_simulacao('+(index_jogo+1)+');"><i class="icon-large icon-chevron-right"></i></a>';
+			html_ += '<a class="offset1" href="javascript:underfined" title="Próximo jogo: '+json_jogos[index_jogo+1].fields.time_a+' X '+json_jogos[index_jogo+1].fields.time_b+'" onclick="proximo_jogo_a_calcular_simulacao('+(index_jogo+1)+');"><img src="/media/images/next.png"></img></a>';
 		}
 		//alert(html_);
 		$('#id_jogo_simulado').html(html_);

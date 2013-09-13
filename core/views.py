@@ -611,7 +611,7 @@ def perfil_competicao(request, competicao_pk, view_inscricao_pk):
 						      {  
 								'template': 'perfil_competicao.html',
 								'titulo': view_inscricao.participante.apelido,
-								'subtitulo': get_nome_oficial_competicao(competicao), #view_inscricao.competicao.campeonato.nome + ' ' + view_inscricao.competicao.nome,
+								'subtitulo': __get_nome_oficial_competicao__(competicao), #view_inscricao.competicao.campeonato.nome + ' ' + view_inscricao.competicao.nome,
 								'user_participante': user_participante,
 								'user_inscricao': user_inscricao,
 								'competicao': competicao, 	
