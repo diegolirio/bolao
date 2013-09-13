@@ -102,7 +102,7 @@
 	function get_html_simulacao(inscricao) {
 		var html_tbody = "";
 		html_tbody += '<tr name="row_'+inscricao.pk+'">'; // row_[inscricao]
-		html_tbody += '   <td >'+inscricao.fields.colocacao+'</td>';
+		html_tbody += '   <td >'+inscricao.pk+ ' ' +inscricao.fields.colocacao+'</td>';
 		//html_tbody += '	  <td ><img src="/media/images/users/diego.jpeg" height="20" width="25" class="img-rounded"/> Diego Lirio</td>';
 		html_tbody += '	  <td ><span id="id_p_info'+inscricao.fields.participante+'"></span></td>';
 		html_tbody += '   <td ><center class="pontos">'+inscricao.fields.pontos+'</center></td>';
@@ -277,23 +277,24 @@
 	}
 
 	function order_rancking() {
-	
-		/*
-	
 		var retorno_inscricoes_aux = json_inscricoes;
+		//alert(JSON.stringify(retorno_inscricoes_aux));
 		// Ordernar a Inscricao......
-		for (var i = 0; i < retorno_inscricoes_aux.length; i++) {
-			
+		
+		//alert(retorno_inscricoes_aux.length);		
+		for (var i = 0; i < retorno_inscricoes_aux.length; i++) {		
 			// Pega a inscricao que nao foi add para a ordenacao
 			var inscr_maior = "";
-			$.each( json_inscricoes, function( i, inscr_m) {
+			$.each( json_inscricoes, function( x, inscr_m) {
+				//alert(inscr_m.fields.pagamento);
 				if (inscr_m.fields.pagamento == false) { // Se pagamento == true ja foi add na ordenacao
-					inscr_maior = json_inscricoes[0];
-					break;
+					inscr_maior = inscr_m;
+					//break;
 				}
 			});
 			
-			$.each( json_inscricoes, function( i, inscr) {
+			$.each( json_inscricoes, function( y, inscr) {
+				
 				if (inscr.fields.pontos > inscr_maior.fields.pontos) {
 					inscr_maior = inscr;
 				} 
@@ -314,19 +315,21 @@
 						inscr_maior = inscr;
 					}
 				}
-			}
-			inscr_maior.fields.colocacao = i+1;
-			// json_inscricoes: fazer loop para pegar o mesmo numero de inscricao para setar pagamento=true
-			$.each( json_inscricoes, function( i, inscr_) {
-				if (inscr_maior.pk == inscr_.pk) {
-					json_inscricoes[i].fields.pagamento = true;
-				}
 			});
-			retorno_inscricoes_aux[i] = inscr_maior;
+			
+			//alert(inscr_maior.pk + ' p=' + inscr_maior.fields.pontos); 
+			inscr_maior.fields.colocacao = i+1;
+			//alert(inscr_maior.pk);
+			
+			// json_inscricoes: fazer loop para pegar o mesmo numero de inscricao para setar pagamento=true
+			$.each( json_inscricoes, function( t, inscr_) {
+				if (inscr_maior.pk == json_inscricoes[t].pk) {
+					json_inscricoes[t].fields.pagamento = true;
+				}				
+			});
+			//retorno_inscricoes_aux[i] = inscr_maior;
 		}
 		json_inscricoes = retorno_inscricoes_aux;
-		
-		*/
 		
 	}
 	
@@ -342,12 +345,9 @@
 		});
 		
 		$('#id_tab_simular').click(function() {
-			if($('#id_jogo_simulado').html() == '') {
-			
-				$('#id_loading_table_simulacao').html('<center><img src="/media/images/__159__.gif"/></center>');
-			
-				$('#id_img_load_sim').html('<img src="/media/images/__159__.gif"/>');
-				
+			if($('#id_jogo_simulado').html() == '') {			
+				$('#id_loading_table_simulacao').html('<center><img src="/media/images/__159__.gif"/></center>');			
+				$('#id_img_load_sim').html('<img src="/media/images/__159__.gif"/>');				
 				$.getJSON('/get_jogos_simulacao/'+{{competicao.id}},   // URL 				
 						function(retorno) {                        // REQUISIÇÂO  
 							//alert(JSON.stringify(retorno));
@@ -359,84 +359,11 @@
 							$.getJSON('/get_apostas_simulacao/'+{{competicao.id}},  		
 													function(retorno_apostas) {
 														json_apostas = retorno_apostas;
-														//alert('Apostas: ' + retorno_apostas.length);
-														//alert(JSON.stringify(retorno_apostas));
-														
-														/*
-														
-														// Calcula Pontos nas Apostas
-														$.each( retorno_apostas, function( i, item_ ) {
-
-															// 4 - ToDo...: Calcula pontos somatorio (classe inscricao) e quantidade de acertos (ap, ar, av, ae, as, er)
-															// 5 - ToDo...: Calcula Rancking (classe inscricao = colocacao)																
-															// 6 - popula a classe inscricao na tabela de simulacao
-															
-															if(retorno[index_jogo].pk == item_.fields.jogo) {		
-																// Calcula vencedor da aposta..
-																//alert(retorno[index_jogo].pk + ' == ' + item_.fields.jogo);	
-																
-																// 3 - ToDo...: Calcula Apostas (pontos individuais/unitario/ganho no jogo)															
-																if (item_.fields.resultado_a == retorno[index_jogo].fields.resultado_a && item_.fields.resultado_b == retorno[index_jogo].fields.resultado_b) {
-																	item_.fields.pontos = 7;
-																	retorno_apostas[i].fields.pontos = 7;
-																}
-																//if (a.resultado_a == jogo.resultado_a) and (a.resultado_b == jogo.resultado_b):
-																//	a.pontos = PONTOS_PLACAR																
-																else if (item_.fields.vencedor == retorno[index_jogo].fields.vencedor && 
-																         item_.fields.vencedor != 'E' && 
-																		 (item_.fields.resultado_a == retorno[index_jogo].fields.resultado_a || item_.fields.resultado_b == retorno[index_jogo].fields.resultado_b)) {
-																	item_.fields.pontos = 5;
-																	retorno_apostas[i].fields.pontos = 5;
-																}
-																//elif (a.vencedor == jogo.vencedor) and (a.vencedor != 'E') and ((a.resultado_a == jogo.resultado_a) or (a.resultado_b == jogo.resultado_b)):
-																//	a.pontos = PONTOS_VENCEDOR_RESULTADO_GOLS_UM_TIME
-																else if (item_.fields.vencedor == retorno[index_jogo].fields.vencedor && item_.fields.vencedor != 'E') {
-																	item_.fields.pontos = 4;
-																	retorno_apostas[i].fields.pontos = 4;
-																}
-																//elif (a.vencedor == jogo.vencedor) and (a.vencedor != 'E'):
-																//	a.pontos = PONTOS_VENCEDOR
-																else if (item_.fields.vencedor == retorno[index_jogo].fields.vencedor && item_.fields.vencedor == 'E') {
-																	item_.fields.pontos = 3;
-																	retorno_apostas[i].fields.pontos = 3;
-																}
-																//elif (a.vencedor == jogo.vencedor) and (a.vencedor == 'E'):
-																//	a.pontos = PONTOS_EMPATE_PLACAR_INCORRETO
-																else if (item_.fields.vencedor != retorno[index_jogo].fields.vencedor && 
-																		 (item_.fields.resultado_a == retorno[index_jogo].fields.resultado_a || item_.fields.resultado_b == retorno[index_jogo].fields.resultado_b)) {
-																	item_.fields.pontos = 2;
-																	retorno_apostas[i].fields.pontos = 2;
-																}
-																//elif (a.vencedor != jogo.vencedor) and ((a.resultado_a == jogo.resultado_a) or (a.resultado_b == jogo.resultado_b)):
-																//	a.pontos = PONTOS_SOMENTE_RESULTADO_GOLS_UM_TIME
-																else {
-																	item_.fields.pontos = 0;
-																	retorno_apostas[i].fields.pontos = 0;
-																}
-																//else:
-																//	a.pontos = PONTOS_ERRO									
-																item_.fields.calculado = true;
-																retorno_apostas[i].fields.calculado = true;
-															}
-														});
-														
-														*/
-														
-														calc_aposta(retorno[index_jogo]);
-														  
+														calc_aposta(retorno[index_jogo]);														  
 														Load_Calc_Inscricao__();
 													});
-							// e calcula a primeira.. (inscricoes)
-							// popula na tabela simulacao
 						}
 				);
-				
-				// inscricao....
-				
-				//var html_tbody = get_html_simulacao('inscricao');
-				//$('#id_corpo_tabela_sim').html(html_tbody+html_tbody);				
-				//$('#id_jogo_simulado').html('Brasil <span class="muted">X</span> Italia');
-				//$('#id_img_load_sim').empty();
 			}
 		});
 		
