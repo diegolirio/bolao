@@ -83,8 +83,8 @@
 						json_inscricoes = retorno_inscricoes;
 						$('#id_corpo_tabela_sim').empty();
 						soma_pontos_inscricao();
-						order_rancking();																		
-						popula_rancking();																																		
+						order_colocacao();																		
+						popula_rancking2();																																		
 						$('#id_loading_table_simulacao').empty();							
 				  });	
 	}
@@ -102,7 +102,7 @@
 	function get_html_simulacao(inscricao) {
 		var html_tbody = "";
 		html_tbody += '<tr name="row_'+inscricao.pk+'">'; // row_[inscricao]
-		html_tbody += '   <td >'+inscricao.pk+ ' ' +inscricao.fields.colocacao+'</td>';
+		html_tbody += '   <td >'+inscricao.fields.colocacao+'</td>';
 		//html_tbody += '	  <td ><img src="/media/images/users/diego.jpeg" height="20" width="25" class="img-rounded"/> Diego Lirio</td>';
 		html_tbody += '	  <td ><span id="id_p_info'+inscricao.fields.participante+'"></span></td>';
 		html_tbody += '   <td ><center class="pontos">'+inscricao.fields.pontos+'</center></td>';
@@ -275,16 +275,46 @@
 			//******  6 Fim
 		});
 	}
-
-	function order_rancking() {
-		var retorno_inscricoes_aux = json_inscricoes;
-		//alert(JSON.stringify(retorno_inscricoes_aux));
-		// Ordernar a Inscricao......
+	
+	function popula_rancking2() {																	
+		$.each( json_inscricoes, function( i, i_popula) {	
 		
-		//alert(retorno_inscricoes_aux.length);		
-		for (var i = 0; i < retorno_inscricoes_aux.length; i++) {		
-			// Pega a inscricao que nao foi add para a ordenacao
+			var first_to_last = "";
+			$.each( json_inscricoes, function( x, insc_col) {
+				if (insc_col.fields.pagamento == true) { // Se pagamento == false ja foi populado
+					first_to_last = insc_col;
+				}
+			});			
+			
+			var html_tbody = "";
+			
+			
+			$.each( json_inscricoes, function( i, i_maior_col) {
+				if(i_maior_col.fields.pagamento == true) {
+					if(i_maior_col.fields.colocacao < first_to_last.fields.colocacao) {
+						//******  6 - popula a classe inscricao na tabela de simulacao ******
+						first_to_last = i_maior_col;
+					}
+				}
+			});
+			
+			first_to_last.fields.pagamento = false;			
+			//html_tbody = get_html_simulacao(first_to_last);
+			//$('#id_corpo_tabela_sim').append(html_tbody);	
+			
+			
+			html_tbody = get_html_simulacao(first_to_last);
+			$('#id_corpo_tabela_sim').append(html_tbody);				
+			
+			//******  6 Fim
+		});
+	}	
+
+	function order_colocacao() {
+		// Ordernar a Inscricao......		
+		for (var i = 0; i < json_inscricoes.length; i++) {					
 			var inscr_maior = "";
+			// Pega a inscricao que nao foi add para a ordenacao
 			$.each( json_inscricoes, function( x, inscr_m) {
 				//alert(inscr_m.fields.pagamento);
 				if (inscr_m.fields.pagamento == false) { // Se pagamento == true ja foi add na ordenacao
@@ -293,44 +323,61 @@
 				}
 			});
 			
+			// Pega o participante com maior numero de pontos ou acertos conforme a regra.
 			$.each( json_inscricoes, function( y, inscr) {
-				
-				if (inscr.fields.pontos > inscr_maior.fields.pontos) {
-					inscr_maior = inscr;
-				} 
-				else if (inscr.fields.pontos == inscr_maior.fields.pontos) {
-					if (inscr.fields.quantidade_acerto_placar > inscr_maior.fields.quantidade_acerto_placar) {
+				if (inscr.fields.pagamento == false) {
+					if (inscr.fields.pontos > inscr_maior.fields.pontos) {
 						inscr_maior = inscr;
 					} 
-					else if (inscr.fields.quantidade_acerto_vencedor_um_resultado_correto > inscr_maior.fields.quantidade_acerto_vencedor_um_resultado_correto) {
-						inscr_maior = inscr;
-					} 
-					else if(inscr.fields.quantidade_acerto_vencedor > inscr_maior.fields.quantidade_acerto_vencedor) {
-						inscr_maior = inscr;
-					} 
-					else if(inscr.fields.quantidade_acerto_empate_erro_placar > inscr_maior.fields.quantidade_acerto_empate_erro_placar) {
-						inscr_maior = inscr;
-					} 
-					else if(inscr.fields.quantidade_acerto_somente_resultado_um_time > inscr_maior.fields.quantidade_acerto_somente_resultado_um_time) {
-						inscr_maior = inscr;
+					else if (inscr.fields.pontos == inscr_maior.fields.pontos) {
+						if (inscr.fields.quantidade_acerto_placar > inscr_maior.fields.quantidade_acerto_placar) {
+							inscr_maior = inscr;
+						} 
+						else if (inscr.fields.quantidade_acerto_vencedor_um_resultado_correto > inscr_maior.fields.quantidade_acerto_vencedor_um_resultado_correto) {
+							inscr_maior = inscr;
+						} 
+						else if(inscr.fields.quantidade_acerto_vencedor > inscr_maior.fields.quantidade_acerto_vencedor) {
+							inscr_maior = inscr;
+						} 
+						else if(inscr.fields.quantidade_acerto_empate_erro_placar > inscr_maior.fields.quantidade_acerto_empate_erro_placar) {
+							inscr_maior = inscr;
+						} 
+						else if(inscr.fields.quantidade_acerto_somente_resultado_um_time > inscr_maior.fields.quantidade_acerto_somente_resultado_um_time) {
+							inscr_maior = inscr;
+						}
 					}
 				}
 			});
 			
-			//alert(inscr_maior.pk + ' p=' + inscr_maior.fields.pontos); 
 			inscr_maior.fields.colocacao = i+1;
-			//alert(inscr_maior.pk);
 			
 			// json_inscricoes: fazer loop para pegar o mesmo numero de inscricao para setar pagamento=true
 			$.each( json_inscricoes, function( t, inscr_) {
 				if (inscr_maior.pk == json_inscricoes[t].pk) {
-					json_inscricoes[t].fields.pagamento = true;
+					json_inscricoes[t].fields.pagamento = true; // pagamento = true (add na ordenacao)
 				}				
 			});
 			//retorno_inscricoes_aux[i] = inscr_maior;
 		}
-		json_inscricoes = retorno_inscricoes_aux;
 		
+		// ORDERNAR ADD NA SEQUENCIA.......
+		//var json_inscricao_aux = eval("[]");
+		//var inscr_first__ = "";
+		
+		//$.each( json_inscricoes, function( ii, insc) {			
+		//	json_inscricoes[ii].fields.pagamento = false;
+			
+			/*
+			if (inscr_m.fields.pagamento == true) { // Se pagamento == false ja foi ordenado....(add na sequencia)
+				inscr_first__ = insc;
+				if (insc.fields.colocacao > insc.fields.colocacao) {
+					json_inscricoes[t].fields.pagamento = false; // pagamento = false (add na ordenacao)
+					//json_inscricao_aux = json_inscricoes[t];
+				}							
+			}
+			*/
+		//});	
+		//alert(JSON.stringify(json_inscricao_aux));			
 	}
 	
 	// #### jquery
@@ -359,6 +406,7 @@
 							$.getJSON('/get_apostas_simulacao/'+{{competicao.id}},  		
 													function(retorno_apostas) {
 														json_apostas = retorno_apostas;
+														//alert(JSON.stringify(retorno_apostas));
 														calc_aposta(retorno[index_jogo]);														  
 														Load_Calc_Inscricao__();
 													});

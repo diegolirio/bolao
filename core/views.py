@@ -173,13 +173,16 @@ def get_apostas_simulacao(request,competicao_pk):
 	for i in inscricoes:
 		apostas_aux = Aposta.objects.filter(inscricao=i)
 		for a in apostas_aux:
-			apostas.append(a)
+			if a.jogo.status.codigo == 'E':
+				a.resultado_a = 0
+				a.resultado_b = 0
+				apostas.append(a)
 	retorno = serializers.serialize("json", apostas)
 	return HttpResponse(retorno, mimetype="text/javascript")	
 	
 def get_inscricoes_simulacao(request,competicao_pk):
 	competicao = Competicao.objects.get(pk=competicao_pk)
-	inscricoes = Inscricao.objects.filter(competicao=competicao)
+	inscricoes = get_rancking_by_competicao(competicao)
 	retorno = serializers.serialize("json", inscricoes)
 	return HttpResponse(retorno, mimetype="text/javascript")	
 	
