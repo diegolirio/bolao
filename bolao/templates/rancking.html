@@ -151,15 +151,37 @@
 		//return true;
 	}
 	
+	function proximo_jogo_a_calcular_simulacao(index) {
+		//$('#id_img_load_sim').ajaxStart(function() { $(this).html('<img src="/media/images/__159__.gif"/>'); });
+		index_jogo = index;
+		popula_jogo(json_jogos[index_jogo]);
+		load_resultado_aposta_proximo_jogo(json_jogos[index_jogo]);
+		//$('#id_img_load_sim').ajaxComplete(function() { $(this).empty(); });
+	}
+	
+	function load_resultado_aposta_proximo_jogo(jogo) {
+		$.each( json_apostas, function( i, a) {
+			if (a.fields.jogo == jogo.pk) {
+				set_resultado_a_participante_view(a.fields.inscricao, a.fields.resultado_a);
+				set_resultado_b_participante_view(a.fields.inscricao, a.fields.resultado_b);
+			}
+		});
+	}
+	
 	function popula_jogo(jogo) {
 		var html_ = "";
-		html_ += '<i class=" icon-large icon-chevron-left"></i>';
+		if (index_jogo > 0) {
+			html_ += '<a href="javascript:underfined" title="Jogo anterior: '+json_jogos[index_jogo-1].fields.time_a+' X '+json_jogos[index_jogo-1].fields.time_b+'" onclick="proximo_jogo_a_calcular_simulacao('+(index_jogo-1)+');"><i class=" icon-large icon-chevron-left"></i></a>';
+		}
 		html_ += jogo.fields.time_a;
-		html_ += '<input type="number" id="id_jogo_resultado_a" style="width: 80px; height: 60px; font-size: 30px;" value="'+jogo.fields.resultado_a+'" min="0"> ';
+		html_ += '<input type="number" class="class_jogo_resultado_a" style="width: 80px; height: 60px; font-size: 30px;" value="'+jogo.fields.resultado_a+'" min="0"> ';
 		html_ += '<span class="muted">X</span> ';
-		html_ += '<input type="number" id="id_jogo_resultado_b" style="width: 80px; height: 60px; font-size: 30px;" value="'+jogo.fields.resultado_b+'" min="0"> ';
+		html_ += '<input type="number" class="class_jogo_resultado_b" style="width: 80px; height: 60px; font-size: 30px;" value="'+jogo.fields.resultado_b+'" min="0"> ';
 		html_ += jogo.fields.time_b;
-		html_ += '<i class="icon-large icon-chevron-right"></i>';
+		if (index_jogo < max_index_jogo) {
+			html_ += '<a href="javascript:underfined" title="Próximo jogo: '+json_jogos[index_jogo+1].fields.time_a+' X '+json_jogos[index_jogo+1].fields.time_b+'" onclick="proximo_jogo_a_calcular_simulacao('+(index_jogo+1)+');"><i class="icon-large icon-chevron-right"></i></a>';
+		}
+		//alert(html_);
 		$('#id_jogo_simulado').html(html_);
 		$('#id_time_a').html(jogo.fields.time_a);
 		$('#id_time_b').html(jogo.fields.time_b);		
@@ -277,18 +299,14 @@
 	}
 	
 	function popula_rancking2() {																	
-		$.each( json_inscricoes, function( i, i_popula) {	
-		
+		$.each( json_inscricoes, function( i, i_popula) {
 			var first_to_last = "";
 			$.each( json_inscricoes, function( x, insc_col) {
 				if (insc_col.fields.pagamento == true) { // Se pagamento == false ja foi populado
 					first_to_last = insc_col;
 				}
-			});			
-			
+			});		
 			var html_tbody = "";
-			
-			
 			$.each( json_inscricoes, function( i, i_maior_col) {
 				if(i_maior_col.fields.pagamento == true) {
 					if(i_maior_col.fields.colocacao < first_to_last.fields.colocacao) {
@@ -297,15 +315,11 @@
 					}
 				}
 			});
-			
 			first_to_last.fields.pagamento = false;			
 			//html_tbody = get_html_simulacao(first_to_last);
 			//$('#id_corpo_tabela_sim').append(html_tbody);	
-			
-			
 			html_tbody = get_html_simulacao(first_to_last);
-			$('#id_corpo_tabela_sim').append(html_tbody);				
-			
+			$('#id_corpo_tabela_sim').append(html_tbody);		
 			//******  6 Fim
 		});
 	}	
@@ -380,6 +394,23 @@
 		//alert(JSON.stringify(json_inscricao_aux));			
 	}
 	
+	function get_resultado_a_participante_view(inscricao) {
+		return $('#id_table_simulator #id_corpo_tabela_sim tr').find('td .ra'+inscricao+' input').val(); // $(this).find('td .ra23 input').val();
+	}
+	
+	function get_resultado_b_participante_view(inscricao) {
+		return $('#id_table_simulator #id_corpo_tabela_sim tr').find('td .rb'+inscricao+' input').val(); // $(this).find('td .ra23 input').val();
+	}	
+	
+	function set_resultado_a_participante_view(inscricao, value) {
+		$('#id_table_simulator #id_corpo_tabela_sim tr').find('td .ra'+inscricao+' input').val(value);
+		//return $('#id_table_simulator #id_corpo_tabela_sim tr').find('td .ra'+inscricao+' input').val(value); // $(this).find('td .ra23 input').val();
+	}
+	
+	function set_resultado_b_participante_view(inscricao, value) {
+		$('#id_table_simulator #id_corpo_tabela_sim tr').find('td .rb'+inscricao+' input').val(value); // $(this).find('td .ra23 input').val();
+	}		
+	
 	// #### jquery
 	$(function() {		
 	
@@ -421,8 +452,8 @@
 			$('#id_loading_table_simulacao').html('<center><img src="/media/images/__159__.gif"/></center>');
 			
 			// 1. Preenche Resultado do Jogo
-			json_jogos[index_jogo].fields.resultado_a = $('#id_jogo_simulado input#id_jogo_resultado_a').val();
-			json_jogos[index_jogo].fields.resultado_b = $('#id_jogo_simulado input#id_jogo_resultado_b').val();			
+			json_jogos[index_jogo].fields.resultado_a = $('#id_jogo_simulado input.class_jogo_resultado_a').val();
+			json_jogos[index_jogo].fields.resultado_b = $('#id_jogo_simulado input.class_jogo_resultado_b').val();			
 			
 			// 2. Calcula vencedor do Jogo
 			if (json_jogos[index_jogo].fields.resultado_a > json_jogos[index_jogo].fields.resultado_b) {
@@ -441,8 +472,8 @@
 				// 3. Preenche resultado das Apostas dos participantes...
 				//  Obs...: Aposta recebera os resultados por Jogo, e inscricao linha a linha
 				var inscricao = $(this).attr("name").replace("row_","");
-				var aposta_resultado_a = $(this).find('td .ra'+inscricao+' input').val();
-				var aposta_resultado_b = $(this).find('td .rb'+inscricao+' input').val();		
+				var aposta_resultado_a = get_resultado_a_participante_view(inscricao); // $(this).find('td .ra'+inscricao+' input').val();
+				var aposta_resultado_b = get_resultado_b_participante_view(inscricao); // $(this).find('td .rb'+inscricao+' input').val();		
 
 				//alert('i'+inscricao+' a'+aposta_resultado_a+' b'+aposta_resultado_b);
 				

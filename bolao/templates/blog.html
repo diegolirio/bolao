@@ -18,6 +18,7 @@
 	function get_html_posts(json_post) {
 		  var html_ = "";
 		  var user_participante_id = {% if user_participante.id > 0 %} {{ user_participante.id }} {% else %} -1 {% endif %};
+		  //alert(user_participante_id);
 		  
 		  $.each( json_post, function( i, item ) {
 				//alert(item.participante.apelido + ' - ' + item.post.mensagem);	

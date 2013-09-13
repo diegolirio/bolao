@@ -37,6 +37,8 @@ def get_participante_by_user(user, verifica_confirm_email=True):
 			#	return redirect('/cadastre_se/')
 		except:
 			return redirect('/cadastre_se/')
+	else:
+		user_participante.pk = -1
 	return user_participante		
 
 def __get_patrocinador_principal__(competicao):
@@ -73,6 +75,7 @@ def get_inscricao(competicao, participante):
 		user_inscricao = Inscricao.objects.filter(competicao=competicao, participante=participante)[0:1].get()
 	except:
 		user_inscricao = Inscricao()	
+		user_inscricao.pk = -1
 	return user_inscricao
 	
 def get_patrocinador_pagina(codigo_pagina, competicao):
@@ -141,18 +144,19 @@ def get_jogos_simulacao(request, competicao_pk):
 	for i in range(len(jogos_aux)*len(jogos_aux)):
 		if jogos_aux[y].data_hora < jogo.data_hora:
 			exist = False
-			for jr in jogos:
-				if jr == jogos_aux[y]:
+			for jr in jogos: # Verifica se ja tenho add na lista do jogo principal
+				if jr.pk == jogos_aux[y].pk:
 					exist = True
 					break
 			if not exist:
 				jogo = jogos_aux[y]
 		y = y + 1
-		if len(jogos_aux)-1 == y:
+		if len(jogos_aux) == y: # Verifica se eh a ultima linha do laco...
 			if len(jogos_aux) == len(jogos):
 				break
 			else:
 				jogos.append(jogo)
+				print(jogo.time_a + ' X ' + jogo.time_b)
 				# Verifica se existe o não Existe o Jogo na Lista Real e existe na Aux. Add, se existe não add...
 				for j in jogos_aux:
 					exist = False
@@ -161,7 +165,7 @@ def get_jogos_simulacao(request, competicao_pk):
 							exist = True
 							break
 					if not exist:
-						jogo = jogos_aux[0]			
+						jogo = j
 				y = 0
 	retorno = serializers.serialize("json", jogos)
 	return HttpResponse(retorno, mimetype="text/javascript")			
