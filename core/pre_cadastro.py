@@ -67,7 +67,7 @@ def insert_auto_paginas():
 		tt.nome_pagina = 'Minhas Apostas Topo'
 		tt.codigo_pagina = 'M'
 		tt.qtde_total_patrocinio = 1
-		tt.valor = 9	
+		tt.valor = 9
 		tt.save()			
 	if Pagina.objects.filter(codigo_pagina='P').count() == 0:		
 		tt = Pagina()

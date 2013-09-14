@@ -59,6 +59,8 @@
 					html_ += '</h2>';
 					$('#title_modal').html(html_);
 					
+					$('#id_href_hist').attr('href', '/perfil_competicao/{{competicao.id}}/'+retorno[0].fields.inscricao_id);
+					
 					$('#col_pt').html('<div><br/><br/><h4> '+retorno[0].fields.inscricao_colocacao+'º Colocado </h4><br/><h4> '+retorno[0].fields.inscricao_pontos+' pontos </h4></div>');				  				
 					
 					// ToDo...: Se nao for meu historico...
@@ -349,17 +351,24 @@
 						if (inscr.fields.quantidade_acerto_placar > inscr_maior.fields.quantidade_acerto_placar) {
 							inscr_maior = inscr;
 						} 
-						else if (inscr.fields.quantidade_acerto_vencedor_um_resultado_correto > inscr_maior.fields.quantidade_acerto_vencedor_um_resultado_correto) {
-							inscr_maior = inscr;
-						} 
-						else if(inscr.fields.quantidade_acerto_vencedor > inscr_maior.fields.quantidade_acerto_vencedor) {
-							inscr_maior = inscr;
-						} 
-						else if(inscr.fields.quantidade_acerto_empate_erro_placar > inscr_maior.fields.quantidade_acerto_empate_erro_placar) {
-							inscr_maior = inscr;
-						} 
-						else if(inscr.fields.quantidade_acerto_somente_resultado_um_time > inscr_maior.fields.quantidade_acerto_somente_resultado_um_time) {
-							inscr_maior = inscr;
+						else if (inscr.fields.quantidade_acerto_placar == inscr_maior.fields.quantidade_acerto_placar) { 
+							if (inscr.fields.quantidade_acerto_vencedor_um_resultado_correto > inscr_maior.fields.quantidade_acerto_vencedor_um_resultado_correto) {
+								inscr_maior = inscr;
+							} 
+							else if (inscr.fields.quantidade_acerto_vencedor_um_resultado_correto == inscr_maior.fields.quantidade_acerto_vencedor_um_resultado_correto) {
+								if(inscr.fields.quantidade_acerto_vencedor > inscr_maior.fields.quantidade_acerto_vencedor) {
+									inscr_maior = inscr;
+								} else if (inscr.fields.quantidade_acerto_vencedor == inscr_maior.fields.quantidade_acerto_vencedor) {
+									if(inscr.fields.quantidade_acerto_empate_erro_placar > inscr_maior.fields.quantidade_acerto_empate_erro_placar) {
+										inscr_maior = inscr;
+									} 
+									else if(inscr.fields.quantidade_acerto_empate_erro_placar == inscr_maior.fields.quantidade_acerto_empate_erro_placar) {
+										if(inscr.fields.quantidade_acerto_somente_resultado_um_time > inscr_maior.fields.quantidade_acerto_somente_resultado_um_time) {
+											inscr_maior = inscr;
+										}
+									}
+								}
+							}
 						}
 					}
 				}
