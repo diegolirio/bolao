@@ -134,39 +134,41 @@ def get_jogos_simulacao(request, competicao_pk):
 	grupos = Grupo.objects.filter(campeonato=competicao.campeonato)
 	jogos_aux = list()	
 	status=StatusJogo.objects.filter(codigo='E')[0:1].get()
+	jogo = Jogo()
+	jogos = list()
 	for g in grupos:
 		jgs = Jogo.objects.filter(grupo=g, status=status)
 		for j in jgs:
 			jogos_aux.append(j)
-	jogo = jogos_aux[0]
-	jogos = list()
-	y = 0
-	for i in range(len(jogos_aux)*len(jogos_aux)):
-		if jogos_aux[y].data_hora < jogo.data_hora:
-			exist = False
-			for jr in jogos: # Verifica se ja tenho add na lista do jogo principal
-				if jr.pk == jogos_aux[y].pk:
-					exist = True
+	if len(jogos_aux) > 0:
+		jogo = jogos_aux[0]
+		y = 0
+		for i in range(len(jogos_aux)*len(jogos_aux)):
+			if jogos_aux[y].data_hora < jogo.data_hora:
+				exist = False
+				for jr in jogos: # Verifica se ja tenho add na lista do jogo principal
+					if jr.pk == jogos_aux[y].pk:
+						exist = True
+						break
+				if not exist:
+					jogo = jogos_aux[y]
+			y = y + 1
+			if len(jogos_aux) == y: # Verifica se eh a ultima linha do laco...
+				if len(jogos_aux) == len(jogos):
 					break
-			if not exist:
-				jogo = jogos_aux[y]
-		y = y + 1
-		if len(jogos_aux) == y: # Verifica se eh a ultima linha do laco...
-			if len(jogos_aux) == len(jogos):
-				break
-			else:
-				jogos.append(jogo)
-				print(jogo.time_a + ' X ' + jogo.time_b)
-				# Verifica se existe o não Existe o Jogo na Lista Real e existe na Aux. Add, se existe não add...
-				for j in jogos_aux:
-					exist = False
-					for jj in jogos:
-						if j == jj:
-							exist = True
-							break
-					if not exist:
-						jogo = j
-				y = 0
+				else:
+					jogos.append(jogo)
+					print(jogo.time_a + ' X ' + jogo.time_b)
+					# Verifica se existe o não Existe o Jogo na Lista Real e existe na Aux. Add, se existe não add...
+					for j in jogos_aux:
+						exist = False
+						for jj in jogos:
+							if j == jj:
+								exist = True
+								break
+						if not exist:
+							jogo = j
+					y = 0
 	retorno = serializers.serialize("json", jogos)
 	return HttpResponse(retorno, mimetype="text/javascript")			
 

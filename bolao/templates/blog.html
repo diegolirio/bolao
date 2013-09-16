@@ -11,6 +11,11 @@
 					  //alert(JSON.stringify(retorno));					  
 					  var html_ = get_html_posts(retorno);
 					  $('#id_posts').html(html_);
+					  if (retorno.length > 0 && retorno[0].post.count_posts > 15) {
+						$('.carregar_mais__').show();
+					  } else {
+						$('.carregar_mais__').hide();
+					  }
 				  }
 		 );		
 	}
@@ -184,7 +189,11 @@
 	}
 	
 	$(function() {
-		$('.carregar_mais').click(function() {
+		$('.carregar_mais__').click(function() {
+		
+			var html_ = "";
+			alert('carregar mais em desenvolvimento');
+		
 			$('#id_posts').append(html_);
 		});
 		
@@ -234,13 +243,11 @@
 			<div class="row">
 				<div id="id_posts"><img src="/media/images/__159__.gif"/></div>
 			</div>
-			{% if count_posts > 15 %}
 			<div class="row">
-				<div class="carregar_mais">
+				<div class="carregar_mais__">
 					<a href="javascript:undefined" class="btn">Carregar mais</a>
 				</div>
 			</div>
-			{% endif %}
 		</div>
 		<div class="span3"></div>
 	</div>

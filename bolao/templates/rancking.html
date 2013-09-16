@@ -442,16 +442,23 @@
 							//alert(JSON.stringify(retorno));
 							json_jogos = retorno;
 							max_index_jogo = retorno.length;
-							popula_jogo(retorno[index_jogo]);
-							$('#id_img_load_sim').empty();
-							// pega as apostas... de todos os jogos (json)
-							$.getJSON('/get_apostas_simulacao/'+{{competicao.id}},  		
-													function(retorno_apostas) {
+							//alert(max_index_jogo);
+							if (max_index_jogo > 0) {
+								popula_jogo(retorno[index_jogo]);
+								$('#id_img_load_sim').empty();
+								// pega as apostas... de todos os jogos (json)
+								$.getJSON('/get_apostas_simulacao/'+{{competicao.id}},  		
+										  function(retorno_apostas) {
 														json_apostas = retorno_apostas;
 														//alert(JSON.stringify(retorno_apostas));
 														calc_aposta(retorno[index_jogo]);														  
 														Load_Calc_Inscricao__();
 													});
+							} else {
+								$('#id_loading_table_simulacao').empty();
+								$('#id_img_load_sim').empty();
+								$('#id_jogo_simulado').html('Não há jogos em aberto!');
+							}
 						}
 				);
 			}
@@ -459,73 +466,77 @@
 		
 		$('#id_recalc').click(function() {
 		
-			//$('#id_corpo_tabela_sim').empty();
-			$('#id_loading_table_simulacao').html('<center><img src="/media/images/__159__.gif"/></center>');
-			
-			// 1. Preenche Resultado do Jogo
-			json_jogos[index_jogo].fields.resultado_a = $('#id_jogo_simulado input.class_jogo_resultado_a').val();
-			json_jogos[index_jogo].fields.resultado_b = $('#id_jogo_simulado input.class_jogo_resultado_b').val();			
-			
-			// 2. Calcula vencedor do Jogo
-			if (json_jogos[index_jogo].fields.resultado_a > json_jogos[index_jogo].fields.resultado_b) {
-				json_jogos[index_jogo].fields.vencedor = 'A';
-			} else if (json_jogos[index_jogo].fields.resultado_a < json_jogos[index_jogo].fields.resultado_b) {
-				json_jogos[index_jogo].fields.vencedor = 'B';
-			} else {
-				json_jogos[index_jogo].fields.vencedor = 'E';
-			}
-			
-			//alert(json_jogos[index_jogo].fields.resultado_a + ' X ' + json_jogos[index_jogo].fields.resultado_b + ' : Vencedor = ' + json_jogos[index_jogo].fields.vencedor);			
-			
-			$('#id_table_simulator #id_corpo_tabela_sim tr').each(function() {			
-				//alert('antes pegar resultados e inscricao');
-			
-				// 3. Preenche resultado das Apostas dos participantes...
-				//  Obs...: Aposta recebera os resultados por Jogo, e inscricao linha a linha
-				var inscricao = $(this).attr("name").replace("row_","");
-				var aposta_resultado_a = get_resultado_a_participante_view(inscricao); // $(this).find('td .ra'+inscricao+' input').val();
-				var aposta_resultado_b = get_resultado_b_participante_view(inscricao); // $(this).find('td .rb'+inscricao+' input').val();		
-
-				//alert('i'+inscricao+' a'+aposta_resultado_a+' b'+aposta_resultado_b);
-				
-				$.each( json_apostas, function( i, a ) {
-					//alert('aposta_inscricao.'+a.fields.inscricao+' == tabela_inscricao.'+inscricao+' && aposta_jogo.'+a.fields.jogo+' == jogo.'+json_jogos[index_jogo].pk);
-					if (a.fields.inscricao == inscricao && a.fields.jogo == json_jogos[index_jogo].pk) {
-						//alert(json_apostas[i].fields.resultado_a);
-						json_apostas[i].fields.resultado_a = aposta_resultado_a;
-						//alert(json_apostas[i].fields.resultado_a);
-						json_apostas[i].fields.resultado_b = aposta_resultado_b;
-						if (a.fields.resultado_a > a.fields.resultado_b) {
-							json_apostas[i].fields.vencedor = 'A';
-						} else if (a.fields.resultado_a < a.fields.resultado_b) {
-							json_apostas[i].fields.vencedor = 'B';
-						} else {
-							json_apostas[i].fields.vencedor = 'E';
-						}
-						//alert('a.'+json_apostas[i].fields.resultado_a+' == '+json_apostas[i].fields.resultado_b+'.b = ' + json_apostas[i].fields.vencedor);
+			if(max_index_jogo <= 0) {
+					$('#id_loading_table_simulacao').html('Não há jogos há serem calculados!');
+			} else {		
+					//$('#id_corpo_tabela_sim').empty();
+					$('#id_loading_table_simulacao').html('<center><img src="/media/images/__159__.gif"/></center>');
+					
+					// 1. Preenche Resultado do Jogo
+					json_jogos[index_jogo].fields.resultado_a = $('#id_jogo_simulado input.class_jogo_resultado_a').val();
+					json_jogos[index_jogo].fields.resultado_b = $('#id_jogo_simulado input.class_jogo_resultado_b').val();			
+					
+					// 2. Calcula vencedor do Jogo
+					if (json_jogos[index_jogo].fields.resultado_a > json_jogos[index_jogo].fields.resultado_b) {
+						json_jogos[index_jogo].fields.vencedor = 'A';
+					} else if (json_jogos[index_jogo].fields.resultado_a < json_jogos[index_jogo].fields.resultado_b) {
+						json_jogos[index_jogo].fields.vencedor = 'B';
+					} else {
+						json_jogos[index_jogo].fields.vencedor = 'E';
 					}
-				});
-				//alert('Linha: ' + $(this).attr("name")); // inscricao
-				//alert('Pontos: ' + $(this).find('td .pontos').html()); // pontos da inscricao
-				//alert('Resultado: ' + $(this).find('td center.ra input').val() + ' X ' + $(this).find('td center.rb input').val()); // resultado da aposta
-				
-				//$(this).find('td').each(function(){
-					//do your stuff, you can use $(this) to get current cell
-					//txt += "-"+$(this).html();
-				//});
-			});	
-			
-			//alert(txt);
-			
-			$('#id_corpo_tabela_sim').empty();
-			
-			//alert('antes calc_aposta');				
-			// 4. Calc...
-			calc_aposta(json_jogos[index_jogo]);
-			
-			Load_Calc_Inscricao__();		
-			
-			//$('#id_loading_table_simulacao').empty();
+					
+					//alert(json_jogos[index_jogo].fields.resultado_a + ' X ' + json_jogos[index_jogo].fields.resultado_b + ' : Vencedor = ' + json_jogos[index_jogo].fields.vencedor);			
+					
+					$('#id_table_simulator #id_corpo_tabela_sim tr').each(function() {			
+						//alert('antes pegar resultados e inscricao');
+					
+						// 3. Preenche resultado das Apostas dos participantes...
+						//  Obs...: Aposta recebera os resultados por Jogo, e inscricao linha a linha
+						var inscricao = $(this).attr("name").replace("row_","");
+						var aposta_resultado_a = get_resultado_a_participante_view(inscricao); // $(this).find('td .ra'+inscricao+' input').val();
+						var aposta_resultado_b = get_resultado_b_participante_view(inscricao); // $(this).find('td .rb'+inscricao+' input').val();		
+
+						//alert('i'+inscricao+' a'+aposta_resultado_a+' b'+aposta_resultado_b);
+						
+						$.each( json_apostas, function( i, a ) {
+							//alert('aposta_inscricao.'+a.fields.inscricao+' == tabela_inscricao.'+inscricao+' && aposta_jogo.'+a.fields.jogo+' == jogo.'+json_jogos[index_jogo].pk);
+							if (a.fields.inscricao == inscricao && a.fields.jogo == json_jogos[index_jogo].pk) {
+								//alert(json_apostas[i].fields.resultado_a);
+								json_apostas[i].fields.resultado_a = aposta_resultado_a;
+								//alert(json_apostas[i].fields.resultado_a);
+								json_apostas[i].fields.resultado_b = aposta_resultado_b;
+								if (a.fields.resultado_a > a.fields.resultado_b) {
+									json_apostas[i].fields.vencedor = 'A';
+								} else if (a.fields.resultado_a < a.fields.resultado_b) {
+									json_apostas[i].fields.vencedor = 'B';
+								} else {
+									json_apostas[i].fields.vencedor = 'E';
+								}
+								//alert('a.'+json_apostas[i].fields.resultado_a+' == '+json_apostas[i].fields.resultado_b+'.b = ' + json_apostas[i].fields.vencedor);
+							}
+						});
+						//alert('Linha: ' + $(this).attr("name")); // inscricao
+						//alert('Pontos: ' + $(this).find('td .pontos').html()); // pontos da inscricao
+						//alert('Resultado: ' + $(this).find('td center.ra input').val() + ' X ' + $(this).find('td center.rb input').val()); // resultado da aposta
+						
+						//$(this).find('td').each(function(){
+							//do your stuff, you can use $(this) to get current cell
+							//txt += "-"+$(this).html();
+						//});
+					});	
+					
+					//alert(txt);
+					
+					$('#id_corpo_tabela_sim').empty();
+					
+					//alert('antes calc_aposta');				
+					// 4. Calc...
+					calc_aposta(json_jogos[index_jogo]);
+					
+					Load_Calc_Inscricao__();		
+					
+					//$('#id_loading_table_simulacao').empty();
+			}
 		});
 		
 	});
