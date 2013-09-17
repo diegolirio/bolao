@@ -228,13 +228,14 @@ def get_maior_ganho_perca(request, competicao_pk):
 					penultima_aposta = ap
 		#print('penultimo: ' + penultima_aposta.jogo.time_a + ' x ' + penultima_aposta.jogo.time_b + ' as ' + penultima_aposta.jogo.data_hora.strftime("%d/%m/%Y %H:%M"))
 		# Pegando o maior ganho de colocacao
-		if (penultima_aposta.colocacao - ultima_aposta.colocacao) > maior_colocacao:
+		col_calc = (penultima_aposta.colocacao - ultima_aposta.colocacao)
+		if col_calc > maior_colocacao:
 			maior_inscricao = i
-			maior_colocacao = penultima_aposta.colocacao - ultima_aposta.colocacao 
+			maior_colocacao = col_calc 
 		# Pegando a maior perca de colocacao
-		if (penultima_aposta.colocacao - ultima_aposta.colocacao) < perca_colocacao:
+		if col_calc < perca_colocacao:
 			perca_inscricao = i
-			perca_colocacao = ultima_aposta.colocacao - penultima_aposta.colocacao
+			perca_colocacao = col_calc
 	view_ganho_json = {'inscricao': maior_inscricao.pk, 'apelido': maior_inscricao.participante.apelido, 'pontos': maior_inscricao.pontos, 'colocacao': maior_inscricao.colocacao, 'foto': maior_inscricao.participante.foto.url, 'ganho': maior_colocacao} 
 	view_perca_json = {'inscricao': perca_inscricao.pk, 'apelido': perca_inscricao.participante.apelido, 'pontos': perca_inscricao.pontos, 'colocacao': perca_inscricao.colocacao, 'foto': perca_inscricao.participante.foto.url, 'perca': perca_colocacao}   	
 	dictFields = { 'ganho': view_ganho_json, 'perca': view_perca_json }
