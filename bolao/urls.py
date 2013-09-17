@@ -36,6 +36,7 @@ urlpatterns = patterns('',
 	url(r'^get_apostas_simulacao/(?P<competicao_pk>\d+)/$', 'core.views.get_apostas_simulacao', name='get_apostas_simulacao'), # ajax.jquery
 	url(r'^get_inscricoes_simulacao/(?P<competicao_pk>\d+)/$', 'core.views.get_inscricoes_simulacao', name='get_inscricoes_simulacao'), # ajax.jquery
 	url(r'^get_partipante_foto_apelido/(?P<participante_pk>\d+)/$', 'core.views.get_partipante_foto_apelido', name='get_partipante_foto_apelido'), # ajax.jquery
+	url(r'^get_maior_ganho_perca/(?P<competicao_pk>\d+)/$', 'core.views.get_maior_ganho_perca'),# ajax.jquery
 	
     url(r'^tabela/(?P<competicao_pk>\d+)/$', 'core.views.tabela', name='tabela'),
     url(r'^aposta/(?P<competicao_pk>\d+)/$', 'core.views.aposta'),

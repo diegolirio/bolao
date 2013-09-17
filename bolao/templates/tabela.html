@@ -1,5 +1,43 @@
 <script type="text/javascript">
+
+	get_maior_ganho_perca();
 	get_one_puclicidade_pagina('B', {{competicao.id}});
+	
+	function get_maior_ganho_perca() {
+			$.getJSON('/get_maior_ganho_perca/'+{{competicao.id}}, 
+			    	  function(retorno) {
+							//alert(JSON.stringify(retorno));
+							if (retorno.length > 0) {
+								var html_ = "";
+								html_ += '<a href="#modal_part" role="button" data-toggle="modal" onclick="get_detail_participante('+retorno[0].ganho.inscricao+');">';
+								html_ += '	  <p class="text-info">';
+								html_ += '       <i class="icon-upload"></i> ';
+								html_ += '       <span style="font-size: 18px;"> '+retorno[0].ganho.apelido +' </span>';
+								html_ += '		 <img class="pull-left img-rounded" src="'+retorno[0].ganho.foto+'" height="50" width="60"/> ';
+								html_ += '		 Subiu <b>'+retorno[0].ganho.ganho+'</b> colocacoes. ';
+								html_ += '		 Está com 48 pontos na '+retorno[0].ganho.colocacao+'º Colocação.</span>';
+								html_ += '    </p>	';
+								html_ += '</a>';
+								html_ += '<br/>';
+								html_ += '<hr/>';
+								html_ += '<br/>';
+								html_ += '<a href="#modal_part" role="button" data-toggle="modal" onclick="get_detail_participante('+retorno[0].perca.inscricao+');">';
+								html_ += '    <p class="text-warning">';
+								html_ += '    	<i class="icon-download"></i> ';
+								html_ += '       <span style="font-size: 18px;"> '+retorno[0].perca.apelido+' 	</span>';
+								html_ += '    	<img class="pull-left img-rounded" src="'+retorno[0].perca.foto+'" height="50" width="60"/> ';
+								html_ += '    	Desceu <b>'+(retorno[0].perca.perca*-1)+'</b> colocacoes. ';
+								html_ += '    	Está com 48 pontos na '+retorno[0].perca.colocacao+'º Colocação.</span>';
+								html_ += '    </p>			';
+								html_ += '</a>							';
+								$('#id_maiores_alteracao_colocacao').html(html_);
+							} else {
+								$('#id_maiores_alteracao_colocacao').empty();
+							}
+					  }
+			);
+	}	
+	
 </script>
 
 <div class="row">	
@@ -89,12 +127,10 @@
 	</div>			
 	<div class="span2">
 	
-		<br/><br/><br/>
+		<br/><br/><br/><br/>
+		<div id="id_maiores_alteracao_colocacao"><center><img src="/media/images/ret.gif"/></center></div>	
 	
-		<h5> Alguma ideia revolucionaria aqui</h5>
-		
-		<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-		<br/><br/><br/><br/><br/>	
+		<br/><br/><br/><br/>
 	
 		<span class="text-warning">publicidade</span><br/>
 			<div class="visible-desktop">

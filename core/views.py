@@ -186,7 +186,7 @@ def get_apostas_simulacao(request,competicao_pk):
 	retorno = serializers.serialize("json", apostas)
 	return HttpResponse(retorno, mimetype="text/javascript")	
 	
-def get_inscricoes_simulacao(request,competicao_pk):
+def get_inscricoes_simulacao(request, competicao_pk):
 	competicao = Competicao.objects.get(pk=competicao_pk)
 	inscricoes = get_rancking_by_competicao(competicao)
 	retorno = serializers.serialize("json", inscricoes)
@@ -198,7 +198,46 @@ def get_partipante_foto_apelido(request, participante_pk):
 	dictFields = { 'participante': view_participante_json }
 	to_json = list()
 	to_json.append(dictFields)
-	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")  	
+	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")
+	
+def get_maior_ganho_perca(request, competicao_pk):
+	competicao = Competicao.objects.get(pk=competicao_pk)	
+	inscricoes = Inscricao.objects.filter(competicao=competicao)
+	to_json = list()
+	maior_inscricao = Inscricao()
+	maior_colocacao = -1000
+	perca_inscricao = Inscricao()
+	perca_colocacao = 1000	
+	for i in inscricoes:
+		apostas = Aposta.objects.filter(inscricao=i)
+		#print('QTDE APOSTAS: ' + str(len(apostas)))
+		ultima_aposta = apostas[0]
+		penultima_aposta = Aposta()
+		for a in apostas:
+			if a.jogo.status.codigo != 'E':
+				if a.jogo.data_hora > ultima_aposta.jogo.data_hora:
+					ultima_aposta = a
+		#print('ultimo: ' + ultima_aposta.jogo.time_a + ' x ' + ultima_aposta.jogo.time_b + ' as ' + ultima_aposta.jogo.data_hora.strftime("%d/%m/%Y %H:%M"))
+		if ultima_aposta.pk != apostas[0].pk:
+			penultima_aposta = apostas[0]
+		else:
+			penultima_aposta = apostas[1]
+		for ap in apostas:
+			if ap.jogo.status.codigo != 'E':
+				if ap.jogo.data_hora > penultima_aposta.jogo.data_hora and ap.jogo.data_hora < ultima_aposta.jogo.data_hora:
+					penultima_aposta = ap
+		#print('penultimo: ' + penultima_aposta.jogo.time_a + ' x ' + penultima_aposta.jogo.time_b + ' as ' + penultima_aposta.jogo.data_hora.strftime("%d/%m/%Y %H:%M"))
+		if (penultima_aposta.colocacao - ultima_aposta.colocacao) > maior_colocacao:
+			maior_inscricao = i
+			maior_colocacao = penultima_aposta.colocacao - ultima_aposta.colocacao
+		if (penultima_aposta.colocacao - ultima_aposta.colocacao) < perca_colocacao:
+			perca_inscricao = i
+			perca_colocacao = penultima_aposta.colocacao - ultima_aposta.colocacao			
+	view_ganho_json = {'inscricao': maior_inscricao.pk, 'apelido': maior_inscricao.participante.apelido, 'pontos': maior_inscricao.pontos, 'colocacao': maior_inscricao.colocacao, 'foto': maior_inscricao.participante.foto.url, 'ganho': maior_colocacao} 
+	view_perca_json = {'inscricao': perca_inscricao.pk, 'apelido': perca_inscricao.participante.apelido, 'pontos': perca_inscricao.pontos, 'colocacao': perca_inscricao.colocacao, 'foto': perca_inscricao.participante.foto.url, 'perca': perca_colocacao}   	
+	dictFields = { 'ganho': view_ganho_json, 'perca': view_perca_json }
+	to_json.append(dictFields)		
+	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")	
 									
 def blog(request, competicao_pk):
 	competicao = Competicao.objects.get(pk=competicao_pk)	
