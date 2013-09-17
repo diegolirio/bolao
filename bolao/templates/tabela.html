@@ -7,7 +7,7 @@
 			$.getJSON('/get_maior_ganho_perca/'+{{competicao.id}}, 
 			    	  function(retorno) {
 							//alert(JSON.stringify(retorno));
-							if (retorno.length > 0) {
+							if (retorno.length > 1) {
 								var html_ = "";
 								html_ += '<a href="#modal_part" role="button" data-toggle="modal" onclick="get_detail_participante('+retorno[0].ganho.inscricao+');">';
 								html_ += '	  <p class="text-info">';

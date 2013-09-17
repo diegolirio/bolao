@@ -227,12 +227,14 @@ def get_maior_ganho_perca(request, competicao_pk):
 				if ap.jogo.data_hora > penultima_aposta.jogo.data_hora and ap.jogo.data_hora < ultima_aposta.jogo.data_hora:
 					penultima_aposta = ap
 		#print('penultimo: ' + penultima_aposta.jogo.time_a + ' x ' + penultima_aposta.jogo.time_b + ' as ' + penultima_aposta.jogo.data_hora.strftime("%d/%m/%Y %H:%M"))
+		# Pegando o maior ganho de colocacao
 		if (penultima_aposta.colocacao - ultima_aposta.colocacao) > maior_colocacao:
 			maior_inscricao = i
-			maior_colocacao = penultima_aposta.colocacao - ultima_aposta.colocacao
+			maior_colocacao = penultima_aposta.colocacao - ultima_aposta.colocacao 
+		# Pegando a maior perca de colocacao
 		if (penultima_aposta.colocacao - ultima_aposta.colocacao) < perca_colocacao:
 			perca_inscricao = i
-			perca_colocacao = penultima_aposta.colocacao - ultima_aposta.colocacao			
+			perca_colocacao = ultima_aposta.colocacao - penultima_aposta.colocacao
 	view_ganho_json = {'inscricao': maior_inscricao.pk, 'apelido': maior_inscricao.participante.apelido, 'pontos': maior_inscricao.pontos, 'colocacao': maior_inscricao.colocacao, 'foto': maior_inscricao.participante.foto.url, 'ganho': maior_colocacao} 
 	view_perca_json = {'inscricao': perca_inscricao.pk, 'apelido': perca_inscricao.participante.apelido, 'pontos': perca_inscricao.pontos, 'colocacao': perca_inscricao.colocacao, 'foto': perca_inscricao.participante.foto.url, 'perca': perca_colocacao}   	
 	dictFields = { 'ganho': view_ganho_json, 'perca': view_perca_json }
@@ -1475,7 +1477,7 @@ def __calcula_apostas__(jogo):
 			a.pontos = PONTOS_ERRO
 		# somente entre no blobo if abaixo os Finalizados com nao calculados
 		if a.jogo.status.codigo == 'F':
-			a.calculado = True
+			#a.calculado = True
 			a.colocacao = -1
 			envia_email = True
 		elif a.jogo.status.codigo == 'A':
@@ -1500,6 +1502,8 @@ def __calcula_colocacao_aposta__(competicao):
 		apostas = Aposta.objects.filter(inscricao=i, colocacao=-1)
 		for a in apostas:
 			a.colocacao = i.colocacao
+			if a.jogo.status.codigo == 'F':
+				a.calculado = True
 			a.save()
 		
 # Soma a pontuacao toda vez que calcula....
