@@ -9,11 +9,11 @@ from django.core import serializers
 from core.const import *
 from core.models import *
 from core.forms import *
+from datetime import datetime
 import random
 import os
 #import json
 from django.core.mail import send_mail
-#import datetime
 from django.contrib.auth import authenticate, login
 
 envia_email = False
@@ -205,40 +205,47 @@ def get_maior_ganho_perca(request, competicao_pk):
 	inscricoes = Inscricao.objects.filter(competicao=competicao)
 	to_json = list()
 	maior_inscricao = Inscricao()
-	maior_colocacao = -1000
+	maior_colocacao = -99999
 	perca_inscricao = Inscricao()
-	perca_colocacao = 1000	
-	for i in inscricoes:
-		apostas = Aposta.objects.filter(inscricao=i)
-		#print('QTDE APOSTAS: ' + str(len(apostas)))
-		ultima_aposta = apostas[0]
-		penultima_aposta = Aposta()
-		for a in apostas:
-			if a.jogo.status.codigo != 'E':
-				if a.jogo.data_hora > ultima_aposta.jogo.data_hora:
-					ultima_aposta = a
-		#print('ultimo: ' + ultima_aposta.jogo.time_a + ' x ' + ultima_aposta.jogo.time_b + ' as ' + ultima_aposta.jogo.data_hora.strftime("%d/%m/%Y %H:%M"))
-		if ultima_aposta.pk != apostas[0].pk:
-			penultima_aposta = apostas[0]
-		else:
-			penultima_aposta = apostas[1]
-		for ap in apostas:
-			if ap.jogo.status.codigo != 'E':
-				if ap.jogo.data_hora > penultima_aposta.jogo.data_hora and ap.jogo.data_hora < ultima_aposta.jogo.data_hora:
-					penultima_aposta = ap
-		#print('penultimo: ' + penultima_aposta.jogo.time_a + ' x ' + penultima_aposta.jogo.time_b + ' as ' + penultima_aposta.jogo.data_hora.strftime("%d/%m/%Y %H:%M"))
-		# Pegando o maior ganho de colocacao
-		col_calc = (penultima_aposta.colocacao - ultima_aposta.colocacao)
-		if col_calc > maior_colocacao:
-			maior_inscricao = i
-			maior_colocacao = col_calc 
-		# Pegando a maior perca de colocacao
-		if col_calc < perca_colocacao:
-			perca_inscricao = i
-			perca_colocacao = col_calc
-	view_ganho_json = {'inscricao': maior_inscricao.pk, 'apelido': maior_inscricao.participante.apelido, 'pontos': maior_inscricao.pontos, 'colocacao': maior_inscricao.colocacao, 'foto': maior_inscricao.participante.foto.url, 'ganho': maior_colocacao} 
-	view_perca_json = {'inscricao': perca_inscricao.pk, 'apelido': perca_inscricao.participante.apelido, 'pontos': perca_inscricao.pontos, 'colocacao': perca_inscricao.colocacao, 'foto': perca_inscricao.participante.foto.url, 'perca': perca_colocacao}   	
-	dictFields = { 'ganho': view_ganho_json, 'perca': view_perca_json }
+	perca_colocacao = 999999	
+	ultima_rodada = Jogo()
+	penultima_rodada = Jogo()
+	grupos = Grupo.objects.filter(campeonato=competicao.campeonato)
+	qtde_jogos_finalizados = 0
+	for g in grupos:
+		status_e = StatusJogo.objects.filter(codigo='E')[0:1].get()
+		jogos = Jogo.objects.filter(grupo=g).exclude(status=status_e)#.order_by('data_calc')
+		qtde_jogos_finalizados = qtde_jogos_finalizados + len(jogos)
+		for j in jogos:
+			if ultima_rodada.pk < 1:
+				ultima_rodada = j
+			elif j.data_hora > ultima_rodada.data_hora:
+				ultima_rodada = j
+			if penultima_rodada.pk < 1 and j.pk != ultima_rodada.pk:
+				penultima_rodada = j
+			elif j.pk != ultima_rodada.pk and j.data_hora > penultima_rodada.data_hora and j.data_hora < ultima_rodada.data_hora:
+				penultima_rodada = j		
+	print(penultima_rodada.time_a + ' x ' + penultima_rodada.time_b + ' - ' + penultima_rodada.data_hora.strftime("%d/%m/%Y %H:%M"))
+	print(ultima_rodada.time_a + ' x ' + ultima_rodada.time_b + ' - ' + ultima_rodada.data_hora.strftime("%d/%m/%Y %H:%M"))
+	if qtde_jogos_finalizados > 1:
+		for insc in inscricoes:
+			aposta_ultima_rodada = Aposta.objects.filter(inscricao=insc, jogo=ultima_rodada)[0:1].get()
+			aposta_penultima_rodada = Aposta.objects.filter(inscricao=insc, jogo=penultima_rodada)[0:1].get()
+			col_calc = (aposta_penultima_rodada.colocacao - aposta_ultima_rodada.colocacao)
+			print(insc.participante.apelido + ' Col. Calc.: ' + str(col_calc))
+			# Pegando o maior ganho de colocacao
+			if col_calc > maior_colocacao:
+				maior_inscricao = insc
+				maior_colocacao = col_calc 
+			# Pegando a maior perca de colocacao
+			if col_calc < perca_colocacao and (insc != maior_inscricao):
+				perca_inscricao = insc
+				perca_colocacao = col_calc		
+	dictFields = {}
+	if qtde_jogos_finalizados > 1:
+		view_ganho_json = {'inscricao': maior_inscricao.pk, 'apelido': maior_inscricao.participante.apelido, 'pontos': maior_inscricao.pontos, 'colocacao': maior_inscricao.colocacao, 'foto': maior_inscricao.participante.foto.url, 'ganho': maior_colocacao} 
+		view_perca_json = {'inscricao': perca_inscricao.pk, 'apelido': perca_inscricao.participante.apelido, 'pontos': perca_inscricao.pontos, 'colocacao': perca_inscricao.colocacao, 'foto': perca_inscricao.participante.foto.url, 'perca': perca_colocacao}   	
+		dictFields = { 'ganho': view_ganho_json, 'perca': view_perca_json }
 	to_json.append(dictFields)		
 	return HttpResponse(simplejson.dumps(to_json), mimetype="text/javascript")	
 									
@@ -555,7 +562,7 @@ def aposta_edit(request, user_aposta_pk):
 	mensagem = ''	
 	form = ApostaForm()
 	pagina_patro = get_patrocinador_pagina('E', model.inscricao.competicao)
-		
+	print('aposta_edit >>> ' + model.jogo.time_a)
 	if len(pagina_patro) > 0:
 		publicidade = pagina_patro[0].competicacao_patrocinador.patrocinador.image_aside
 	else:
@@ -563,6 +570,7 @@ def aposta_edit(request, user_aposta_pk):
 	# ToDo...: if model.jogo.data_hora > DateTime.now-4horas: ToDo..:
 	if model.jogo.status.codigo == 'E':		
 		if request.method == 'POST':
+			print('aposta_edit >>> ' + model.jogo.time_b)
 			form = ApostaForm(request.POST, request.FILES, instance=model)
 			if form.is_valid():
 				model_update = form.save(commit=False)
@@ -572,6 +580,7 @@ def aposta_edit(request, user_aposta_pk):
 					model_update.vencedor = 'B'
 				else:
 					model_update.vencedor = 'E'
+				model_update.data_alteracao = datetime.now()
 				model.colocacao = 0
 				model.pontuacao = 0
 				model.calculado = False

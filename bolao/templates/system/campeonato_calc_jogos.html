@@ -39,7 +39,12 @@
 			<td class="text-error"><center>Status</center></td>
 			<td class="text-error"><center>Alterar</center></td>			
 		</tr>
-		{% for j in jogos %}
+		{% for j in jogos %}		
+			{% if j.first_group %}
+				<tr>
+					<td colspan="9"><center><h5>{{j.grupo.descricao}}</h5></center></td>
+				</tr>
+			{% endif %}				
 		<tr>
 			<td>{{ j.time_a }}</td>
 			<td>

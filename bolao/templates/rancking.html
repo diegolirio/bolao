@@ -29,7 +29,7 @@
 							html_ += '       <span style="font-size: 18px;"> '+retorno[0].ganho.apelido +' </span><br/>';
 							html_ += '		 <img class="pull-left img-rounded" src="'+retorno[0].ganho.foto+'" height="80" width="80"/> ';
 							if (retorno[0].ganho.ganho != 0) {
-								html_ += '		 Subiu <b>'+retorno[0].ganho.ganho+'</b> colocacoes. ';
+								html_ += '		 Subiu <b>'+retorno[0].ganho.ganho+'</b> colocações. ';
 							} else {
 								html_ += '		 Manteve a colocação. ';
 							}
@@ -40,12 +40,12 @@
 							html_ += '<hr/>';
 							html_ += '<br/>';
 							html_ += '<a href="#modal_part" role="button" data-toggle="modal" onclick="get_detail_participante('+retorno[0].perca.inscricao+');">';
-							html_ += '    <h5 class="text-warning">';
+							html_ += '    <h5 class="text-error">';
 							html_ += '    	<i class="icon-download"></i> ';
 							html_ += '      <span style="font-size: 18px;"> '+retorno[0].perca.apelido+' 	</span><br/>';
 							html_ += '    	<img class="pull-left img-rounded" src="'+retorno[0].perca.foto+'" height="80" width="80"/> ';
 							if (retorno[0].perca.perca != 0) {
-								html_ += '    	Desceu <b>'+(retorno[0].perca.perca*-1)+'</b> colocacoes. ';
+								html_ += '    	Desceu <b>'+(retorno[0].perca.perca*-1)+'</b> colocações. ';
 							} else {
 								html_ += '		 Manteve a colocação. ';
 							}
@@ -750,7 +750,7 @@
 							{% if ip.participante.id == user_participante.id %}
 								<h1>
 							{% endif %}
-							<tr>
+							<tr {% if ip.participante.id == user_participante.id %} class="success" {% endif %}>
 								<td>
 									<a href="/comparar_colocacao/{{competicao.id}}/{{ip.id}}/" class="text-info" target="_blank" title="Comparar colocação">
 										{% if ip.participante.id == user_participante.id %}

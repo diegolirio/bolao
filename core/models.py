@@ -97,6 +97,9 @@ class Local(models.Model):
 		return self.descricao
 					
 class Jogo(models.Model):
+	class Meta:
+		#order_with_respect_to = 'grupo'
+		ordering = ('data_hora',)
 	#time_a = models.ForeignKey(Time)
 	#time_b = models.ForeignKey(Time)
 	time_a = models.CharField(max_length=50)
@@ -122,7 +125,7 @@ class Jogo(models.Model):
 ###########################################################
 
 class Inscricao(models.Model):
-	data = models.DateField(default=datetime.now)
+	data = models.DateTimeField(default=datetime.now)
 	participante = models.ForeignKey(Participante)
 	competicao = models.ForeignKey(Competicao)
 	# Pontucao (Analisar se compensa mover para um Model)
@@ -150,7 +153,7 @@ class Inscricao(models.Model):
 class Aposta(models.Model):
 	class Meta:
 		unique_together = ('inscricao', 'jogo')		
-		
+        order_with_respect_to = 'jogo'			
 	inscricao = models.ForeignKey(Inscricao)
 	jogo = models.ForeignKey(Jogo)
 	resultado_a = models.IntegerField(default=0)
@@ -160,6 +163,7 @@ class Aposta(models.Model):
 	calculado = models.BooleanField(default=False)
 	colocacao = models.IntegerField(default=0)
 	riscado = models.BooleanField(default=False)
+	data_alteracao = models.DateTimeField(default=datetime.now)
 	def __unicode__(self):
 		return self.inscricao.participante.apelido + " / " + self.jogo.time_a + " " + str(self.jogo.resultado_a) + " X " + str(self.jogo.resultado_b) + " " + self.jogo.time_b + " / " + str(self.jogo.data_hora) + " / Local: " + self.jogo.local.descricao + " / " + self.jogo.status.descricao + " - Aposta: " + str(self.resultado_a) + " X " + str(self.resultado_b) + " - Calculado: " + str(self.calculado)
 	

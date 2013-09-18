@@ -59,7 +59,7 @@
 					  html_ += '		<div id="id_coment_alert'+item.post.id+'" class="text-warning"></div>';
 					  html_ += '		<div id="id_comentar_post'+item.post.id+'">';
 					  html_ += '			<img src="/media/{{user_participante.foto}}" height="30" width="30" class="img-rounded"/>';
-					  html_ += '            <textarea class="form-control span4" rows="2" id="id_mensagem_comentar'+item.post.id+'" placeholder="Sua mensagem"></textarea>';
+					  html_ += '            <textarea class="form-control span4" rows="2" id="id_mensagem_comentar'+item.post.id+'" placeholder="Comentar"></textarea>';
 					  html_ += '			<a href="javascript:undefined" class="btn" id="id_publicar_mensagem'+item.post.id+'" onclick="comentar_post('+item.post.id+','+item.participante.id+');">publicar</a>';
 					  html_ += '		</div>	';						
 				{% endif %}

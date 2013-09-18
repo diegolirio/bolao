@@ -9,6 +9,7 @@ from django import forms
 class ApostaForm(ModelForm):
 	class Meta:
 		model = Aposta
+		exclude = ('data_alteracao',)
 		
 	def clean_resultado_a(self):
 		if int(self.cleaned_data['resultado_a']) < 0:

@@ -7,28 +7,37 @@
 			$.getJSON('/get_maior_ganho_perca/'+{{competicao.id}}, 
 			    	  function(retorno) {
 							//alert(JSON.stringify(retorno));
-							if (retorno.length > 1) {
+							//alert(retorno.length);
+							if (retorno.length > 0) {
 								var html_ = "";
 								html_ += '<a href="#modal_part" role="button" data-toggle="modal" onclick="get_detail_participante('+retorno[0].ganho.inscricao+');">';
-								html_ += '	  <p class="text-info">';
+								html_ += '	  <h5 class="text-info">';
 								html_ += '       <i class="icon-upload"></i> ';
-								html_ += '       <span style="font-size: 18px;"> '+retorno[0].ganho.apelido +' </span>';
-								html_ += '		 <img class="pull-left img-rounded" src="'+retorno[0].ganho.foto+'" height="50" width="60"/> ';
-								html_ += '		 Subiu <b>'+retorno[0].ganho.ganho+'</b> colocacoes. ';
+								html_ += '       <span style="font-size: 18px;"> '+retorno[0].ganho.apelido +' </span><br/>';
+								html_ += '		 <img class="pull-left img-rounded" src="'+retorno[0].ganho.foto+'" height="80" width="80"/> ';
+								if (retorno[0].ganho.ganho != 0) {
+									html_ += '		 Subiu <b>'+retorno[0].ganho.ganho+'</b> colocações. ';
+								} else {
+									html_ += '		 Manteve a colocação. ';
+								}
 								html_ += '		 Está com 48 pontos na '+retorno[0].ganho.colocacao+'º Colocação.</span>';
-								html_ += '    </p>	';
+								html_ += '    </h5>	';
 								html_ += '</a>';
 								html_ += '<br/>';
 								html_ += '<hr/>';
 								html_ += '<br/>';
 								html_ += '<a href="#modal_part" role="button" data-toggle="modal" onclick="get_detail_participante('+retorno[0].perca.inscricao+');">';
-								html_ += '    <p class="text-warning">';
+								html_ += '    <h5 class="text-error">';
 								html_ += '    	<i class="icon-download"></i> ';
-								html_ += '       <span style="font-size: 18px;"> '+retorno[0].perca.apelido+' 	</span>';
-								html_ += '    	<img class="pull-left img-rounded" src="'+retorno[0].perca.foto+'" height="50" width="60"/> ';
-								html_ += '    	Desceu <b>'+(retorno[0].perca.perca*-1)+'</b> colocacoes. ';
+								html_ += '      <span style="font-size: 18px;"> '+retorno[0].perca.apelido+' 	</span><br/>';
+								html_ += '    	<img class="pull-left img-rounded" src="'+retorno[0].perca.foto+'" height="80" width="80"/> ';
+								if (retorno[0].perca.perca != 0) {
+									html_ += '    	Desceu <b>'+(retorno[0].perca.perca*-1)+'</b> colocações. ';
+								} else {
+									html_ += '		 Manteve a colocação. ';
+								}
 								html_ += '    	Está com 48 pontos na '+retorno[0].perca.colocacao+'º Colocação.</span>';
-								html_ += '    </p>			';
+								html_ += '    </h5>			';
 								html_ += '</a>							';
 								$('#id_maiores_alteracao_colocacao').html(html_);
 							} else {

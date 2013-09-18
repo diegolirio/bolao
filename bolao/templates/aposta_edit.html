@@ -2,13 +2,14 @@
 <div class="row">
 	<div class="span8">
 		<center>		
+			<br/>
 			<form action="" method="POST"> {% csrf_token %}
 				<div id="legend">
 				   <legend>
-					   <h3>
+					   <h4>
 						   <span class="muted">Aposta em
 						   {{ aposta.jogo.status.descricao }} até </span> {{ aposta.jogo.data_hora }}
-					   </h3>
+					   </h4>
 				   </legend>
 				</div>						
 				
