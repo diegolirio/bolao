@@ -220,11 +220,15 @@ def get_maior_ganho_perca(request, competicao_pk):
 			if ultima_rodada.pk < 1:
 				ultima_rodada = j
 			elif j.data_hora > ultima_rodada.data_hora:
-				ultima_rodada = j
+				ultima_rodada = j	
+	for g in grupos:
+		status_e = StatusJogo.objects.filter(codigo='E')[0:1].get()
+		jogos = Jogo.objects.filter(grupo=g).exclude(status=status_e)#.order_by('data_calc')
+		for j in jogos:
 			if penultima_rodada.pk < 1 and j.pk != ultima_rodada.pk:
 				penultima_rodada = j
 			elif j.pk != ultima_rodada.pk and j.data_hora > penultima_rodada.data_hora and j.data_hora < ultima_rodada.data_hora:
-				penultima_rodada = j		
+				penultima_rodada = j					
 	print(penultima_rodada.time_a + ' x ' + penultima_rodada.time_b + ' - ' + penultima_rodada.data_hora.strftime("%d/%m/%Y %H:%M"))
 	print(ultima_rodada.time_a + ' x ' + ultima_rodada.time_b + ' - ' + ultima_rodada.data_hora.strftime("%d/%m/%Y %H:%M"))
 	if qtde_jogos_finalizados > 1:

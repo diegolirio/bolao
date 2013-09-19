@@ -29,7 +29,7 @@
 							html_ += '       <span style="font-size: 18px;"> '+retorno[0].ganho.apelido +' </span><br/>';
 							html_ += '		 <img class="pull-left img-rounded" src="'+retorno[0].ganho.foto+'" height="80" width="80"/> ';
 							if (retorno[0].ganho.ganho != 0) {
-								html_ += '		 Subiu <b>'+retorno[0].ganho.ganho+'</b> colocações. ';
+								html_ += '		 Subiu <b>'+retorno[0].ganho.ganho+'</b>' + (retorno[0].ganho.ganho == 1 ? ' colocação. ' : ' colocações. ');
 							} else {
 								html_ += '		 Manteve a colocação. ';
 							}
@@ -45,7 +45,7 @@
 							html_ += '      <span style="font-size: 18px;"> '+retorno[0].perca.apelido+' 	</span><br/>';
 							html_ += '    	<img class="pull-left img-rounded" src="'+retorno[0].perca.foto+'" height="80" width="80"/> ';
 							if (retorno[0].perca.perca != 0) {
-								html_ += '    	Desceu <b>'+(retorno[0].perca.perca*-1)+'</b> colocações. ';
+								html_ += '    	Desceu <b>'+(retorno[0].perca.perca*-1)+'</b>' + (retorno[0].perca.perca == -1 ? ' colocação. ' : ' colocações. ');
 							} else {
 								html_ += '		 Manteve a colocação. ';
 							}
@@ -148,7 +148,7 @@
 	function get_html_simulacao(inscricao) {
 		var html_tbody = "";
 		html_tbody += '<tr name="row_'+inscricao.pk+'">'; // row_[inscricao]
-		html_tbody += '   <td >'+inscricao.fields.colocacao+'</td>';
+		html_tbody += '   <td >'+inscricao.fields.colocacao+'º</td>';
 		//html_tbody += '	  <td ><img src="/media/images/users/diego.jpeg" height="20" width="25" class="img-rounded"/> Diego Lirio</td>';
 		html_tbody += '	  <td ><span id="id_p_info'+inscricao.fields.participante+'"></span></td>';
 		html_tbody += '   <td ><center class="pontos">'+inscricao.fields.pontos+'</center></td>';

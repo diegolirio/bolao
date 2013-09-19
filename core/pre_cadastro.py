@@ -238,14 +238,14 @@ def copa_brasil():
 		
 	pdiego = Participante.objects.filter(apelido='Diego Lirio')[0:1].get()
 		
-	if Competicao.objects.filter(nome='Uninove', campeonato=campeonato).count() == 0:
+	if Competicao.objects.filter(nome='São Paulo', campeonato=campeonato).count() == 0:
 		comp = Competicao()
 		comp.campeonato = campeonato
-		comp.nome = 'Uninove'
+		comp.nome = 'São Paulo'
 		comp.presidente = pdiego
 		comp.save()	
 	else:
-		comp = Competicao.objects.filter(nome='Uninove', campeonato=campeonato)[0:1].get()
+		comp = Competicao.objects.filter(nome='São Paulo', campeonato=campeonato)[0:1].get()
 		
 	asisco = Patrocinador.objects.filter(nome_visual='Asisco')[0:1].get()
 	if Competicao_Patrocinadores.objects.filter(competicao=comp, patrocinador=asisco).count() == 0:
