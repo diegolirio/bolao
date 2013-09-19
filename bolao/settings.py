@@ -4,11 +4,10 @@
 import os
 import dj_database_url
 from unipath import Path
+PROJECT_DIR = Path(__file__).parent
 
-DEBUG = True
+DEBUG = os.environ.get('DEBUG') == 'True'
 TEMPLATE_DEBUG = DEBUG
-
-ROOT_PROJECT = os.path.dirname(__file__)
 
 ADMINS = (
      # ('Your Name', 'your_email@example.com'),
