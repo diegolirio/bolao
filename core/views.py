@@ -20,7 +20,7 @@ envia_email = False
 # Const
 ROOT_PROJECT = os.path.dirname(__file__)
 SITE_ROOT_ = os.path.realpath(os.path.dirname(__file__))
-SITE_ROOT = 'http://mybolao.herokuapp.com/'
+SITE_ROOT = 'http://bolao-manager.herokuapp.com/'
 NOME_BOLAO = 'Super Bolão' # Super Bolão | Super Placar | Pilantras.com | 
 
 def user_login_is_valid(user_request, user_inscricao):
