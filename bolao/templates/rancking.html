@@ -15,6 +15,7 @@
 	var json_jogos = "";
 	var json_apostas = "";		
 	var json_inscricoes = "";	
+	var json_inscricoes_static = JSON.parse("[]");	
 	
 	function get_maior_ganho_perca() {
 		if ({{qtde_jogos}} > 1) {
@@ -124,15 +125,25 @@
 	function Load_Calc_Inscricao__() {
 		// Calcula Somatorio para as apostas calculadas...
 		// Busca inscricoes (json), de jogos finalizados/andamento
-		$.getJSON('/get_inscricoes_simulacao/'+{{competicao.id}}, 
-				  function(retorno_inscricoes) {
-						json_inscricoes = retorno_inscricoes;
-						$('#id_corpo_tabela_sim').empty();
-						soma_pontos_inscricao();
-						order_colocacao();																		
-						popula_rancking2();																																		
-						$('#id_loading_table_simulacao').empty();							
-				  });	
+		if(json_inscricoes_static.length == 0) {
+			$.getJSON('/get_inscricoes_simulacao/'+{{competicao.id}}, 
+					  function(retorno_inscricoes) {
+							json_inscricoes = retorno_inscricoes;
+							json_inscricoes_static = retorno_inscricoes;
+							$('#id_corpo_tabela_sim').empty();
+							soma_pontos_inscricao();
+							order_colocacao();																		
+							popula_rancking2();																																		
+							$('#id_loading_table_simulacao').empty();							
+					  });	
+		} else {
+			json_inscricoes = json_inscricoes_static;
+			$('#id_corpo_tabela_sim').empty();
+			soma_pontos_inscricao();
+			order_colocacao();																		
+			popula_rancking2();																																		
+			$('#id_loading_table_simulacao').empty();				
+		}
 	}
 	
 	function get_pontos_ganho_simulacao(inscricao_id) {

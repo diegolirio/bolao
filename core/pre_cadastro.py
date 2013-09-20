@@ -139,6 +139,8 @@ def global_():
 		pdiego.save()
 	else:
 		pdiego = Participante.objects.filter(apelido='Diego Lirio')[0:1].get()
+		pdiego.foto = 'images/users/diego.jpeg'
+		pdiego.save()
 
 	# StatusJogo
 	if StatusJogo.objects.filter(codigo='E').count() == 0:
