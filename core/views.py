@@ -21,7 +21,7 @@ envia_email = False
 ROOT_PROJECT = os.path.dirname(__file__)
 SITE_ROOT_ = os.path.realpath(os.path.dirname(__file__))
 SITE_ROOT = 'http://bolao-manager.herokuapp.com/'
-NOME_BOLAO = 'Super Bolão' # Super Bolão | Super Placar | Pilantras.com | 
+NOME_BOLAO = 'Bolão Manager' # Super Bolão | Super Placar | Pilantras.com | 
 
 def user_login_is_valid(user_request, user_inscricao):
 	if user_request.pk == user_inscricao.pk:
@@ -544,6 +544,8 @@ def aposta(request, competicao_pk):
 	patrocinador = __get_patrocinador_principal__(competicao)
 	user_participante = get_participante_by_user(request.user)
 	user_inscricao = get_inscricao(competicao, user_participante)			
+	if user_inscricao.pk <= 0:
+		return redirect('/tabela/'+str(competicao.pk))
 	apts = Aposta.objects.filter(inscricao=user_inscricao).order_by('jogo')
 	return render_to_response('_base.html', 
 	                          {   'template': 'aposta.html', 
