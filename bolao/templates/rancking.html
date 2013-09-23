@@ -9,6 +9,13 @@
 	// Set a callback to run when the Google Visualization API is loaded.
 	//google.setOnLoadCallback(drawChart);
 	
+	var PONTOS_PLACAR = 6;
+	var PONTOS_VENCEDOR_RESULTADO_GOLS_UM_TIME = 4;
+	var PONTOS_VENCEDOR = 3;
+	var PONTOS_EMPATE_PLACAR_INCORRETO = 3;
+	var PONTOS_SOMENTE_RESULTADO_GOLS_UM_TIME = 1;
+	var PONTOS_ERRO = 0	;
+	
 	var index_jogo = 0;
 	var max_index_jogo = 0;	
 	
@@ -257,44 +264,44 @@
 			if(jogo.pk == item_.fields.jogo) {		
 				// Calcula vencedor da aposta..
 				//alert(retorno[index_jogo].pk + ' == ' + item_.fields.jogo);	
-				
+			
 				// 3 - ToDo...: Calcula Apostas (pontos individuais/unitario/ganho no jogo)															
 				if (item_.fields.resultado_a == jogo.fields.resultado_a && item_.fields.resultado_b == jogo.fields.resultado_b) {
-					item_.fields.pontos = 7;
-					json_apostas[i].fields.pontos = 7;
+					item_.fields.pontos = PONTOS_PLACAR;
+					json_apostas[i].fields.pontos = PONTOS_PLACAR;
 				}
 				//if (a.resultado_a == jogo.resultado_a) and (a.resultado_b == jogo.resultado_b):
 				//	a.pontos = PONTOS_PLACAR																
 				else if (item_.fields.vencedor == jogo.fields.vencedor && 
 						 item_.fields.vencedor != 'E' && 
 						 (item_.fields.resultado_a == jogo.fields.resultado_a || item_.fields.resultado_b == jogo.fields.resultado_b)) {
-					item_.fields.pontos = 5;
-					json_apostas[i].fields.pontos = 5;
+					item_.fields.pontos = PONTOS_VENCEDOR_RESULTADO_GOLS_UM_TIME;
+					json_apostas[i].fields.pontos = PONTOS_VENCEDOR_RESULTADO_GOLS_UM_TIME;
 				}
 				//elif (a.vencedor == jogo.vencedor) and (a.vencedor != 'E') and ((a.resultado_a == jogo.resultado_a) or (a.resultado_b == jogo.resultado_b)):
 				//	a.pontos = PONTOS_VENCEDOR_RESULTADO_GOLS_UM_TIME
 				else if (item_.fields.vencedor == jogo.fields.vencedor && item_.fields.vencedor != 'E') {
-					item_.fields.pontos = 4;
-					json_apostas[i].fields.pontos = 4;
+					item_.fields.pontos = PONTOS_VENCEDOR;
+					json_apostas[i].fields.pontos = PONTOS_VENCEDOR;
 				}
 				//elif (a.vencedor == jogo.vencedor) and (a.vencedor != 'E'):
 				//	a.pontos = PONTOS_VENCEDOR
 				else if (item_.fields.vencedor == jogo.fields.vencedor && item_.fields.vencedor == 'E') {
-					item_.fields.pontos = 3;
-					json_apostas[i].fields.pontos = 3;
+					item_.fields.pontos = PONTOS_EMPATE_PLACAR_INCORRETO;
+					json_apostas[i].fields.pontos = PONTOS_EMPATE_PLACAR_INCORRETO;
 				}
 				//elif (a.vencedor == jogo.vencedor) and (a.vencedor == 'E'):
 				//	a.pontos = PONTOS_EMPATE_PLACAR_INCORRETO
 				else if (item_.fields.vencedor != jogo.fields.vencedor && 
 						 (item_.fields.resultado_a == jogo.fields.resultado_a || item_.fields.resultado_b == jogo.fields.resultado_b)) {
-					item_.fields.pontos = 2;
-					json_apostas[i].fields.pontos = 2;
+					item_.fields.pontos = PONTOS_SOMENTE_RESULTADO_GOLS_UM_TIME;
+					json_apostas[i].fields.pontos = PONTOS_SOMENTE_RESULTADO_GOLS_UM_TIME;
 				}
 				//elif (a.vencedor != jogo.vencedor) and ((a.resultado_a == jogo.resultado_a) or (a.resultado_b == jogo.resultado_b)):
 				//	a.pontos = PONTOS_SOMENTE_RESULTADO_GOLS_UM_TIME
 				else {
-					item_.fields.pontos = 0;
-					json_apostas[i].fields.pontos = 0;
+					item_.fields.pontos = PONTOS_ERRO;
+					json_apostas[i].fields.pontos = PONTOS_ERRO;
 				}
 				//else:
 				//	a.pontos = PONTOS_ERRO									
@@ -315,27 +322,27 @@
 					inscricao.fields.pontos += a.fields.pontos;																					
 					//if a.pontos == PONTOS_PLACAR:
 					//	qtde_ap = qtde_ap + 1	
-					if (a.fields.pontos == 7) {
+					if (a.fields.pontos == PONTOS_PLACAR) {
 						inscricao.fields.quantidade_acerto_placar++;
 					} 
 					//if a.pontos == PONTOS_VENCEDOR_RESULTADO_GOLS_UM_TIME:
 					//	qtde_ar = qtde_ar + 1		
-					else if (a.fields.pontos == 5) {
+					else if (a.fields.pontos == PONTOS_VENCEDOR_RESULTADO_GOLS_UM_TIME) {
 						inscricao.fields.quantidade_acerto_vencedor_um_resultado_correto++;
 					}
 					//elif a.pontos == PONTOS_VENCEDOR:
 					//	qtde_av = qtde_av + 1
-					else if (a.fields.pontos == 4) {
+					else if (a.fields.pontos == PONTOS_VENCEDOR) {
 						inscricao.fields.quantidade_acerto_vencedor++;
 					}																					
 					//elif a.pontos == PONTOS_EMPATE_PLACAR_INCORRETO:
 					//	qtde_ae = qtde_ae + 1	
-					else if (a.fields.pontos == 3) {
+					else if (a.fields.pontos == PONTOS_EMPATE_PLACAR_INCORRETO) {
 						inscricao.fields.quantidade_acerto_empate_erro_placar++;
 					}																					
 					//elif a.pontos == PONTOS_SOMENTE_RESULTADO_GOLS_UM_TIME:
 					//	qtde_as = qtde_as + 1	
-					else if (a.fields.pontos == 2) {
+					else if (a.fields.pontos == PONTOS_SOMENTE_RESULTADO_GOLS_UM_TIME) {
 						inscricao.fields.quantidade_acerto_somente_resultado_um_time++;
 					}																						
 					//elif (a.jogo.status.codigo != 'E') and (a.pontos == PONTOS_ERRO):
@@ -747,11 +754,11 @@
 								<td class="text-error">Participante</td>
 								<td class="text-error" title="Inscrição"><center>Insc.</center></td>
 								<td class="text-error" title="Pontos"><center>Pontos</center></td>
-								<td class="text-error" title="Acerto do Placar (7 pontos)"><center>AP</center></td>
-								<td class="text-error" title="Acerto do Vencedor e quantidade de gols de um Time (5 pontos)"><center>AR</center></td>
-								<td class="text-error" title="Acerto do Vencedor (4 pontos)"><center>AV</center></td>
-								<td class="text-error" title="Acerto de Empate com placar diferente (3 pontos)"><center>AE</center></td>
-								<td class="text-error" title="Acerto de Somente da quantidade de gols de um Time (2 pontos)"><center>AS</center></td>
+								<td class="text-error" title="Acerto do Placar (6 pontos)"><center>AP6</center></td>
+								<td class="text-error" title="Acerto do Vencedor e quantidade de gols de um Time (4 pontos)"><center>AR4</center></td>
+								<td class="text-error" title="Acerto do Vencedor (3 pontos)"><center>AV3</center></td>
+								<td class="text-error" title="Acerto de Empate com placar diferente (3 pontos)"><center>AE3</center></td>
+								<td class="text-error" title="Acerto de Somente da quantidade de gols de um Time (1 pontos)"><center>AS1</center></td>
 								<td class="text-error" title="Errou Tudo (Zero pontos)"><center>ER</center></td>
 								<td class="text-error" title="% de aproveitamento"><center>%</center></td>
 							</tr>
@@ -895,11 +902,11 @@
 								<td class="text-error">Participante</td>
 								<td class="text-error" title="Pontos"><center>Pontos</center></td>
 								<td class="text-error" title="Pontos somados na simulação"><center>+</center></td>
-								<td class="text-error" title="Acerto do Placar (7 pontos)"><center>AP</center></td>
-								<td class="text-error" title="Acerto do Vencedor e quantidade de gols de um Time (5 pontos)"><center>AR</center></td>
-								<td class="text-error" title="Acerto do Vencedor (4 pontos)"><center>AV</center></td>
-								<td class="text-error" title="Acerto de Empate com placar diferente (3 pontos)"><center>AE</center></td>
-								<td class="text-error" title="Acerto de Somente da quantidade de gols de um Time (2 pontos)"><center>AS</center></td>
+								<td class="text-error" title="Acerto do Placar (6 pontos)"><center>AP6</center></td>
+								<td class="text-error" title="Acerto do Vencedor e quantidade de gols de um Time (4 pontos)"><center>AR4</center></td>
+								<td class="text-error" title="Acerto do Vencedor (3 pontos)"><center>AV3</center></td>
+								<td class="text-error" title="Acerto de Empate com placar diferente (3 pontos)"><center>AE3</center></td>
+								<td class="text-error" title="Acerto de Somente da quantidade de gols de um Time (1 pontos)"><center>AS1</center></td>
 								<!--<td class="text-error" title="Errou Tudo (Zero pontos)"><center>ER</center></td>-->
 								<td class="text-error" title=""><center id="id_time_a">Brasil</center></td>
 								<td class="text-error" title=""><center>X</center></td>
