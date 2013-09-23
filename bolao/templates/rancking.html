@@ -9,9 +9,9 @@
 	// Set a callback to run when the Google Visualization API is loaded.
 	//google.setOnLoadCallback(drawChart);
 	
-	var PONTOS_PLACAR = 6;
-	var PONTOS_VENCEDOR_RESULTADO_GOLS_UM_TIME = 4;
-	var PONTOS_VENCEDOR = 3;
+	var PONTOS_PLACAR = 7;
+	var PONTOS_VENCEDOR_RESULTADO_GOLS_UM_TIME = 5;
+	var PONTOS_VENCEDOR = 4;
 	var PONTOS_EMPATE_PLACAR_INCORRETO = 3;
 	var PONTOS_SOMENTE_RESULTADO_GOLS_UM_TIME = 1;
 	var PONTOS_ERRO = 0	;
@@ -41,7 +41,7 @@
 							} else {
 								html_ += '		 Manteve a colocação. ';
 							}
-							html_ += '		 Está com 48 pontos na '+retorno[0].ganho.colocacao+'º Colocação.</span>';
+							html_ += '		 Está com '+retorno[0].ganho.pontos+' pontos na '+retorno[0].ganho.colocacao+'º Colocação.</span>';
 							html_ += '    </h5>	';
 							html_ += '</a>';
 							html_ += '<br/>';
@@ -57,7 +57,7 @@
 							} else {
 								html_ += '		 Manteve a colocação. ';
 							}
-							html_ += '    	Está com 48 pontos na '+retorno[0].perca.colocacao+'º Colocação.</span>';
+							html_ += '    	Está com '+retorno[0].perca.pontos+' pontos na '+retorno[0].perca.colocacao+'º Colocação.</span>';
 							html_ += '    </h5>			';
 							html_ += '</a>							';
 							$('#id_maiores_alteracao_colocacao').html(html_);
@@ -132,7 +132,9 @@
 	function Load_Calc_Inscricao__() {
 		// Calcula Somatorio para as apostas calculadas...
 		// Busca inscricoes (json), de jogos finalizados/andamento
-		if(json_inscricoes_static.length == 0) {
+		
+		//if(json_inscricoes_static.length == 0) {
+		
 			$.getJSON('/get_inscricoes_simulacao/'+{{competicao.id}}, 
 					  function(retorno_inscricoes) {
 							json_inscricoes = retorno_inscricoes;
@@ -143,14 +145,14 @@
 							popula_rancking2();																																		
 							$('#id_loading_table_simulacao').empty();							
 					  });	
-		} else {
-			json_inscricoes = json_inscricoes_static;
-			$('#id_corpo_tabela_sim').empty();
-			soma_pontos_inscricao();
-			order_colocacao();																		
-			popula_rancking2();																																		
-			$('#id_loading_table_simulacao').empty();				
-		}
+		//} else {
+		//	json_inscricoes = json_inscricoes_static;
+		//	$('#id_corpo_tabela_sim').empty();
+		//	soma_pontos_inscricao();
+		//	order_colocacao();																		
+		//	popula_rancking2();																																		
+		//	$('#id_loading_table_simulacao').empty();				
+		//}
 	}
 	
 	function get_pontos_ganho_simulacao(inscricao_id) {
@@ -559,8 +561,8 @@
 						var aposta_resultado_a = get_resultado_a_participante_view(inscricao); // $(this).find('td .ra'+inscricao+' input').val();
 						var aposta_resultado_b = get_resultado_b_participante_view(inscricao); // $(this).find('td .rb'+inscricao+' input').val();		
 
-						//alert('i'+inscricao+' a'+aposta_resultado_a+' b'+aposta_resultado_b);
-						
+						//alert('i'+inscricao+' a'+aposta_resultado_a+' b'+aposta_resultado_b);						
+						// ================= Preenche vencedor de cada participante ==================== //
 						$.each( json_apostas, function( i, a ) {
 							//alert('aposta_inscricao.'+a.fields.inscricao+' == tabela_inscricao.'+inscricao+' && aposta_jogo.'+a.fields.jogo+' == jogo.'+json_jogos[index_jogo].pk);
 							if (a.fields.inscricao == inscricao && a.fields.jogo == json_jogos[index_jogo].pk) {
@@ -754,9 +756,9 @@
 								<td class="text-error">Participante</td>
 								<td class="text-error" title="Inscrição"><center>Insc.</center></td>
 								<td class="text-error" title="Pontos"><center>Pontos</center></td>
-								<td class="text-error" title="Acerto do Placar (6 pontos)"><center>AP6</center></td>
-								<td class="text-error" title="Acerto do Vencedor e quantidade de gols de um Time (4 pontos)"><center>AR4</center></td>
-								<td class="text-error" title="Acerto do Vencedor (3 pontos)"><center>AV3</center></td>
+								<td class="text-error" title="Acerto do Placar (7 pontos)"><center>AP7</center></td>
+								<td class="text-error" title="Acerto do Vencedor e quantidade de gols de um Time (5 pontos)"><center>AR5</center></td>
+								<td class="text-error" title="Acerto do Vencedor (4 pontos)"><center>AV4</center></td>
 								<td class="text-error" title="Acerto de Empate com placar diferente (3 pontos)"><center>AE3</center></td>
 								<td class="text-error" title="Acerto de Somente da quantidade de gols de um Time (1 pontos)"><center>AS1</center></td>
 								<td class="text-error" title="Errou Tudo (Zero pontos)"><center>ER</center></td>
@@ -902,9 +904,9 @@
 								<td class="text-error">Participante</td>
 								<td class="text-error" title="Pontos"><center>Pontos</center></td>
 								<td class="text-error" title="Pontos somados na simulação"><center>+</center></td>
-								<td class="text-error" title="Acerto do Placar (6 pontos)"><center>AP6</center></td>
-								<td class="text-error" title="Acerto do Vencedor e quantidade de gols de um Time (4 pontos)"><center>AR4</center></td>
-								<td class="text-error" title="Acerto do Vencedor (3 pontos)"><center>AV3</center></td>
+								<td class="text-error" title="Acerto do Placar (7 pontos)"><center>AP7</center></td>
+								<td class="text-error" title="Acerto do Vencedor e quantidade de gols de um Time (5 pontos)"><center>AR5</center></td>
+								<td class="text-error" title="Acerto do Vencedor (4 pontos)"><center>AV4</center></td>
 								<td class="text-error" title="Acerto de Empate com placar diferente (3 pontos)"><center>AE3</center></td>
 								<td class="text-error" title="Acerto de Somente da quantidade de gols de um Time (1 pontos)"><center>AS1</center></td>
 								<!--<td class="text-error" title="Errou Tudo (Zero pontos)"><center>ER</center></td>-->
