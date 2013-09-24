@@ -131,8 +131,8 @@
 
 						<div class="pull-right">
 							<a href="/photo/" onclick="show__(this.href); return false;">
+								{{ form_participante.foto.label }}<br/>
 								{% if form_participante.foto.value != '' %}
-									{{ form_participante.foto.label }}<br/>
 									<img src="/media/{{ form_participante.foto.value }}" height="150" width="150" class="img-rounded"/>
 								{% endif %}
 							</a>
