@@ -1135,13 +1135,19 @@ def system_calcular_campeonato(request, campeonato_pk):
 	envia_email = False
 	campeonato = Campeonato.objects.get(pk=campeonato_pk)
 	jogos = __get_jogos_not_edition_by_campeonato__(campeonato)
-	for j in jogos:
+	for j in jogos:		
 		#print(j.time_a + " X " + j.time_b)
 		__calcular_vencedor_jogo__(j)
+		
 		# calcula apostas e colocacao hist...
 		__calcula_apostas__(j)
-	# calcula somatorio definitivo
+		
+	#  calcula a colocacao no momento da aposta/jogo (Historico)
 	competicoes = Competicao.objects.filter(campeonato=campeonato)
+	for co in competicoes:
+		__calcula_colocacao_aposta__(co)
+		
+	# calcula somatorio definitivo
 	for c in competicoes:
 		inscricoes = Inscricao.objects.filter(competicao=c, ativo=True)
 		for i in inscricoes:
@@ -1474,9 +1480,9 @@ def __calcular_vencedor_jogo__(j):
 	
 def __calcula_apostas__(jogo):
 	apostas = Aposta.objects.filter(jogo=jogo, calculado=False)
-	if apostas.count():
-		competicao = apostas[0].inscricao.competicao
-	i = 0
+	#if apostas.count():
+	#	competicao = apostas[0].inscricao.competicao
+	#i = 0
 	for a in apostas:
 		i = i + 1
 		if (a.resultado_a == jogo.resultado_a) and (a.resultado_b == jogo.resultado_b):
@@ -1499,10 +1505,10 @@ def __calcula_apostas__(jogo):
 		elif a.jogo.status.codigo == 'A':
 			a.colocacao = -1
 		a.save()
-		if (competicao != a.inscricao.competicao) or (i == apostas.count()):
-			competicao = a.inscricao.competicao
+		#if (competicao != a.inscricao.competicao) or (i == apostas.count()):
+		#	competicao = a.inscricao.competicao
 			# calcula colocacao na aposta (competicao)
-			__calcula_colocacao_aposta__(competicao)
+		#	__calcula_colocacao_aposta__(competicao)
 		
 # RANCKING		
 def __calcula_colocacao_aposta__(competicao):
