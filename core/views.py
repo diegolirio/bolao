@@ -1484,7 +1484,7 @@ def __calcula_apostas__(jogo):
 	#	competicao = apostas[0].inscricao.competicao
 	#i = 0
 	for a in apostas:
-		i = i + 1
+		#i = i + 1
 		if (a.resultado_a == jogo.resultado_a) and (a.resultado_b == jogo.resultado_b):
 			a.pontos = PONTOS_PLACAR
 		elif (a.vencedor == jogo.vencedor) and (a.vencedor != 'E') and ((a.resultado_a == jogo.resultado_a) or (a.resultado_b == jogo.resultado_b)):
