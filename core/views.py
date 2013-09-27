@@ -618,19 +618,47 @@ def __get_jogos_not_edition_by_campeonato__(campeonato):
 		jgs = Jogo.objects.filter(grupo=g).exclude(status=status).order_by('data_hora')
 		for j in jgs:
 			jogos_.append(j)
-	return jogos_			
+	return jogos_		
+
+def get_dic_aposta(aposta):
+	if aposta != None:
+		view_aposta_dic = { 'id': aposta.pk,
+							'resultado_a': aposta.resultado_a,
+							'resultado_b': aposta.resultado_b,
+							'pontos': aposta.pontos,
+							'jogo_id': aposta.jogo.pk,
+							'jogo_time_a': aposta.jogo.time_a,
+							'jogo_time_b': aposta.jogo.time_b,
+							'jogo_resultado_b': aposta.jogo.resultado_b,
+							'jogo_resultado_a': aposta.jogo.resultado_a,
+							'jogo_status_codigo': aposta.jogo.status.codigo,
+							'jogo_data_hora': aposta.jogo.data_hora.strftime('%d/%m/%Y %H:%M'),
+						  }
+		
+	return view_aposta_dic
 
 def perfil_competicao_modal(request, view_inscricao_pk):   
 	view_inscricao = Inscricao.objects.get(pk=view_inscricao_pk)
-	to_json = list()
-	
+	to_json = list()	
 	view_apostas = list()
-	apts_aux = Aposta.objects.filter(inscricao=view_inscricao)
+	apts_aux = Aposta.objects.filter(inscricao=view_inscricao).order_by('-jogo')	
 	jogo_ = 0
 	for a in apts_aux:
 		if (a.jogo.status.codigo == 'A') or (a.jogo.status.codigo == 'F'):
 			view_apostas.append(a)	
-			jogo_ = jogo_ + 1		
+			jogo_ = jogo_ + 1	
+	if jogo_ > 0:
+		view_ultimo_aposta_json = get_dic_aposta(view_apostas[0])
+		if jogo_ > 1:
+			view_penultimo_aposta_json = get_dic_aposta(view_apostas[1])			
+			if jogo_ > 2:
+				view_antepenultimo_aposta_json = get_dic_aposta(view_apostas[2])
+				
+	view_apostas_json = {
+						  'ultimo': view_ultimo_aposta_json,
+						  'penultimo': view_penultimo_aposta_json,
+						  'antepenultimo': view_antepenultimo_aposta_json
+					    }    					
 	view_inscricao_json = {
                              'inscricao_id': view_inscricao.id,
 							 'participante_id': view_inscricao.participante.id,
@@ -644,7 +672,8 @@ def perfil_competicao_modal(request, view_inscricao_pk):
 							 'inscricao_quantidade_acerto_empate_erro_placar': view_inscricao.quantidade_acerto_empate_erro_placar,
 							 'inscricao_quantidade_acerto_somente_resultado_um_time': view_inscricao.quantidade_acerto_somente_resultado_um_time,
 							 'inscricao_quantidade_erro': view_inscricao.quantidade_erro,
-							 'quantidade_jogos': jogo_
+							 'quantidade_jogos': jogo_,
+							 'ultimas_apostas': view_apostas_json
 						  }    
 	dictFields = { 'fields': view_inscricao_json }
 	to_json.append(dictFields)
@@ -1142,7 +1171,7 @@ def system_calcular_campeonato(request, campeonato_pk):
 		# calcula apostas e colocacao hist...
 		__calcula_apostas__(j)
 		
-	#  calcula a colocacao no momento da aposta/jogo (Historico)
+	#  calcula a colocacao no momento da aposta/jogo ("Historico" gravado na aposta)
 	competicoes = Competicao.objects.filter(campeonato=campeonato)
 	for co in competicoes:
 		__calcula_colocacao_aposta__(co)
