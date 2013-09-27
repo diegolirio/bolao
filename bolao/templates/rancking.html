@@ -111,6 +111,7 @@
 		$('#chart').html('<img src="/media/images/__159__.gif"/>	');
 	    $('#title_modal').html('<img src="/media/images/159.gif" class="img-rounded"/> ');
 	    $('#col_pt').html('<img src="/media/images/211.gif" class="img-rounded"/>');
+		$('#id_ultimos_jogos').hide();
 	
 		$.getJSON('/perfil_competicao_modal/'+inscricao_pk,  // URL 
 		
@@ -803,7 +804,7 @@
 					<div class="tab-pane fade active in" id="id_rancking">			
 					
 						<p class="pull-left"><a href="#"><a href="javascript:frame_impressao.print()">Imprimir</a></p>
-						<center>{{qtde_jogos}} Jogos</center>
+						{% if qtde_jogos > 0 %} <center>{{qtde_jogos}} Jogos</center> {% endif %}
 						<iframe name='frame_impressao' id='frame_impressao' height='0' width='0' src='/imprimir_rancking/{{competicao.id}}/' frameborder=' '>
 						</iframe>		
 						
