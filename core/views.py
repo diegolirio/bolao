@@ -634,7 +634,19 @@ def get_dic_aposta(aposta):
 							'jogo_status_codigo': aposta.jogo.status.codigo,
 							'jogo_data_hora': aposta.jogo.data_hora.strftime('%d/%m/%Y %H:%M'),
 						  }
-		
+	else:
+		view_aposta_dic = { 'id': '-1',
+							'resultado_a': '',
+							'resultado_b': '',
+							'pontos': '',
+							'jogo_id': '-1',
+							'jogo_time_a': '',
+							'jogo_time_b': '',
+							'jogo_resultado_b': '',
+							'jogo_resultado_a': '',
+							'jogo_status_codigo': '',
+							'jogo_data_hora': '',
+						  }	
 	return view_aposta_dic
 
 def perfil_competicao_modal(request, view_inscricao_pk):   
@@ -647,6 +659,9 @@ def perfil_competicao_modal(request, view_inscricao_pk):
 		if (a.jogo.status.codigo == 'A') or (a.jogo.status.codigo == 'F'):
 			view_apostas.append(a)	
 			jogo_ = jogo_ + 1	
+	view_ultimo_aposta_json = get_dic_aposta(None)
+	view_penultimo_aposta_json = get_dic_aposta(None)
+	view_antepenultimo_aposta_json = get_dic_aposta(None)
 	if jogo_ > 0:
 		view_ultimo_aposta_json = get_dic_aposta(view_apostas[0])
 		if jogo_ > 1:
