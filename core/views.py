@@ -20,8 +20,8 @@ envia_email = False
 # Const
 ROOT_PROJECT = os.path.dirname(__file__)
 SITE_ROOT_ = os.path.realpath(os.path.dirname(__file__))
-SITE_ROOT = 'http://bolao-manager.herokuapp.com/'
-NOME_BOLAO = 'Bolão Manager' # Super Bolão | Super Placar | Pilantras.com | 
+SITE_ROOT = 'http://bolao.diegolirio.com/'
+NOME_BOLAO = 'Bolão Show' # Super Bolão | Super Placar | Pilantras.com | 
 
 def user_login_is_valid(user_request, user_inscricao):
 	if user_request.pk == user_inscricao.pk:
@@ -57,7 +57,7 @@ def home(request):
 												'subtitulo': '',
 												'user_participante': user_participante,
 												'my_count': my_count,
-												'competicoes': competicoes
+												'competicoes': competicoes,
 											})
 											
 def get_rancking_by_competicao(competicao):

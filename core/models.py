@@ -117,11 +117,14 @@ class Jogo(models.Model):
 	first_group = models.BooleanField(default=False)
 	def __unicode__(self):
 		r_a = ""
-		r_b = ""		
+		r_b = ""	
+		local__ = ""
+		if self.local != None:
+			local__ = " / Local: " + self.local.descricao			
 		if self.status.codigo != "E":
 			r_a = str(self.resultado_a)
 			r_b = str(self.resultado_b)			
-		return self.time_a + " " + r_a + " X " + r_b + " " + self.time_b + " / " + str(self.data_hora) + " - " + self.status.descricao + " / Local: " + self.local.descricao
+		return self.time_a + " " + r_a + " X " + r_b + " " + self.time_b + " / " + str(self.data_hora) + " - " + self.status.descricao + local__
 ###########################################################
 
 class Inscricao(models.Model):

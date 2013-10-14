@@ -1,13 +1,12 @@
 # Django settings for bolao project.
+import os
 
 #import dj_database_url
-import os
-import dj_database_url
-from unipath import Path
-PROJECT_DIR = Path(__file__).parent
 
-DEBUG = os.environ.get('DEBUG') == 'True'
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+
+ROOT_PROJECT = os.path.dirname(__file__)
 
 ADMINS = (
      # ('Your Name', 'your_email@example.com'),
@@ -15,24 +14,17 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-#        'NAME': 'bolao_db',                      # Or path to database file if using sqlite3.
-#        # The following settings are not used with sqlite3:
-#        'USER': '',
-#        'PASSWORD': '',
-#        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-#        'PORT': '',                      # Set to empty string for default.
-#    }
-#}
-
-
 DATABASES = {
-    'default': dj_database_url.config(
-        default='sqlite:///' + PROJECT_DIR.child('mybolao.db'))
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'bolao_db',                      # Or path to database file if using sqlite3.
+        # The following settings are not used with sqlite3:
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        'PORT': '',                      # Set to empty string for default.
+    }
 }
-
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
@@ -63,8 +55,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-#MEDIA_ROOT = os.path.join(ROOT_PROJECT, 'media') 
-MEDIA_ROOT = PROJECT_DIR.child('media')
+MEDIA_ROOT = os.path.join(ROOT_PROJECT, 'media') 
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -75,8 +66,7 @@ MEDIA_URL = '/media/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-#STATIC_ROOT = os.path.join(ROOT_PROJECT, 'static') 
-STATIC_ROOT = PROJECT_DIR.child('static')
+STATIC_ROOT = os.path.join(ROOT_PROJECT, 'static') 
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -126,8 +116,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    #os.path.join(ROOT_PROJECT, 'templates')
-	PROJECT_DIR.child('templates')
+    os.path.join(ROOT_PROJECT, 'templates')
 )
 
 INSTALLED_APPS = (
@@ -178,7 +167,7 @@ LOGGING = {
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'diegolirio.dl@gmail.com'
-EMAIL_HOST_PASSWORD = 'dyegpython86'
+EMAIL_HOST_PASSWORD = 'dyeg1986'
 EMAIL_USE_TLS = True
 # -----------------------------------------------------
 
