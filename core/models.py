@@ -100,8 +100,8 @@ class Jogo(models.Model):
 	class Meta:
 		#order_with_respect_to = 'grupo'
 		ordering = ('data_hora',)
-	#time_a = models.ForeignKey(Time)
-	#time_b = models.ForeignKey(Time)
+	#time_a = models.ForeignKey('Time', verbose_name=u'Time A', related_name='time_a')
+	#time_b = models.ForeignKey('Time', verbose_name=u'Time B', related_name='time_b')
 	time_a = models.CharField(max_length=50)
 	time_b = models.CharField(max_length=50)
 	resultado_a = models.IntegerField(default=0)

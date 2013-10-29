@@ -118,7 +118,119 @@ def __apostas_save_all__(participante, competicao):
 					aposta.calculado = True
 				aposta.save()			
 
-def global_():
+def __status__():
+	# StatusJogo
+	if StatusJogo.objects.filter(codigo='E').count() == 0:
+		e = StatusJogo()
+		e.codigo = 'E'
+		e.descricao = 'Edicao'
+		e.save()
+	else:
+		e = StatusJogo.objects.filter(codigo='E')[0:1].get()
+	if StatusJogo.objects.filter(codigo='A').count() == 0:
+		a = StatusJogo()
+		a.codigo = 'A'
+		a.descricao = 'Andamento/Bola Rolando'
+		a.save()
+	else:
+		a = StatusJogo.objects.filter(codigo='A')[0:1].get()
+	if StatusJogo.objects.filter(codigo='F').count() == 0:
+		f = StatusJogo()
+		f.codigo = 'F'
+		f.descricao = 'Finalizado'
+		f.save()
+	else:
+		f = StatusJogo.objects.filter(codigo='F')[0:1].get()	
+	return {'E': e, 'A': a, 'F': f}
+				
+def __patrocinio_python__():
+	#Patrocinador Python
+	if Patrocinador.objects.filter(nome_visual='Python').count() == 0:
+		py = Patrocinador()
+		py.nome_visual = 'Python'
+		py.nome = 'Python'
+		py.url_site = 'http://python.org'
+		py.image_aside = 'images/patrocinadores/python.jpg'
+		py.save()
+	else:
+		py = Patrocinador.objects.filter(nome_visual='Python')[0:1].get()	
+	return py
+	
+def __patrocinio_asisco__():	
+	#Patrocinador Asisco
+	if Patrocinador.objects.filter(nome_visual='Asisco').count() == 0:
+		asisco = Patrocinador()
+		asisco.nome_visual = 'Asisco'
+		asisco.nome = 'Alpha Sistemas e Consultoria'
+		asisco.url_site = 'http://www.asisco.com.br'
+		asisco.image_aside = 'images/patrocinadores/asisco.jpg'
+		asisco.save()
+	else:
+		asisco = Patrocinador.objects.filter(nome_visual='Asisco')[0:1].get()	
+	return asisco
+	
+def __tipo_regra__():
+	if TipoRegra.objects.filter(codigo='M').count() == 0:
+		tipo_m = TipoRegra()
+		tipo_m.codigo = 'M'
+		tipo_m.nome = 'Mata-a-mata'
+		tipo_m.save()
+	else:
+		tipo_m = TipoRegra.objects.filter(codigo='M')[0:1].get()
+		
+	if TipoRegra.objects.filter(codigo='G').count() == 0:
+		tipo_g = TipoRegra()
+		tipo_g.codigo = 'G'
+		tipo_g.nome = 'Grupo'
+		tipo_g.save()
+	else:
+		tipo_g = TipoRegra.objects.filter(codigo='G')[0:1].get()
+
+	if TipoRegra.objects.filter(codigo='P').count() == 0:
+		tipo_p = TipoRegra()
+		tipo_p.codigo = 'P'
+		tipo_p.nome = 'Pontos corridos'
+		tipo_p.save()
+	else:
+		tipo_p = TipoRegra.objects.filter(codigo='P')[0:1].get()	
+	return {'M': tipo_m ,'G': tipo_g, 'P': tipo_p}
+				
+def __global__():
+	# User
+	if User.objects.filter(username='diego').count() == 0:
+		diego = User.objects.create_user('diego', 'diegolirio.dl@gmail.com', 'diego')		
+	else:
+		diego = User.objects.filter(username='diego')[0:1].get()	
+	# Participante	
+	if Participante.objects.filter(apelido='Diego Lirio').count() == 0:
+		pdiego = Participante()
+		pdiego.apelido = 'Diego Lirio'
+		pdiego.ddd = 11
+		pdiego.telefone = 961409798
+		pdiego.user = diego
+		pdiego.confirm_email = True
+		pdiego.confirm_send_code = 1234567890
+		pdiego.foto = 'images/users/diego.jpeg'
+		pdiego.save()
+	else:
+		pdiego = Participante.objects.filter(apelido='Diego Lirio')[0:1].get()
+		pdiego.foto = 'images/users/diego.jpeg'
+		pdiego.save()		
+	
+	status_dic = __status__()
+	patro_python = __patrocinio_python__()
+	patro_asisco = __patrocinio_asisco__()
+	insert_auto_paginas()
+	tipos_regra_dic = __tipo_regra__()
+	# Atividades...
+	insert_auto_atividades()	
+	
+	p = Local()
+	p.descricao = 'Poaense'
+	p.save()	
+	
+			
+def global_2():
 	# User
 	if User.objects.filter(username='diego').count() == 0:
 		diego = User.objects.create_user('diego', 'diegolirio.dl@gmail.com', 'diego')		
@@ -390,7 +502,97 @@ def __local__():
 	re.save()		
 	salvador = Local()
 	salvador.descricao = 'Salvador'
-	salvador.save()			
+	salvador.save()		
+
+def __campeonato_quarta_show__():
+	pdiego = Participante.objects.filter(apelido='Diego Lirio')[0:1].get()
+	asisco = Patrocinador.objects.filter(nome_visual='Asisco')[0:1].get()	
+	py = Patrocinador.objects.filter(nome_visual='Python')[0:1].get()
+	e = StatusJogo.objects.filter(codigo='E')[0:1].get()	
+	# Campeonato
+	nome_camp = 'Campeonato Quarta Show'
+	if Campeonato.objects.filter(nome=nome_camp).count() == 0:
+		camp = Campeonato()
+		camp.nome = nome_camp
+		camp.status = StatusJogo.objects.filter(codigo='E')[0:1].get()
+		camp.tipo_regra = TipoRegra.objects.filter(codigo='G')[0:1].get()
+		camp.save()
+	else:
+		camp = Campeonato.objects.filter(nome=nome_camp)[0:1].get()	
+	###############################################
+	# competicao
+	if Competicao.objects.filter(nome='Quarta Show', campeonato=camp).count() == 0:
+		comp = Competicao()
+		comp.campeonato = camp
+		comp.nome = 'Quarta Show'
+		comp.status = e
+		comp.presidente = pdiego
+		#comp_teste.patrocinador = asisco
+		comp.valor_aposta = 10.00
+		comp.save()
+	else:
+		comp = Competicao.objects.filter(nome='Quarta Show', campeonato=camp)[0:1].get()		
+	# Patrocinadores		
+	if Competicao_Patrocinadores.objects.filter(competicao=comp, patrocinador=asisco).count() == 0:
+		com_pa_ = Competicao_Patrocinadores()
+		com_pa_.competicao = comp
+		com_pa_.patrocinador = asisco
+		com_pa_.principal = False
+		com_pa_.save()			
+	if Competicao_Patrocinadores.objects.filter(competicao=comp, patrocinador=py).count() == 0:
+		com_pa_ = Competicao_Patrocinadores()
+		com_pa_.competicao = comp
+		com_pa_.patrocinador = py
+		com_pa_.principal = False
+		com_pa_.save()			
+	# Grupo
+	if Grupo.objects.filter(descricao = 'Grupo A').count() == 0:
+		a_ = Grupo()
+		a_.descricao = 'Grupo A'
+		a_.campeonato = camp
+		a_.save()
+	else:
+		a_ = Grupo.objects.filter(descricao = 'Grupo A')[0:1].get()		
+	####################
+	# Jogos
+	l1 = Local.objects.filter(descricao='Poaense')[0:1].get()
+	if Jogo.objects.filter(time_a='Art Car',time_b='Tahiti', grupo=a_, local=l1).count() == 0:
+		jogo_1 = Jogo()
+		jogo_1.time_a = 'Art Car'
+		jogo_1.time_b = 'Tahiti'
+		jogo_1.resultado_a = 0
+		jogo_1.resultado_b = 0
+		jogo_1.grupo = a_
+		jogo_1.data_hora = datetime.datetime(2013, 06, 07, 16, 00, 4, 883118) # datetime.datetime.now()
+		jogo_1.vencedor = 'E'
+		jogo_1.local = l1
+		jogo_1.status = e
+		jogo_1.save()
+	# Jogo2
+	if Jogo.objects.filter(time_a='Os Treze',time_b='Real Matismo', grupo=a_).count() == 0:
+		jogo_2 = Jogo()
+		jogo_2.time_a = 'Os Treze'
+		jogo_2.time_b = 'Real Matismo'
+		jogo_2.resultado_a = 0
+		jogo_2.resultado_b = 0
+		jogo_2.grupo = a_
+		jogo_2.data_hora = datetime.datetime(2013, 06, 06, 16, 00, 4, 883118)
+		jogo_2.vencedor = 'E'
+		jogo_2.local = l1
+		jogo_2.status = e
+		jogo_2.save()	
+	# Inscricao
+	if Inscricao.objects.filter(participante=pdiego, competicao=comp_teste).count() == 0:
+		idiego = Inscricao()
+		idiego.participante = pdiego
+		idiego.competicao = comp_teste
+		idiego.save()
+	else:
+		idiego = Inscricao.objects.filter(participante=pdiego, competicao=comp_teste)[0:1].get()
+	######################################################
+	# Aposta
+	__apostas_save_all__(pdiego, comp)		
+	
 	
 def competicao_copa_confederacoes():
 	
