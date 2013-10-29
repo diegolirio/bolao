@@ -20,7 +20,7 @@ envia_email = False
 # Const
 ROOT_PROJECT = os.path.dirname(__file__)
 SITE_ROOT_ = os.path.realpath(os.path.dirname(__file__))
-SITE_ROOT = 'http://bolao.diegolirio.com/'
+SITE_ROOT = 'http://bolao.quartashow.com/'
 NOME_BOLAO = 'Bolão Show' # Super Bolão | Super Placar | Pilantras.com | 
 
 def user_login_is_valid(user_request, user_inscricao):
@@ -568,7 +568,7 @@ def aposta_edit(request, user_aposta_pk):
 	mensagem = ''	
 	form = ApostaForm()
 	pagina_patro = get_patrocinador_pagina('E', model.inscricao.competicao)
-	print('aposta_edit >>> ' + model.jogo.time_a)
+	print('aposta_edit >>> ' + model.jogo.time_a.nome)
 	if len(pagina_patro) > 0:
 		publicidade = pagina_patro[0].competicacao_patrocinador.patrocinador.image_aside
 	else:
@@ -576,7 +576,7 @@ def aposta_edit(request, user_aposta_pk):
 	# ToDo...: if model.jogo.data_hora > DateTime.now-4horas: ToDo..:
 	if model.jogo.status.codigo == 'E':		
 		if request.method == 'POST':
-			print('aposta_edit >>> ' + model.jogo.time_b)
+			print('aposta_edit >>> ' + model.jogo.time_b.nome)
 			form = ApostaForm(request.POST, request.FILES, instance=model)
 			if form.is_valid():
 				model_update = form.save(commit=False)
@@ -1064,6 +1064,7 @@ def __apostas_create_all__(participante, competicao):
 			aposta = Aposta()
 			aposta.inscricao = inscr
 			aposta.jogo = j
+			aposta.colocacao = Inscricao.objects.filter(competicao=competicao).count()+1
 			if j.status.codigo == 'F':
 				aposta.calculado = True
 			aposta.save()			
@@ -1079,6 +1080,7 @@ def aceitar_solicitacao(request, solicitacao_pk):
 		inscricao_new = Inscricao()
 		inscricao_new.competicao = solicitacao.competicao
 		inscricao_new.participante = solicitacao.participante
+		inscricao_new.colocacao = Inscricao.objects.filter(competicao=solicitacao.competicao).count()+1
 		inscricao_new.save()
 		__apostas_create_all__(solicitacao.participante, solicitacao.competicao)
 		solicitacao.status = 'A'
@@ -1124,6 +1126,7 @@ def system_campeonato_calc_jogos(request, campeonato_pk):
 def system_novo_jogo(request, campeonato_pk):
 	campeonato = Campeonato.objects.get(pk=campeonato_pk)
 	grupos = Grupo.objects.filter(campeonato=campeonato)
+	times = Time.objects.all()
 	form = JogoForm()
 	execute_transation = 'N'
 	mensagem = ''
@@ -1143,7 +1146,7 @@ def system_novo_jogo(request, campeonato_pk):
 			mensagem = 'gravado com sucesso'
 		else:
 			print('form invalido')
-	return render_to_response('_base_simple.html', {'template': 'system/novo_jogo.html', 'form': form, 'execute_transation': execute_transation, 'mensagem': mensagem, 'campeonato': campeonato, 'grupos': grupos}, context_instance=RequestContext(request))						  
+	return render_to_response('_base_simple.html', {'template': 'system/novo_jogo.html', 'form': form, 'times': times, 'execute_transation': execute_transation, 'mensagem': mensagem, 'campeonato': campeonato, 'grupos': grupos}, context_instance=RequestContext(request))						  
 								  
 def system_jogo_edit(request, campeonato_pk, jogo_pk):
 	campeonato = Campeonato.objects.get(pk=campeonato_pk)

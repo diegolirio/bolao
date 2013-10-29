@@ -671,9 +671,12 @@
 
 <div class="row">
 
+	<!--
 	<div class="visible-desktop pull-right" id="id_publicidade_top">
 		<img src="/media/images/__159__.gif"/>
 	</div>	
+	-->
+	
 	
 	<p>{{competicao.campeonato.nome}}</p>
 	<h3>Copa <a href="{{patrocinador.patrocinador.url_site}}" target="_blank">{{patrocinador.patrocinador.nome_visual}}</a> {{competicao.nome}}</h3>
@@ -797,7 +800,7 @@
 				<div class="bs-example">
 				  <ul class="nav nav-tabs" style="margin-bottom: 15px;">
 					<li class="active"><a href="#id_rancking" data-toggle="tab">Rancking</a></li>
-					<li><a href="#id_simulador" data-toggle="tab" id="id_tab_simular">Simulador</a></li>			
+					<!--<li><a href="#id_simulador" data-toggle="tab" id="id_tab_simular">Simulador</a></li>			-->
 				  </ul>
 				</div>
 				<div id="myTabContent" class="tab-content">
@@ -950,7 +953,7 @@
 							{% endfor %}
 						</table>				
 					</div>
-					<!-- ========================= Simulador =========================== -->
+					<!-- ========================= Simulador =========================== --
 					<div class="tab-pane fade in" id="id_simulador">
 						<center>
 							<h1 id="id_jogo_simulado"></h1>
@@ -971,7 +974,7 @@
 								<td class="text-error" title="Acerto do Vencedor (4 pontos)"><center>AV4</center></td>
 								<td class="text-error" title="Acerto de Empate com placar diferente (3 pontos)"><center>AE3</center></td>
 								<td class="text-error" title="Acerto de Somente da quantidade de gols de um Time (1 pontos)"><center>AS1</center></td>
-								<!--<td class="text-error" title="Errou Tudo (Zero pontos)"><center>ER</center></td>-->
+								<!--<td class="text-error" title="Errou Tudo (Zero pontos)"><center>ER</center></td>--
 								<td class="text-error" title=""><center id="id_time_a">Brasil</center></td>
 								<td class="text-error" title=""><center>X</center></td>
 								<td class="text-error" title=""><center id="id_time_b">Itália</center></td>
@@ -979,7 +982,7 @@
 							<tbody id="id_corpo_tabela_sim"></tbody>
 						</table>
 						<div id="id_loading_table_simulacao"><center><img src="/media/images/__159__.gif"/></center></div>
-					</div>							
+					</div>	-->						
 				</div>				
 				<!--
 				<br/><br/>
@@ -1010,7 +1013,7 @@
 		<!-- Facebook -->      		
 		 <!-- Facebook -->       
 			  <div class="fb-like-box" 
-				 data-href="http://www.facebook.com/asiscoweb" 
+				 data-href="http://www.facebook.com/bolaoshowpontocom" 
 				 data-width="200" 
 				 data-height="430" 
 				 data-show-faces="true" 
@@ -1020,6 +1023,8 @@
 		 <!-- Facebook -->  	
 		
 		<br/><br/><br/>
+	
+	<!--  29/10-2013
 	
 		<span class="text-warning">publicidade</span><br/>
 		<div class="visible-desktop">
@@ -1037,8 +1042,10 @@
 				<br/><br/>
 			</div>			
 		{% endfor %}
-		
-		<!--
+	-->
+	
+	
+		<!-- statico...
 		<div class="visible-desktop">
 			<a href="http://www.asisco.com.br" target="_blank"><img class="img-rounded" src="/media/images/patrocinadores/cocacola.png"/></a>
 			<br/><br/>
@@ -1048,8 +1055,11 @@
 			<br/><br/>
 		</div>
 		-->
+		
+		<!--
 		<div class="patrocinador">
 			<img class="img-rounded" height="100" width="150" src="/media/images/patrocinadores/anuncie.gif"/>
 		</div>
+		-->
 	</div>
 </div>

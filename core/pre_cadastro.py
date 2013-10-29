@@ -504,6 +504,15 @@ def __local__():
 	salvador.descricao = 'Salvador'
 	salvador.save()		
 
+def __times__(nome):
+	if Time.objects.filter(nome=nome).count() > 0:
+		time = Time.objects.filter(nome=nome)[0:1].get()
+	else:
+		time = Time()
+		time.nome = nome
+		time.save()
+	return time
+	
 def __campeonato_quarta_show__():
 	pdiego = Participante.objects.filter(apelido='Diego Lirio')[0:1].get()
 	asisco = Patrocinador.objects.filter(nome_visual='Asisco')[0:1].get()	
@@ -555,40 +564,45 @@ def __campeonato_quarta_show__():
 		a_ = Grupo.objects.filter(descricao = 'Grupo A')[0:1].get()		
 	####################
 	# Jogos
+	tahiti = __times__('Tahiti')
+	art_car = __times__('Art Car')
+	os_treze = __times__('Os Treze')
+	real_matismo = __times__('Real Matismo')	
+	
 	l1 = Local.objects.filter(descricao='Poaense')[0:1].get()
-	if Jogo.objects.filter(time_a='Art Car',time_b='Tahiti', grupo=a_, local=l1).count() == 0:
+	if Jogo.objects.filter(time_a=art_car,time_b=tahiti, grupo=a_, local=l1).count() == 0:
 		jogo_1 = Jogo()
-		jogo_1.time_a = 'Art Car'
-		jogo_1.time_b = 'Tahiti'
+		jogo_1.time_a = art_car
+		jogo_1.time_b = tahiti
 		jogo_1.resultado_a = 0
 		jogo_1.resultado_b = 0
 		jogo_1.grupo = a_
-		jogo_1.data_hora = datetime.datetime(2013, 06, 07, 16, 00, 4, 883118) # datetime.datetime.now()
+		jogo_1.data_hora = datetime.datetime(2013, 11, 06, 19, 30, 4, 883118) # datetime.datetime.now()
 		jogo_1.vencedor = 'E'
 		jogo_1.local = l1
 		jogo_1.status = e
 		jogo_1.save()
 	# Jogo2
-	if Jogo.objects.filter(time_a='Os Treze',time_b='Real Matismo', grupo=a_).count() == 0:
+	if Jogo.objects.filter(time_a=os_treze,time_b=real_matismo, grupo=a_).count() == 0:
 		jogo_2 = Jogo()
-		jogo_2.time_a = 'Os Treze'
-		jogo_2.time_b = 'Real Matismo'
+		jogo_2.time_a = os_treze
+		jogo_2.time_b = real_matismo
 		jogo_2.resultado_a = 0
 		jogo_2.resultado_b = 0
 		jogo_2.grupo = a_
-		jogo_2.data_hora = datetime.datetime(2013, 06, 06, 16, 00, 4, 883118)
+		jogo_2.data_hora = datetime.datetime(2013, 11, 06, 19, 30, 4, 883118)
 		jogo_2.vencedor = 'E'
 		jogo_2.local = l1
 		jogo_2.status = e
 		jogo_2.save()	
 	# Inscricao
-	if Inscricao.objects.filter(participante=pdiego, competicao=comp_teste).count() == 0:
+	if Inscricao.objects.filter(participante=pdiego, competicao=comp).count() == 0:
 		idiego = Inscricao()
 		idiego.participante = pdiego
-		idiego.competicao = comp_teste
+		idiego.competicao = comp
 		idiego.save()
 	else:
-		idiego = Inscricao.objects.filter(participante=pdiego, competicao=comp_teste)[0:1].get()
+		idiego = Inscricao.objects.filter(participante=pdiego, competicao=comp)[0:1].get()
 	######################################################
 	# Aposta
 	__apostas_save_all__(pdiego, comp)		
@@ -842,11 +856,12 @@ def competicao_copa_confederacoes():
 @login_required	
 def pre_cadastro(request):
 	if request.user.username == 'admin':
-		global_()
-		__local__()
+		__global__()
+		#__local__()
 		#copa_mundo_teste()	
-		competicao_copa_confederacoes()
-		copa_brasil()
+		#competicao_copa_confederacoes()
+		#copa_brasil()
+		__campeonato_quarta_show__()
 	return redirect('/')
 
 @login_required		

@@ -51,10 +51,13 @@
 
 <div class="row">	
 
+	<!--
 	<div class="visible-desktop pull-right" id="id_publicidade_top">
 		<img src="/media/images/__159__.gif"/>
 	</div>		
-
+	-->
+	
+	
 	<p>{{competicao.campeonato.nome}}</p>
 	<h3>Copa <a href="{{patrocinador.patrocinador.url_site}}" target="_blank">{{patrocinador.patrocinador.nome_visual}}</a> {{competicao.nome}}</h3>
 	
@@ -136,11 +139,14 @@
 	</div>			
 	<div class="span2">
 	
-		<br/><br/><br/><br/>
-		<div id="id_maiores_alteracao_colocacao"><center><img src="/media/images/ret.gif"/></center></div>	
+		<br/><br/><br/><br/> 
+		<!-- Aqui e a estatistica dos que mais ganharam/perderam colocacao na rodada 
+			<div id="id_maiores_alteracao_colocacao"><center><img src="/media/images/ret.gif"/></center></div>	
+		-->
 	
 		<br/><br/><br/><br/>
 	
+		<!-- 29/10/2013 - patrocinadores
 		<span class="text-warning">publicidade</span><br/>
 			<div class="visible-desktop">
 				<a href="{{ patrocinador.patrocinador.url_site }}" target="_blank">
@@ -156,8 +162,9 @@
 					<br/><br/>
 				</div>			
 			{% endfor %}
+		-->
 		
-		<!--
+		<!-- Modelo Patrocinador
 		<div class="visible-desktop">
 			<a href="http://www.asisco.com.br" target="_blank"><img class="img-rounded" src="/media/images/patrocinadores/cocacola.png"/></a>
 			<br/><br/>
@@ -167,8 +174,11 @@
 			<br/><br/>
 		</div>
 		-->
+		
+		<!-- Anuncie Aqui
 		<div class="patrocinador">
 			<img class="img-rounded" height="100" width="150" src="/media/images/patrocinadores/anuncie.gif"/>
 		</div>
+		-->
 	</div>			
 </div>				

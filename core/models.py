@@ -100,10 +100,10 @@ class Jogo(models.Model):
 	class Meta:
 		#order_with_respect_to = 'grupo'
 		ordering = ('data_hora',)
-	#time_a = models.ForeignKey('Time', verbose_name=u'Time A', related_name='time_a')
-	#time_b = models.ForeignKey('Time', verbose_name=u'Time B', related_name='time_b')
-	time_a = models.CharField(max_length=50)
-	time_b = models.CharField(max_length=50)
+	time_a = models.ForeignKey('Time', verbose_name=u'Time A', related_name='time_a')
+	time_b = models.ForeignKey('Time', verbose_name=u'Time B', related_name='time_b')
+	#time_a = models.CharField(max_length=50)
+	#time_b = models.CharField(max_length=50)
 	resultado_a = models.IntegerField(default=0)
 	resultado_b = models.IntegerField(default=0)
 	grupo = models.ForeignKey(Grupo)
@@ -124,7 +124,7 @@ class Jogo(models.Model):
 		if self.status.codigo != "E":
 			r_a = str(self.resultado_a)
 			r_b = str(self.resultado_b)			
-		return self.time_a + " " + r_a + " X " + r_b + " " + self.time_b + " / " + str(self.data_hora) + " - " + self.status.descricao + local__
+		return self.time_a.nome + " " + r_a + " X " + r_b + " " + self.time_b.nome + " / " + str(self.data_hora) + " - " + self.status.descricao + local__
 ###########################################################
 
 class Inscricao(models.Model):
@@ -168,7 +168,7 @@ class Aposta(models.Model):
 	riscado = models.BooleanField(default=False)
 	data_alteracao = models.DateTimeField(default=datetime.now)
 	def __unicode__(self):
-		return self.inscricao.participante.apelido + " / " + self.jogo.time_a + " " + str(self.jogo.resultado_a) + " X " + str(self.jogo.resultado_b) + " " + self.jogo.time_b + " / " + str(self.jogo.data_hora) + " / Local: " + self.jogo.local.descricao + " / " + self.jogo.status.descricao + " - Aposta: " + str(self.resultado_a) + " X " + str(self.resultado_b) + " - Calculado: " + str(self.calculado)
+		return self.inscricao.participante.apelido + " / " + self.jogo.time_a.nome + " " + str(self.jogo.resultado_a) + " X " + str(self.jogo.resultado_b) + " " + self.jogo.time_b.nome + " / " + str(self.jogo.data_hora) + " / Local: " + self.jogo.local.descricao + " / " + self.jogo.status.descricao + " - Aposta: " + str(self.resultado_a) + " X " + str(self.resultado_b) + " - Calculado: " + str(self.calculado)
 	
 class Solicitacao(models.Model):
 	participante = models.ForeignKey(Participante)
